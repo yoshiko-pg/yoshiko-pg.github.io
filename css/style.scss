@@ -1,0 +1,474 @@
+@font-face {
+  font-family: 'Inconsolata';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Inconsolata'), url(font/inconsolata.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(font/open_sans.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(font/open_sans_semibold.woff) format('woff');
+}
+//@import url(http://fonts.googleapis.com/css?family=Inconsolata);
+//@import url(http://fonts.googleapis.com/css?family=Open+Sans:600,400);
+
+@font-face {
+  font-family: "migu1m";
+  src: url(font/migu-1m-regular.woff) format('woff');
+}
+
+
+@import url(lib/fa/css/font-awesome.min.css);
+
+////////////////////////////////////////////////////////////////////////
+@mixin cf {
+	zoom: 1;
+
+	&:before,
+	&:after {
+		display: block;
+		height: 0;
+		visibility: hidden;
+		content: "\0020";
+	}
+
+	&:after {
+		clear: both;
+	}
+}
+.cf{ @include cf; }
+
+@mixin pa00 {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+@mixin box{
+	@include pa00;
+	width: 100%;
+	margin: 0;
+}
+
+////////////////////////////////////////////////////////////////////////
+.float_left{ float: left;}
+.float_right{ float: right; }
+
+h2{
+	text-align: center;
+	color: #FFF;
+	font-size: 26px;
+	font-weight: normal;
+	letter-spacing: 10px;
+}
+////////////////////////////////////////////////////////////////////////
+
+html, body{ height: 100%; }
+
+body{
+	margin: 0;
+	padding: 0;
+	position: relative;
+	font-family: 'Inconsolata', sans-serif;
+}
+
+
+#home{
+	@include box;
+	position: fixed;
+	padding: 0;
+	height: 100%;
+	@include cf;
+	z-index: 20;
+
+	$side_width: 200px;
+
+	.side{
+		@include pa00;
+		font-family: 'Open Sans', sans-serif;
+		background-color: #313437;
+		width: $side_width;
+		margin: 0;
+		height: 100%;
+
+		dl{
+			line-height: 2;
+			cursor: default;
+			margin-top: 0;
+
+			dt{
+				font-weight: bold;
+				font-size: 12px;
+				color: #859597;
+				margin-top: 10px;
+				padding-left: 10px;
+			}
+
+			dd{
+				font-size: 11px;
+				$color: #DADADA;
+				color: $color;
+				margin: 0px;
+				padding-left: 25px;
+
+				&.file{
+					padding-left: 43px;
+				}
+				&.current{
+					background-color: #2095F0;
+					color: #FFF;
+				}
+
+				i{
+					margin-right: 7px;
+					color: #3173C7;
+					&.fa-file{
+						color: #313437;
+					}
+				}
+
+				a:link, a:visited, a:hover, a:active{
+					color: $color;
+					text-decoration: none;
+					cursor: default;
+				}
+				a:hover{
+					color: #FFFFFF;
+				}
+			}
+		}
+
+	}
+
+	.main{
+		@include pa00;
+		left: $side_width;
+		width: 100%;
+		height: 100%;
+
+		.tabs{
+			$color: #4B4F53;
+			$bgcolor: #131416;
+			$radius: 7px;
+
+			width: 100%;
+			background: $bgcolor;
+			padding: 0 $radius + 2px;
+			border-bottom: 6px $color solid;
+
+			.tab{
+				font-family: 'Open Sans', sans-serif;
+				font-size: 11px;
+				color: #FFF;
+				width: 140px;
+				padding: 7px 9px;
+				background-color: $color;
+				position: relative;
+				border-top-left-radius: $radius;
+				border-top-right-radius: $radius;
+
+				&:before, &:after {
+					position: absolute;
+					bottom: -1px;
+					width: $radius;
+					height: $radius;
+					content: " ";
+					background-color: $bgcolor;
+				}
+				&:before {
+					left: -$radius;
+					border-bottom-right-radius: $radius;
+					border-width: 0 1px 1px 0;
+					border-color: $color;
+					border-style: solid;
+					box-shadow: 2px 4px 0 $color;
+				}
+				&:after {
+					right: -$radius;
+					border-bottom-left-radius: $radius;
+					border-width: 0 0 1px 1px;
+					border-color: $color;
+					border-style: solid;
+					box-shadow: -2px 4px 0 $color;
+				}
+
+				.fa-stack{
+					position: absolute;
+					right: 3px;
+					top: 10px;
+					line-height: 1;
+
+					.fa-stack-2x{
+						font-size: 12px;
+						color: #818487;
+					}
+					&:hover .fa-stack-2x{ color: #E0E0E0;}
+
+					.fa-stack-1x{
+						font-size: 10px;
+						color: $color;
+						margin-top: 1px;
+					}
+				}
+			}
+		}
+
+		.body{
+			$tabs_height: 40px;
+			$lines_width: 45px;
+			height: 100%;
+
+			font-size: 20px !important;
+			line-height: 1.2 !important;
+			background-color: #26292C;
+			padding-left: $lines_width + 15px;
+			padding-top: 4px;
+
+			.lines{
+				@include pa00;
+				top: $tabs_height;
+				width: $lines_width;
+				color: #3D4D50;
+				text-align: right;
+				height: 100%;
+				overflow: hidden;
+			}
+
+			pre{
+				margin: 0;
+				color: #EEE;
+				font-family: 'Inconsolata', sans-serif;
+			}
+		}
+	}
+}
+
+
+#global_navi{
+	$height: 76px;
+	height: $height;
+	position: absolute;
+	bottom: -$height + 23px;
+	left: 0;
+	width: 100%;
+	background-color: #3C3F42;
+	overflow: hidden;
+
+	.editor_foot{
+		font-family: 'Open Sans', sans-serif;
+		color: #949597;
+		font-size: 11px;
+		margin: 3px 15px;
+		@include cf;
+	}
+
+	.navi_menu{
+
+		.logo{
+
+		}
+
+		ul{
+			margin-top: 0;
+			float: right;
+			@include cf;
+			li{
+				float: left;
+				list-style: none;
+				margin-right: 40px;
+				letter-spacing: 5px;
+
+				a:link, a:visited, a:hover, a:active{
+					color: #FFF;
+					text-decoration: none;
+				}
+			}
+		}
+
+		#navi_marker{
+			display: block;
+			position: absolute;
+			width: 90px;
+			height: 5px;
+			background-color: #CCC;
+			right:385px;
+			bottom:-5px;
+		}
+	}
+}
+
+#about{
+	position: fixed;
+	top: 100%;
+	left: 0;
+	width: 100%;
+	height: 120%;
+	z-index: 10;
+
+	background:url(./img/grunge.png) repeat 0 0, #313437;
+	background:url(./img/grunge.png) repeat 0 0, -moz-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+	background:url(./img/grunge.png) repeat 0 0, -webkit-gradient(linear, left top, right bottom, color-stop(20%,#313437), color-stop(100%,#373C40));
+	background:url(./img/grunge.png) repeat 0 0, -webkit-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+	background:url(./img/grunge.png) repeat 0 0, -o-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+	background:url(./img/grunge.png) repeat 0 0, -ms-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+	background:url(./img/grunge.png) repeat 0 0, linear-gradient(to right bottom, #313437 20%, #373C40 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#313437', endColorstr='#373C40',GradientType=0 );
+
+	h2{
+		margin-top: 120px;
+	}
+
+	.wrap{
+		width: 80%;
+		height:50%;
+		margin: 10% auto 20%;
+		overflow: hidden;
+		@include cf;
+
+		.image{
+			$size: 370px;
+			width: 50%;
+			height: $size;
+			float: left;
+			text-align: center;
+
+			img{
+				width:$size;
+				height: $size;
+				-webkit-border-radius: $size;
+				        border-radius: $size;
+			}
+		}
+
+		.textbox{
+			width: 50%;
+			height: 100%;
+			float: left;
+			position: relative;
+			overflow: hidden;
+
+			.text{
+				@include pa00;
+				$pd: 5%;
+				width: 100% - $pd * 2;
+				height: 55%;
+				padding: 0 $pd;
+				font-size: 16px;
+				color: #FFF;
+				letter-spacing: 3px;
+				font-family: 'Inconsolata', 'migu1m', sans-serif;
+				opacity: 1;
+
+				h3{
+					font-weight: normal;
+					font-size: 16px;
+					text-align: center;
+					padding-bottom: 15px;
+					width: 50%;
+					border-bottom: 1px solid #949597;
+					margin: 0 auto 30px;
+				}
+
+				p{
+					line-height: 1.8;
+
+				}
+			}
+
+			.marker_area{
+				$width: 120px;
+
+				@include cf;
+				margin: 70% auto 0;
+				width: $width;
+				position: relative;
+
+				.marker_wrap{
+					position: relative;
+					width: $width;
+					margin: 0 auto;
+					padding-top: 2px;
+
+					.marker{
+						$markersize: 6px;
+						display: block;
+						width: $markersize;
+						height: $markersize;
+						-webkit-border-radius: $markersize;
+						        border-radius: $markersize;
+						background-color: #EEEEEE;
+						border: 2px solid #313437;
+						margin: 2px;
+						float: left;
+						margin: 0 15px;
+
+						&.left { left:0; }
+						&.right{ right:0;}
+					}
+				}
+
+				.pointer{
+					@include pa00;
+					$pointersize: 14px;
+					display: block;
+					width: $pointersize;
+					height: $pointersize;
+					-webkit-border-radius: $pointersize;
+					        border-radius: $pointersize;
+					background-color: #888888;
+				}
+			}
+		}
+	}
+
+	#skills{
+		position: absolute;
+		left: 0;
+		bottom: 10px;
+		width: 100%;
+	}
+}
+
+#skills_body{
+	background-color: #181818;
+}
+
+
+
+// TMP
+#works, #contact{
+	@include box;
+	top: 20000px;
+	height:30000px
+}
+
+
+#bg1{
+	position: fixed;
+	top: 50%;
+	background: #CCCCCC url(../img/bg1.jpg) no-repeat left top;
+	width: 100%;
+	height: 1000px;
+	z-index: 0;
+}
+
+#bg2{
+	@include box;
+}
+
+.white_text{
+	position: fixed;
+	color: #FFF;
+	text-align: center;
+	font-size: 40px;
+	width: 100%;
+	z-index: 5;
+	letter-spacing: 10px;
+}
