@@ -197,7 +197,9 @@ body {
   left: 0;
   width: 100%;
   background-color: #3C3F42;
-  overflow: hidden; }
+  overflow: hidden;
+  -webkit-box-shadow: 0px 5px 5px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 5px 5px 0 rgba(0, 0, 0, 0.15); }
   #global_navi .editor_foot {
     font-family: 'Open Sans', sans-serif;
     color: #949597;
@@ -240,26 +242,29 @@ body {
     bottom: -5px; }
 
 #about {
+  background: url(./img/grunge.png) repeat 0 0, #313437;
+  /*
+  background:url(./img/grunge.png) repeat 0 0, #313437;
+  background:url(./img/grunge.png) repeat 0 0, -moz-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+  background:url(./img/grunge.png) repeat 0 0, -webkit-gradient(linear, left top, right bottom, color-stop(20%,#313437), color-stop(100%,#373C40));
+  background:url(./img/grunge.png) repeat 0 0, -webkit-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+  background:url(./img/grunge.png) repeat 0 0, -o-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+  background:url(./img/grunge.png) repeat 0 0, -ms-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+  background:url(./img/grunge.png) repeat 0 0, linear-gradient(to right bottom, #313437 20%, #373C40 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#313437', endColorstr='#373C40',GradientType=0 );
+  */
   position: fixed;
   top: 100%;
   left: 0;
   width: 100%;
-  height: 120%;
-  z-index: 10;
-  background: url(./img/grunge.png) repeat 0 0, #313437;
-  background: url(./img/grunge.png) repeat 0 0, -moz-linear-gradient(right bottom, #313437 20%, #373c40 100%);
-  background: url(./img/grunge.png) repeat 0 0, -webkit-gradient(linear, left top, right bottom, color-stop(20%, #313437), color-stop(100%, #373c40));
-  background: url(./img/grunge.png) repeat 0 0, -webkit-linear-gradient(right bottom, #313437 20%, #373c40 100%);
-  background: url(./img/grunge.png) repeat 0 0, -o-linear-gradient(right bottom, #313437 20%, #373c40 100%);
-  background: url(./img/grunge.png) repeat 0 0, -ms-linear-gradient(right bottom, #313437 20%, #373c40 100%);
-  background: url(./img/grunge.png) repeat 0 0, linear-gradient(to right bottom, #313437 20%, #373c40 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#313437', endColorstr='#373C40',GradientType=0 ); }
+  height: 100%;
+  z-index: 10; }
   #about h2 {
-    margin-top: 120px; }
+    margin-top: 8%; }
   #about .wrap {
     width: 80%;
     height: 50%;
-    margin: 10% auto 20%;
+    margin: 5% auto 20%;
     overflow: hidden;
     zoom: 1; }
     #about .wrap:before, #about .wrap:after {
@@ -271,14 +276,13 @@ body {
       clear: both; }
     #about .wrap .image {
       width: 50%;
-      height: 370px;
+      height: 100%;
       float: left;
       text-align: center; }
       #about .wrap .image img {
-        width: 370px;
-        height: 370px;
-        -webkit-border-radius: 370px;
-        border-radius: 370px; }
+        height: 100%;
+        -webkit-border-radius: 100%;
+        border-radius: 100%; }
     #about .wrap .textbox {
       width: 50%;
       height: 100%;
@@ -290,13 +294,14 @@ body {
         top: 0;
         left: 0;
         width: 90%;
-        height: 55%;
+        height: 90%;
         padding: 0 5%;
-        font-size: 16px;
+        font-size: 14px;
         color: #FFF;
         letter-spacing: 3px;
         font-family: 'Inconsolata', 'migu1m', sans-serif;
-        opacity: 1; }
+        opacity: 1;
+        overflow: hidden; }
         #about .wrap .textbox .text h3 {
           font-weight: normal;
           font-size: 16px;
@@ -309,9 +314,11 @@ body {
           line-height: 1.8; }
       #about .wrap .textbox .marker_area {
         zoom: 1;
-        margin: 70% auto 0;
         width: 120px;
-        position: relative; }
+        position: absolute;
+        bottom: 2px;
+        left: 50%;
+        margin-left: -60px; }
         #about .wrap .textbox .marker_area:before, #about .wrap .textbox .marker_area:after {
           display: block;
           height: 0;
@@ -350,13 +357,51 @@ body {
           border-radius: 14px;
           background-color: #888888; }
   #about #skills {
+    background: url(./img/grunge.png) repeat 0 0, #313437;
+    /*
+    background:url(./img/grunge.png) repeat 0 0, #313437;
+    background:url(./img/grunge.png) repeat 0 0, -moz-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+    background:url(./img/grunge.png) repeat 0 0, -webkit-gradient(linear, left top, right bottom, color-stop(20%,#313437), color-stop(100%,#373C40));
+    background:url(./img/grunge.png) repeat 0 0, -webkit-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+    background:url(./img/grunge.png) repeat 0 0, -o-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+    background:url(./img/grunge.png) repeat 0 0, -ms-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+    background:url(./img/grunge.png) repeat 0 0, linear-gradient(to right bottom, #313437 20%, #373C40 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#313437', endColorstr='#373C40',GradientType=0 );
+    */
     position: absolute;
     left: 0;
-    bottom: 10px;
-    width: 100%; }
+    bottom: -140px;
+    width: 100%;
+    height: 140px; }
 
 #skills_body {
-  background-color: #181818; }
+  background-color: #181818;
+  position: fixed;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  margin: 0 auto; }
+  #skills_body .graphs {
+    zoom: 1;
+    position: absolute;
+    top: 20%;
+    width: 20%;
+    height: 100%;
+    background-color: red;
+    margin: 0;
+    padding: 0 !important; }
+    #skills_body .graphs:before, #skills_body .graphs:after {
+      display: block;
+      height: 0;
+      visibility: hidden;
+      content: "\0020"; }
+    #skills_body .graphs:after {
+      clear: both; }
+    #skills_body .graphs li {
+      width: 33%;
+      float: left;
+      color: #FFF; }
 
 #works, #contact {
   position: absolute;
