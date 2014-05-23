@@ -29,50 +29,50 @@
 
 ////////////////////////////////////////////////////////////////////////
 @mixin cf {
-	zoom: 1;
+  zoom: 1;
 
-	&:before,
-	&:after {
-		display: block;
-		height: 0;
-		visibility: hidden;
-		content: "\0020";
-	}
+  &:before,
+  &:after {
+    display: block;
+    height: 0;
+    visibility: hidden;
+    content: "\0020";
+  }
 
-	&:after {
-		clear: both;
-	}
+  &:after {
+    clear: both;
+  }
 }
 .cf{ @include cf; }
 
 @mixin pa00 {
-	position: absolute;
-	top: 0;
-	left: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 @mixin box{
-	@include pa00;
-	width: 100%;
-	margin: 0;
+  @include pa00;
+  width: 100%;
+  margin: 0;
 }
 
 @mixin bg_gray{
-		background:url(./img/grunge.png) repeat 0 0, #313437;
-	/*
-	background:url(./img/grunge.png) repeat 0 0, #313437;
-	background:url(./img/grunge.png) repeat 0 0, -moz-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-	background:url(./img/grunge.png) repeat 0 0, -webkit-gradient(linear, left top, right bottom, color-stop(20%,#313437), color-stop(100%,#373C40));
-	background:url(./img/grunge.png) repeat 0 0, -webkit-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-	background:url(./img/grunge.png) repeat 0 0, -o-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-	background:url(./img/grunge.png) repeat 0 0, -ms-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-	background:url(./img/grunge.png) repeat 0 0, linear-gradient(to right bottom, #313437 20%, #373C40 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#313437', endColorstr='#373C40',GradientType=0 );
-	*/
+    background:url(./img/grunge.png) repeat 0 0, #313437;
+  /*
+  background:url(./img/grunge.png) repeat 0 0, #313437;
+  background:url(./img/grunge.png) repeat 0 0, -moz-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+  background:url(./img/grunge.png) repeat 0 0, -webkit-gradient(linear, left top, right bottom, color-stop(20%,#313437), color-stop(100%,#373C40));
+  background:url(./img/grunge.png) repeat 0 0, -webkit-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+  background:url(./img/grunge.png) repeat 0 0, -o-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+  background:url(./img/grunge.png) repeat 0 0, -ms-linear-gradient(right bottom, #313437 20%, #373C40 100%);
+  background:url(./img/grunge.png) repeat 0 0, linear-gradient(to right bottom, #313437 20%, #373C40 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#313437', endColorstr='#373C40',GradientType=0 );
+  */
 }
 
 @mixin bg_darkgray{
-	background-color: #181818;
+  background-color: #181818;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -80,436 +80,436 @@
 .float_right{ float: right; }
 
 h2{
-	text-align: center;
-	color: #FFF;
-	font-size: 26px;
-	font-weight: normal;
-	letter-spacing: 10px;
+  text-align: center;
+  color: #FFF;
+  font-size: 26px;
+  font-weight: normal;
+  letter-spacing: 10px;
 }
 ////////////////////////////////////////////////////////////////////////
 
 html, body{ height: 100%; }
 
 body{
-	margin: 0;
-	padding: 0;
-	position: relative;
-	font-family: 'Inconsolata', sans-serif;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  font-family: 'Inconsolata', sans-serif;
 }
 
 
 #home{
-	@include box;
-	position: fixed;
-	padding: 0;
-	height: 100%;
-	@include cf;
-	z-index: 20;
+  @include box;
+  position: fixed;
+  padding: 0;
+  height: 100%;
+  @include cf;
+  z-index: 20;
 
-	$side_width: 200px;
+  $side_width: 200px;
 
-	.side{
-		@include pa00;
-		font-family: 'Open Sans', sans-serif;
-		background-color: #313437;
-		width: $side_width;
-		margin: 0;
-		height: 100%;
+  .side{
+    @include pa00;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #313437;
+    width: $side_width;
+    margin: 0;
+    height: 100%;
 
-		dl{
-			line-height: 2;
-			cursor: default;
-			margin-top: 0;
+    dl{
+      line-height: 2;
+      cursor: default;
+      margin-top: 0;
 
-			dt{
-				font-weight: bold;
-				font-size: 12px;
-				color: #859597;
-				margin-top: 10px;
-				padding-left: 10px;
-			}
+      dt{
+        font-weight: bold;
+        font-size: 12px;
+        color: #859597;
+        margin-top: 10px;
+        padding-left: 10px;
+      }
 
-			dd{
-				font-size: 11px;
-				$color: #DADADA;
-				color: $color;
-				margin: 0px;
-				padding-left: 25px;
+      dd{
+        font-size: 11px;
+        $color: #DADADA;
+        color: $color;
+        margin: 0px;
+        padding-left: 25px;
 
-				&.file{
-					padding-left: 43px;
-				}
-				&.current{
-					background-color: #2095F0;
-					color: #FFF;
-				}
+        &.file{
+          padding-left: 43px;
+        }
+        &.current{
+          background-color: #2095F0;
+          color: #FFF;
+        }
 
-				i{
-					margin-right: 7px;
-					color: #3173C7;
-					&.fa-file{
-						color: #313437;
-					}
-				}
+        i{
+          margin-right: 7px;
+          color: #3173C7;
+          &.fa-file{
+            color: #313437;
+          }
+        }
 
-				a:link, a:visited, a:hover, a:active{
-					color: $color;
-					text-decoration: none;
-					cursor: default;
-				}
-				a:hover{
-					color: #FFFFFF;
-				}
-			}
-		}
+        a:link, a:visited, a:hover, a:active{
+          color: $color;
+          text-decoration: none;
+          cursor: default;
+        }
+        a:hover{
+          color: #FFFFFF;
+        }
+      }
+    }
 
-	}
+  }
 
-	.main{
-		@include pa00;
-		left: $side_width;
-		width: 100%;
-		height: 100%;
+  .main{
+    @include pa00;
+    left: $side_width;
+    width: 100%;
+    height: 100%;
 
-		.tabs{
-			$color: #4B4F53;
-			$bgcolor: #131416;
-			$radius: 7px;
+    .tabs{
+      $color: #4B4F53;
+      $bgcolor: #131416;
+      $radius: 7px;
 
-			width: 100%;
-			background: $bgcolor;
-			padding: 0 $radius + 2px;
-			border-bottom: 6px $color solid;
+      width: 100%;
+      background: $bgcolor;
+      padding: 0 $radius + 2px;
+      border-bottom: 6px $color solid;
 
-			.tab{
-				font-family: 'Open Sans', sans-serif;
-				font-size: 11px;
-				color: #FFF;
-				width: 140px;
-				padding: 7px 9px;
-				background-color: $color;
-				position: relative;
-				border-top-left-radius: $radius;
-				border-top-right-radius: $radius;
+      .tab{
+        font-family: 'Open Sans', sans-serif;
+        font-size: 11px;
+        color: #FFF;
+        width: 140px;
+        padding: 7px 9px;
+        background-color: $color;
+        position: relative;
+        border-top-left-radius: $radius;
+        border-top-right-radius: $radius;
 
-				&:before, &:after {
-					position: absolute;
-					bottom: -1px;
-					width: $radius;
-					height: $radius;
-					content: " ";
-					background-color: $bgcolor;
-				}
-				&:before {
-					left: -$radius;
-					border-bottom-right-radius: $radius;
-					border-width: 0 1px 1px 0;
-					border-color: $color;
-					border-style: solid;
-					box-shadow: 2px 4px 0 $color;
-				}
-				&:after {
-					right: -$radius;
-					border-bottom-left-radius: $radius;
-					border-width: 0 0 1px 1px;
-					border-color: $color;
-					border-style: solid;
-					box-shadow: -2px 4px 0 $color;
-				}
+        &:before, &:after {
+          position: absolute;
+          bottom: -1px;
+          width: $radius;
+          height: $radius;
+          content: " ";
+          background-color: $bgcolor;
+        }
+        &:before {
+          left: -$radius;
+          border-bottom-right-radius: $radius;
+          border-width: 0 1px 1px 0;
+          border-color: $color;
+          border-style: solid;
+          box-shadow: 2px 4px 0 $color;
+        }
+        &:after {
+          right: -$radius;
+          border-bottom-left-radius: $radius;
+          border-width: 0 0 1px 1px;
+          border-color: $color;
+          border-style: solid;
+          box-shadow: -2px 4px 0 $color;
+        }
 
-				.fa-stack{
-					position: absolute;
-					right: 3px;
-					top: 10px;
-					line-height: 1;
+        .fa-stack{
+          position: absolute;
+          right: 3px;
+          top: 10px;
+          line-height: 1;
 
-					.fa-stack-2x{
-						font-size: 12px;
-						color: #818487;
-					}
-					&:hover .fa-stack-2x{ color: #E0E0E0;}
+          .fa-stack-2x{
+            font-size: 12px;
+            color: #818487;
+          }
+          &:hover .fa-stack-2x{ color: #E0E0E0;}
 
-					.fa-stack-1x{
-						font-size: 10px;
-						color: $color;
-						margin-top: 1px;
-					}
-				}
-			}
-		}
+          .fa-stack-1x{
+            font-size: 10px;
+            color: $color;
+            margin-top: 1px;
+          }
+        }
+      }
+    }
 
-		.body{
-			$tabs_height: 40px;
-			$lines_width: 45px;
-			height: 100%;
+    .body{
+      $tabs_height: 40px;
+      $lines_width: 45px;
+      height: 100%;
 
-			font-size: 20px !important;
-			line-height: 1.2 !important;
-			background-color: #26292C;
-			padding-left: $lines_width + 15px;
-			padding-top: 4px;
+      font-size: 20px !important;
+      line-height: 1.2 !important;
+      background-color: #26292C;
+      padding-left: $lines_width + 15px;
+      padding-top: 4px;
 
-			.lines{
-				@include pa00;
-				top: $tabs_height;
-				width: $lines_width;
-				color: #3D4D50;
-				text-align: right;
-				height: 100%;
-				overflow: hidden;
-			}
+      .lines{
+        @include pa00;
+        top: $tabs_height;
+        width: $lines_width;
+        color: #3D4D50;
+        text-align: right;
+        height: 100%;
+        overflow: hidden;
+      }
 
-			pre{
-				margin: 0;
-				color: #EEE;
-				font-family: 'Inconsolata', sans-serif;
-			}
-		}
-	}
+      pre{
+        margin: 0;
+        color: #EEE;
+        font-family: 'Inconsolata', sans-serif;
+      }
+    }
+  }
 }
 
 
 #global_navi{
-	$height: 76px;
-	height: $height;
-	position: absolute;
-	bottom: -$height + 23px;
-	left: 0;
-	width: 100%;
-	background-color: #3C3F42;
-	overflow: hidden;
-	-webkit-box-shadow: 0px 5px 5px 0 rgba(0, 0, 0, 0.15);
-	        box-shadow: 0px 5px 5px 0 rgba(0, 0, 0, 0.15);
+  $height: 76px;
+  height: $height;
+  position: absolute;
+  bottom: -$height + 23px;
+  left: 0;
+  width: 100%;
+  background-color: #3C3F42;
+  overflow: hidden;
+  -webkit-box-shadow: 0px 5px 5px 0 rgba(0, 0, 0, 0.15);
+          box-shadow: 0px 5px 5px 0 rgba(0, 0, 0, 0.15);
 
-	.editor_foot{
-		font-family: 'Open Sans', sans-serif;
-		color: #949597;
-		font-size: 11px;
-		margin: 3px 15px;
-		@include cf;
-	}
+  .editor_foot{
+    font-family: 'Open Sans', sans-serif;
+    color: #949597;
+    font-size: 11px;
+    margin: 3px 15px;
+    @include cf;
+  }
 
-	.navi_menu{
+  .navi_menu{
 
-		.logo{
+    .logo{
 
-		}
+    }
 
-		ul{
-			margin-top: 0;
-			float: right;
-			@include cf;
-			li{
-				float: left;
-				list-style: none;
-				margin-right: 40px;
-				letter-spacing: 5px;
+    ul{
+      margin-top: 0;
+      float: right;
+      @include cf;
+      li{
+        float: left;
+        list-style: none;
+        margin-right: 40px;
+        letter-spacing: 5px;
 
-				a:link, a:visited, a:hover, a:active{
-					color: #FFF;
-					text-decoration: none;
-				}
-			}
-		}
+        a:link, a:visited, a:hover, a:active{
+          color: #FFF;
+          text-decoration: none;
+        }
+      }
+    }
 
-		#navi_marker{
-			display: block;
-			position: absolute;
-			width: 90px;
-			height: 5px;
-			background-color: #CCC;
-			right:385px;
-			bottom:-5px;
-		}
-	}
+    #navi_marker{
+      display: block;
+      position: absolute;
+      width: 90px;
+      height: 5px;
+      background-color: #CCC;
+      right:385px;
+      bottom:-5px;
+    }
+  }
 }
 
 #about{
-	@include bg_gray;
-	position: fixed;
-	top: 100%;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 10;
+  @include bg_gray;
+  position: fixed;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
 
-	h2{
-		margin-top: 8%;
-	}
+  h2{
+    margin-top: 8%;
+  }
 
-	.wrap{
-		width: 80%;
-		height:50%;
-		margin: 5% auto 20%;
-		overflow: hidden;
-		@include cf;
+  .wrap{
+    width: 80%;
+    height:50%;
+    margin: 5% auto 20%;
+    overflow: hidden;
+    @include cf;
 
-		.image{
-			$size: 100%;
-			width: 50%;
-			height: $size;
-			float: left;
-			text-align: center;
+    .image{
+      $size: 100%;
+      width: 50%;
+      height: $size;
+      float: left;
+      text-align: center;
 
-			img{
-				height: $size;
-				-webkit-border-radius: $size;
-				        border-radius: $size;
-			}
-		}
+      img{
+        height: $size;
+        -webkit-border-radius: $size;
+                border-radius: $size;
+      }
+    }
 
-		.textbox{
-			width: 50%;
-			height: 100%;
-			float: left;
-			position: relative;
-			overflow: hidden;
+    .textbox{
+      width: 50%;
+      height: 100%;
+      float: left;
+      position: relative;
+      overflow: hidden;
 
-			.text{
-				@include pa00;
-				$pd: 5%;
-				width: 100% - $pd * 2;
-				height: 90%;
-				padding: 0 $pd;
-				font-size: 14px;
-				color: #FFF;
-				letter-spacing: 3px;
-				font-family: 'Inconsolata', 'migu1m', sans-serif;
-				opacity: 1;
-				overflow: hidden;
+      .text{
+        @include pa00;
+        $pd: 5%;
+        width: 100% - $pd * 2;
+        height: 90%;
+        padding: 0 $pd;
+        font-size: 14px;
+        color: #FFF;
+        letter-spacing: 3px;
+        font-family: 'Inconsolata', 'migu1m', sans-serif;
+        opacity: 1;
+        overflow: hidden;
 
-				h3{
-					font-weight: normal;
-					font-size: 16px;
-					text-align: center;
-					padding-bottom: 15px;
-					width: 50%;
-					border-bottom: 1px solid #949597;
-					margin: 0 auto 30px;
-				}
+        h3{
+          font-weight: normal;
+          font-size: 16px;
+          text-align: center;
+          padding-bottom: 15px;
+          width: 50%;
+          border-bottom: 1px solid #949597;
+          margin: 0 auto 30px;
+        }
 
-				p{
-					line-height: 1.8;
+        p{
+          line-height: 1.8;
 
-				}
-			}
+        }
+      }
 
-			.marker_area{
-				$width: 120px;
+      .marker_area{
+        $width: 120px;
 
-				@include cf;
-				width: $width;
-				position: absolute;
-				bottom: 2px;
-				left: 50%;
-				margin-left: -($width/2);
+        @include cf;
+        width: $width;
+        position: absolute;
+        bottom: 2px;
+        left: 50%;
+        margin-left: -($width/2);
 
 
-				.marker_wrap{
-					position: relative;
-					width: $width;
-					margin: 0 auto;
-					padding-top: 2px;
+        .marker_wrap{
+          position: relative;
+          width: $width;
+          margin: 0 auto;
+          padding-top: 2px;
 
-					.marker{
-						$markersize: 6px;
-						display: block;
-						width: $markersize;
-						height: $markersize;
-						-webkit-border-radius: $markersize;
-						        border-radius: $markersize;
-						background-color: #EEEEEE;
-						border: 2px solid #313437;
-						margin: 2px;
-						float: left;
-						margin: 0 15px;
+          .marker{
+            $markersize: 6px;
+            display: block;
+            width: $markersize;
+            height: $markersize;
+            -webkit-border-radius: $markersize;
+                    border-radius: $markersize;
+            background-color: #EEEEEE;
+            border: 2px solid #313437;
+            margin: 2px;
+            float: left;
+            margin: 0 15px;
 
-						&.left { left:0; }
-						&.right{ right:0;}
-					}
-				}
+            &.left { left:0; }
+            &.right{ right:0;}
+          }
+        }
 
-				.pointer{
-					@include pa00;
-					$pointersize: 14px;
-					display: block;
-					width: $pointersize;
-					height: $pointersize;
-					-webkit-border-radius: $pointersize;
-					        border-radius: $pointersize;
-					background-color: #888888;
-				}
-			}
-		}
-	}
+        .pointer{
+          @include pa00;
+          $pointersize: 14px;
+          display: block;
+          width: $pointersize;
+          height: $pointersize;
+          -webkit-border-radius: $pointersize;
+                  border-radius: $pointersize;
+          background-color: #888888;
+        }
+      }
+    }
+  }
 
-	#skills{
-		@include bg_gray;
-		$height: 140px;
-		position: absolute;
-		left: 0;
-		bottom: -$height;
-		width: 100%;
-		height: $height;
-	}
+  #skills{
+    @include bg_gray;
+    $height: 140px;
+    position: absolute;
+    left: 0;
+    bottom: -$height;
+    width: 100%;
+    height: $height;
+  }
 }
 
 #skills_body{
-	@include bg_darkgray;
-	position: fixed;
-	top: 0;
-	left: -50%;
-	width: 200%;
-	height: 100%;
-	margin: 0 auto;
+  @include bg_darkgray;
+  position: fixed;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  margin: 0 auto;
 
-	.graphs{
-		@include cf;
-		position: absolute;
-		top: 20%;
-		width: 20%;
-		height: 100%;
-		background-color: red;
-		margin: 0;
-		padding: 0 !important;
+  .graphs{
+    @include cf;
+    position: absolute;
+    top: 20%;
+    width: 20%;
+    height: 100%;
+    background-color: red;
+    margin: 0;
+    padding: 0 !important;
 
-		li{
-			width: 33%;
-			float: left;
-			color: #FFF;
-		}
-	}
+    li{
+      width: 33%;
+      float: left;
+      color: #FFF;
+    }
+  }
 }
 
 
 
 // TMP
 #works, #contact{
-	@include box;
-	top: 20000px;
-	height:30000px
+  @include box;
+  top: 20000px;
+  height:30000px
 }
 
 
 #bg1{
-	position: fixed;
-	top: 50%;
-	background: #CCCCCC url(../img/bg1.jpg) no-repeat left top;
-	width: 100%;
-	height: 1000px;
-	z-index: 0;
+  position: fixed;
+  top: 50%;
+  background: #CCCCCC url(../img/bg1.jpg) no-repeat left top;
+  width: 100%;
+  height: 1000px;
+  z-index: 0;
 }
 
 #bg2{
-	@include box;
+  @include box;
 }
 
 .white_text{
-	position: fixed;
-	color: #FFF;
-	text-align: center;
-	font-size: 40px;
-	width: 100%;
-	z-index: 5;
-	letter-spacing: 10px;
+  position: fixed;
+  color: #FFF;
+  text-align: center;
+  font-size: 40px;
+  width: 100%;
+  z-index: 5;
+  letter-spacing: 10px;
 }
