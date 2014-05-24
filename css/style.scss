@@ -504,13 +504,25 @@ body{
   }
 }
 
+#works{
+  @include bg_gray;
+  position: fixed;
+  top: 76px;
+  right: 100%;
+  width: 100%;
+  height: 100%;
+  padding-top: 60px;
+  z-index: 10;
+}
 
 
 // TMP
-#works, #contact{
-  @include box;
-  top: 20000px;
-  height:30000px
+#contact{
+  top: 76px;
+  right: 100%;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
 }
 
 
@@ -524,7 +536,12 @@ body{
 }
 
 #bg2{
-  @include box;
+  position: fixed;
+  top: 0%;
+  background: #CCCCCC url(../img/bg2.jpg) no-repeat left top;
+  width: 100%;
+  height: 200%;
+  z-index: -1;
 }
 
 .white_text{
