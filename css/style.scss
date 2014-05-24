@@ -469,14 +469,37 @@ body{
     top: 20%;
     width: 20%;
     height: 100%;
-    background-color: red;
     margin: 0;
     padding: 0 !important;
 
     li{
       width: 33%;
+      height:100%;
       float: left;
       color: #FFF;
+      list-style-type: none;
+      text-align: center;
+
+      .graph{
+        width: 16%;
+        height: 300px;
+        border: 1px #313437 solid;
+        margin: 60px auto 20px;
+        overflow: hidden;
+        .graph_inner{
+          @include bg_gray;
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .title{
+        height: 1.8em;
+      }
+      .image{
+        img{
+          width:35%;
+         }
+      }
     }
   }
 }
