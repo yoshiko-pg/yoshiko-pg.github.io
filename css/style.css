@@ -188,10 +188,14 @@ body {
         overflow: hidden; }
       #home .main .body pre {
         margin: 0;
-        color: #EEE;
-        font-family: 'Inconsolata', sans-serif;
-        font-size: 20px;
-        line-height: 1.2; }
+        padding: 0; }
+        #home .main .body pre code {
+          margin: 0;
+          padding: 0;
+          color: #EEE;
+          font-family: 'Inconsolata', sans-serif;
+          font-size: 20px;
+          line-height: 1; }
 
 #global_navi {
   height: 76px;
