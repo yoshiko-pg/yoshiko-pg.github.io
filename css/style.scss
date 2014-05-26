@@ -270,10 +270,31 @@ body{
           font-family: 'Inconsolata', sans-serif;
           font-size: 20px;
           line-height: 1;
+          #cursor{
+            margin: 0 5px;
+            border-right: 1px white solid;
+          }
         }
       }
     }
   }
+}
+
+@-webkit-keyframes blink {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+#cursor{
+  -webkit-animation-name: blink;/* keyframe名 */
+  -webkit-animation-duration: 0.7s;/* アニメーションにかける時間 */
+  -webkit-animation-iteration-count:infinite;/*infiniteで無限ループ */
+  -webkit-animation-timing-function:ease-in-out;/* イーズインアウト */
+  -webkit-animation-direction: alternate;/* alternateにするとアニメーションが反復 */
+  -webkit-animation-delay: 0s; /* 実行までの待ち時間 */
 }
 
 

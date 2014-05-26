@@ -13,4 +13,13 @@ $(function(){
       top.close();
     }
   });
+
+  var $code = $('code#code');
+  var $text = hljs.highlightAuto($code.text()).value;
+  $(window).scroll(function () {
+    $scroll = $(this).scrollTop();
+    if ($scroll < 1500) {
+      $code.html($text.substring(0, $scroll/2) + "<span id='cursor' />");
+    }
+  });
 })
