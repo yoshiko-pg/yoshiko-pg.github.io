@@ -189,7 +189,9 @@ body {
       #home .main .body pre {
         margin: 0;
         color: #EEE;
-        font-family: 'Inconsolata', sans-serif; }
+        font-family: 'Inconsolata', sans-serif;
+        font-size: 20px;
+        line-height: 1.2; }
 
 #global_navi {
   height: 76px;
