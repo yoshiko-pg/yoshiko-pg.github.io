@@ -117,7 +117,8 @@ body {
     left: 0;
     left: 200px;
     width: 100%;
-    height: 100%; }
+    height: 100%;
+    overflow: hidden; }
     #home .main .tabs {
       width: 100%;
       background: #131416;
@@ -464,6 +465,23 @@ body {
   height: 100%;
   padding-top: 60px;
   z-index: 10; }
+  #contact #links {
+    width: 600px;
+    margin: 15% auto; }
+    #contact #links li {
+      list-style-type: none;
+      float: left;
+      width: 100px;
+      height: 100px;
+      margin: 0 25px; }
+      #contact #links li img {
+        width: 100%;
+        height: 100%; }
+
+#copyright {
+  color: #FFFFFF;
+  text-align: center;
+  opacity: 0.8; }
 
 #bg1 {
   position: fixed;
