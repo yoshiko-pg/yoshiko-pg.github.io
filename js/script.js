@@ -27,12 +27,17 @@ $(function(){
   });
 
   // menu link scroll
-  var offsets = $('#navi_marker').attrList('data-'); // TMP
-  $('a[href^=#]').click(function() {
-    var href = $(this).attr("href");
-    if(offsets[href]){
-      $('html,body').animate({ scrollTop: offsets[href] }, 500);
+  var datas = document.getElementById('navi_marker').dataset;
+  var i = 0, j = 0;
+  var menu = ['about', 'skills', 'works', 'contact'];
+  var set = function(to, offset){
+    $('a[href^=#' + to + ']').click(function() {
+      $('html,body').animate({ scrollTop: offset }, 1000);
       return false;
-    }
-  });
+    });
+  }
+  set('home', 0);
+  for(key in datas){
+    if(i++%2) set(menu[j++], key);
+  }
 });
