@@ -25,7 +25,7 @@
 }
 
 
-@import url(lib/fa/css/font-awesome.min.css);
+@import './lib/fa/css/font-awesome.min.css';
 
 ////////////////////////////////////////////////////////////////////////
 @mixin cf {
@@ -542,6 +542,16 @@ body{
   height: 100%;
   padding-top: 60px;
   z-index: 10;
+  ul{
+    width:788px;
+    margin: 0 auto;
+    li{
+      list-style-type: none;
+      float:left;
+      width: 314px;
+      margin: 40px;
+    }
+  }
 }
 
 #contact{

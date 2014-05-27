@@ -20,7 +20,7 @@
   font-family: "migu1m";
   src: url(font/migu-1m-regular.woff) format('woff'); }
 
-@import url(lib/fa/css/font-awesome.min.css);
+@import url('./lib/fa/css/font-awesome.min.css');
 .cf {
   zoom: 1; }
   .cf:before, .cf:after {
@@ -475,6 +475,14 @@ body {
   height: 100%;
   padding-top: 60px;
   z-index: 10; }
+  #works ul {
+    width: 788px;
+    margin: 0 auto; }
+    #works ul li {
+      list-style-type: none;
+      float: left;
+      width: 314px;
+      margin: 40px; }
 
 #contact {
   background: url(./img/grunge.png) repeat 0 0, #313437;
