@@ -14,6 +14,7 @@ $(function(){
     }
   });
 
+  // scroll programming
   var $code = $('code#code');
   var $text = hljs.highlightAuto($code.text()).value;
   var cursor = '<span id="cursor" />';
@@ -24,4 +25,14 @@ $(function(){
       $code.html($text.substring(0, $scroll/2) + cursor);
     }
   });
-})
+
+  // menu link scroll
+  var offsets = $('#navi_marker').attrList('data-'); // TMP
+  $('a[href^=#]').click(function() {
+    var href = $(this).attr("href");
+    if(offsets[href]){
+      $('html,body').animate({ scrollTop: offsets[href] }, 500);
+      return false;
+    }
+  });
+});
