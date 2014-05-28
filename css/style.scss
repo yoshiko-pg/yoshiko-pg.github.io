@@ -319,9 +319,17 @@ body{
   }
 
   .navi_menu{
+    padding-top: 1em;
 
     .logo{
-
+      float: left;
+      margin-left: 60px;
+      letter-spacing: 5px;
+      font-size: 1.2em;
+      a:link, a:visited, a:hover, a:active{
+        color: #FFF;
+        text-decoration: none;
+      }
     }
 
     ul{

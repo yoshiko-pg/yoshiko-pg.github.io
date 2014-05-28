@@ -1502,33 +1502,43 @@ body {
       content: "\0020"; }
     #global_navi .editor_foot:after {
       clear: both; }
-  #global_navi .navi_menu ul {
-    margin-top: 0;
-    float: right;
-    zoom: 1; }
-    #global_navi .navi_menu ul:before, #global_navi .navi_menu ul:after {
-      display: block;
-      height: 0;
-      visibility: hidden;
-      content: "\0020"; }
-    #global_navi .navi_menu ul:after {
-      clear: both; }
-    #global_navi .navi_menu ul li {
+  #global_navi .navi_menu {
+    padding-top: 1em; }
+    #global_navi .navi_menu .logo {
       float: left;
-      list-style: none;
-      margin-right: 40px;
-      letter-spacing: 5px; }
-      #global_navi .navi_menu ul li a:link, #global_navi .navi_menu ul li a:visited, #global_navi .navi_menu ul li a:hover, #global_navi .navi_menu ul li a:active {
+      margin-left: 60px;
+      letter-spacing: 5px;
+      font-size: 1.2em; }
+      #global_navi .navi_menu .logo a:link, #global_navi .navi_menu .logo a:visited, #global_navi .navi_menu .logo a:hover, #global_navi .navi_menu .logo a:active {
         color: #FFF;
         text-decoration: none; }
-  #global_navi .navi_menu #navi_marker {
-    display: block;
-    position: absolute;
-    width: 90px;
-    height: 5px;
-    background-color: #CCC;
-    right: 385px;
-    bottom: -5px; }
+    #global_navi .navi_menu ul {
+      margin-top: 0;
+      float: right;
+      zoom: 1; }
+      #global_navi .navi_menu ul:before, #global_navi .navi_menu ul:after {
+        display: block;
+        height: 0;
+        visibility: hidden;
+        content: "\0020"; }
+      #global_navi .navi_menu ul:after {
+        clear: both; }
+      #global_navi .navi_menu ul li {
+        float: left;
+        list-style: none;
+        margin-right: 40px;
+        letter-spacing: 5px; }
+        #global_navi .navi_menu ul li a:link, #global_navi .navi_menu ul li a:visited, #global_navi .navi_menu ul li a:hover, #global_navi .navi_menu ul li a:active {
+          color: #FFF;
+          text-decoration: none; }
+    #global_navi .navi_menu #navi_marker {
+      display: block;
+      position: absolute;
+      width: 90px;
+      height: 5px;
+      background-color: #CCC;
+      right: 385px;
+      bottom: -5px; }
 
 #about {
   background: url(./img/grunge.png) repeat 0 0, #313437;
