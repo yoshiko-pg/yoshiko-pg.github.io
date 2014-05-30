@@ -1503,12 +1503,20 @@ body {
     #global_navi .editor_foot:after {
       clear: both; }
   #global_navi .navi_menu {
-    padding-top: 1em; }
+    padding-top: 1.1em; }
     #global_navi .navi_menu .logo {
       float: left;
-      margin-left: 60px;
+      margin-left: 40px;
       letter-spacing: 5px;
       font-size: 1.2em; }
+      #global_navi .navi_menu .logo span {
+        margin-right: 7px;
+        font-size: 0.8em;
+        text-align: center;
+        color: #888888; }
+        #global_navi .navi_menu .logo span .fa-inverse {
+          color: #333333;
+          font-size: 1.1em; }
       #global_navi .navi_menu .logo a:link, #global_navi .navi_menu .logo a:visited, #global_navi .navi_menu .logo a:hover, #global_navi .navi_menu .logo a:active {
         color: #FFF;
         text-decoration: none; }
