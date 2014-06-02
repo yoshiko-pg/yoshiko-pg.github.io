@@ -560,14 +560,48 @@ body{
   height: 100%;
   padding-top: 60px;
   z-index: 10;
-  ul{
-    width:788px;
+  ul.flips{
+    width:728px;
     margin: 0 auto;
+    padding:0;
     li{
-      list-style-type: none;
-      float:left;
       width: 314px;
-      margin: 40px;
+      height:189px;
+      margin: 40px 20px 0px;
+      list-style-type: none;
+      display: inline-block;
+      float:left;
+      .flip {
+        width: 100%;
+        height: 100%;
+        border: 2px solid white;
+        display: block;
+        -webkit-transform-style: preserve-3d;
+        -webkit-transition: 0.5s;
+        img, div {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          -webkit-backface-visibility: hidden;
+          background: transparent;
+          text-align: center;
+          color: white;
+          .fa{
+            font-size: 6em;
+            margin: 8% auto 6%;
+            display: block;
+          }
+          &.on {
+            -webkit-transform: rotateY(180deg);
+            background: #fff ;
+          }
+          &.off { z-index: 10;}
+        }
+        &:hover .off { z-index: 0;}
+      }
+      &:hover .flip {
+        -webkit-transform: rotateY(180deg);
+      }
     }
   }
 }

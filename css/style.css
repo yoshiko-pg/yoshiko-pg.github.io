@@ -1752,14 +1752,45 @@ body {
   height: 100%;
   padding-top: 60px;
   z-index: 10; }
-  #works ul {
-    width: 788px;
-    margin: 0 auto; }
-    #works ul li {
-      list-style-type: none;
-      float: left;
+  #works ul.flips {
+    width: 728px;
+    margin: 0 auto;
+    padding: 0; }
+    #works ul.flips li {
       width: 314px;
-      margin: 40px; }
+      height: 189px;
+      margin: 40px 20px 0px;
+      list-style-type: none;
+      display: inline-block;
+      float: left; }
+      #works ul.flips li .flip {
+        width: 100%;
+        height: 100%;
+        border: 2px solid white;
+        display: block;
+        -webkit-transform-style: preserve-3d;
+        -webkit-transition: 0.5s; }
+        #works ul.flips li .flip img, #works ul.flips li .flip div {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          -webkit-backface-visibility: hidden;
+          background: transparent;
+          text-align: center;
+          color: white; }
+          #works ul.flips li .flip img .fa, #works ul.flips li .flip div .fa {
+            font-size: 6em;
+            margin: 8% auto 6%;
+            display: block; }
+          #works ul.flips li .flip img.on, #works ul.flips li .flip div.on {
+            -webkit-transform: rotateY(180deg);
+            background: #fff; }
+          #works ul.flips li .flip img.off, #works ul.flips li .flip div.off {
+            z-index: 10; }
+        #works ul.flips li .flip:hover .off {
+          z-index: 0; }
+      #works ul.flips li:hover .flip {
+        -webkit-transform: rotateY(180deg); }
 
 #contact {
   background: url(./img/grunge.png) repeat 0 0, #313437;
