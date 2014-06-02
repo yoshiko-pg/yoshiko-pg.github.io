@@ -1468,17 +1468,17 @@ body {
 
 #cursor {
   -webkit-animation-name: blink;
-  /* keyframe名 */
+  /* keyframe */
   -webkit-animation-duration: 0.7s;
-  /* アニメーションにかける時間 */
+  /* �������kKQ�B� */
   -webkit-animation-iteration-count: infinite;
-  /*infiniteで無限ループ */
+  /*infiniteg!P��� */
   -webkit-animation-timing-function: ease-in-out;
-  /* イーズインアウト */
+  /* �������� */
   -webkit-animation-direction: alternate;
-  /* alternateにするとアニメーションが反復 */
+  /* alternatekY�h�������Lͩ */
   -webkit-animation-delay: 0s;
-  /* 実行までの待ち時間 */ }
+  /* �L~gn�aB� */ }
 
 #global_navi {
   height: 76px;
@@ -1567,7 +1567,7 @@ body {
   height: 100%;
   z-index: 10; }
   #about h2 {
-    margin-top: 8%; }
+    margin-top: 3.2em; }
   #about .wrap {
     width: 80%;
     height: 50%;
