@@ -1812,8 +1812,9 @@ body {
   padding-top: 60px;
   z-index: 10; }
   #contact #links {
-    width: 600px;
-    margin: 15% auto; }
+    width: 750px;
+    margin: 15% auto;
+    padding: 0; }
     #contact #links li {
       list-style-type: none;
       float: left;
