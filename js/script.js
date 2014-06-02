@@ -21,8 +21,8 @@ $(function(){
   $code.html(cursor);
   $(window).scroll(function () {
     $scroll = $(this).scrollTop();
-    if ($scroll < 1500) {
-      $code.html($text.substring(0, $scroll/2) + cursor);
+    if ($scroll < 4000) {
+      $code.html($text.substring(0, Math.round($scroll/5)) + cursor);
     }
   });
 
