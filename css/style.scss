@@ -320,19 +320,17 @@ body{
       margin-left: 40px;
       letter-spacing: 5px;
       font-size: 1.2em;
-      span{
-        margin-right: 7px;
-        font-size:0.8em;
-        text-align: center;
-        color: #888888;
-        .fa-inverse{
-          color: #333333;
-          font-size: 1.1em;
-        }
-      }
       a:link, a:visited, a:hover, a:active{
         color: #FFF;
         text-decoration: none;
+        img{
+          float: left;
+          margin: -2px 15px 0 0;
+        }
+        span{
+          display: block;
+          float: left;
+        }
       }
     }
 

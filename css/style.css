@@ -1471,17 +1471,17 @@ body {
 
 #cursor {
   -webkit-animation-name: blink;
-  /* keyframe */
+  /* keyframe名 */
   -webkit-animation-duration: 0.7s;
-  /* �������kKQ�B� */
+  /* アニメーションにかける時間 */
   -webkit-animation-iteration-count: infinite;
-  /*infiniteg!P��� */
+  /*infiniteで無限ループ */
   -webkit-animation-timing-function: ease-in-out;
-  /* �������� */
+  /* イーズインアウト */
   -webkit-animation-direction: alternate;
-  /* alternatekY�h�������Lͩ */
+  /* alternateにするとアニメーションが反復 */
   -webkit-animation-delay: 0s;
-  /* �L~gn�aB� */ }
+  /* 実行までの待ち時間 */ }
 
 #global_navi {
   height: 76px;
@@ -1512,17 +1512,15 @@ body {
       margin-left: 40px;
       letter-spacing: 5px;
       font-size: 1.2em; }
-      #global_navi .navi_menu .logo span {
-        margin-right: 7px;
-        font-size: 0.8em;
-        text-align: center;
-        color: #888888; }
-        #global_navi .navi_menu .logo span .fa-inverse {
-          color: #333333;
-          font-size: 1.1em; }
       #global_navi .navi_menu .logo a:link, #global_navi .navi_menu .logo a:visited, #global_navi .navi_menu .logo a:hover, #global_navi .navi_menu .logo a:active {
         color: #FFF;
         text-decoration: none; }
+        #global_navi .navi_menu .logo a:link img, #global_navi .navi_menu .logo a:visited img, #global_navi .navi_menu .logo a:hover img, #global_navi .navi_menu .logo a:active img {
+          float: left;
+          margin: -2px 15px 0 0; }
+        #global_navi .navi_menu .logo a:link span, #global_navi .navi_menu .logo a:visited span, #global_navi .navi_menu .logo a:hover span, #global_navi .navi_menu .logo a:active span {
+          display: block;
+          float: left; }
     #global_navi .navi_menu ul {
       margin-top: 0;
       float: right;
