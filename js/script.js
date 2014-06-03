@@ -50,4 +50,9 @@ $(function(){
     var key = menu.indexOf(location.hash.replace('#', ''));
     $('html,body').animate({ scrollTop: offsets[key] }, 1000);
   }
+
+  // worksリンク反応しない問題回避
+  $('#work_list li').on('click', function(){
+    window.open($(this).find('a').attr('href'));
+  });
 });

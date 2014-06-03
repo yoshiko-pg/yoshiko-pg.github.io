@@ -1313,7 +1313,7 @@ body {
   margin: 0;
   padding: 0;
   position: relative;
-  font-family: 'Inconsolata', sans-serif; }
+  font-family: 'Inconsolata', 'migu1m', sans-serif; }
 
 #home {
   position: absolute;
@@ -1598,7 +1598,6 @@ body {
         font-size: 14px;
         color: #FFF;
         letter-spacing: 3px;
-        font-family: 'Inconsolata', 'migu1m', sans-serif;
         opacity: 1;
         overflow: hidden; }
         #about .wrap .textbox .text h3 {
