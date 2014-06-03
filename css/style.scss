@@ -58,17 +58,7 @@
 }
 
 @mixin bg_gray{
-    background:url(./img/grunge.png) repeat 0 0, #313437;
-  /*
-  background:url(./img/grunge.png) repeat 0 0, #313437;
-  background:url(./img/grunge.png) repeat 0 0, -moz-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -webkit-gradient(linear, left top, right bottom, color-stop(20%,#313437), color-stop(100%,#373C40));
-  background:url(./img/grunge.png) repeat 0 0, -webkit-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -o-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -ms-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, linear-gradient(to right bottom, #313437 20%, #373C40 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#313437', endColorstr='#373C40',GradientType=0 );
-  */
+    background-color: #313437;
 }
 
 @mixin bg_darkgray{

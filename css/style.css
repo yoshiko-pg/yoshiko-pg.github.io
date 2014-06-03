@@ -1552,17 +1552,7 @@ body {
       bottom: -5px; }
 
 #about {
-  background: url(./img/grunge.png) repeat 0 0, #313437;
-  /*
-  background:url(./img/grunge.png) repeat 0 0, #313437;
-  background:url(./img/grunge.png) repeat 0 0, -moz-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -webkit-gradient(linear, left top, right bottom, color-stop(20%,#313437), color-stop(100%,#373C40));
-  background:url(./img/grunge.png) repeat 0 0, -webkit-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -o-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -ms-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, linear-gradient(to right bottom, #313437 20%, #373C40 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#313437', endColorstr='#373C40',GradientType=0 );
-  */
+  background-color: #313437;
   position: fixed;
   top: 100%;
   left: 0;
@@ -1664,17 +1654,7 @@ body {
           border-radius: 14px;
           background-color: #888888; }
   #about #skills {
-    background: url(./img/grunge.png) repeat 0 0, #313437;
-    /*
-  background:url(./img/grunge.png) repeat 0 0, #313437;
-  background:url(./img/grunge.png) repeat 0 0, -moz-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -webkit-gradient(linear, left top, right bottom, color-stop(20%,#313437), color-stop(100%,#373C40));
-  background:url(./img/grunge.png) repeat 0 0, -webkit-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -o-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -ms-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, linear-gradient(to right bottom, #313437 20%, #373C40 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#313437', endColorstr='#373C40',GradientType=0 );
-  */
+    background-color: #313437;
     position: absolute;
     left: 0;
     bottom: -140px;
@@ -1718,17 +1698,7 @@ body {
         margin: 60px auto 20px;
         overflow: hidden; }
         #skills_body .graphs li .graph .graph_inner {
-          background: url(./img/grunge.png) repeat 0 0, #313437;
-          /*
-  background:url(./img/grunge.png) repeat 0 0, #313437;
-  background:url(./img/grunge.png) repeat 0 0, -moz-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -webkit-gradient(linear, left top, right bottom, color-stop(20%,#313437), color-stop(100%,#373C40));
-  background:url(./img/grunge.png) repeat 0 0, -webkit-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -o-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -ms-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, linear-gradient(to right bottom, #313437 20%, #373C40 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#313437', endColorstr='#373C40',GradientType=0 );
-  */
+          background-color: #313437;
           width: 100%;
           height: 100%; }
       #skills_body .graphs li .title {
@@ -1737,17 +1707,7 @@ body {
         width: 35%; }
 
 #works {
-  background: url(./img/grunge.png) repeat 0 0, #313437;
-  /*
-  background:url(./img/grunge.png) repeat 0 0, #313437;
-  background:url(./img/grunge.png) repeat 0 0, -moz-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -webkit-gradient(linear, left top, right bottom, color-stop(20%,#313437), color-stop(100%,#373C40));
-  background:url(./img/grunge.png) repeat 0 0, -webkit-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -o-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -ms-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, linear-gradient(to right bottom, #313437 20%, #373C40 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#313437', endColorstr='#373C40',GradientType=0 );
-  */
+  background-color: #313437;
   position: fixed;
   top: 76px;
   right: 100%;
@@ -1796,17 +1756,7 @@ body {
         -webkit-transform: rotateY(180deg); }
 
 #contact {
-  background: url(./img/grunge.png) repeat 0 0, #313437;
-  /*
-  background:url(./img/grunge.png) repeat 0 0, #313437;
-  background:url(./img/grunge.png) repeat 0 0, -moz-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -webkit-gradient(linear, left top, right bottom, color-stop(20%,#313437), color-stop(100%,#373C40));
-  background:url(./img/grunge.png) repeat 0 0, -webkit-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -o-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, -ms-linear-gradient(right bottom, #313437 20%, #373C40 100%);
-  background:url(./img/grunge.png) repeat 0 0, linear-gradient(to right bottom, #313437 20%, #373C40 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#313437', endColorstr='#373C40',GradientType=0 );
-  */
+  background-color: #313437;
   position: fixed;
   top: 100%;
   left: 0px;
