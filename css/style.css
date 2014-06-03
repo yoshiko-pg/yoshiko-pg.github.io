@@ -1303,6 +1303,9 @@ h2 {
   font-weight: normal;
   letter-spacing: 10px; }
 
+img {
+  border: none; }
+
 html, body {
   height: 100%; }
 
@@ -1764,15 +1767,15 @@ body {
       display: inline-block;
       float: left; }
       #works ul.flips li .flip {
-        width: 100%;
-        height: 100%;
+        width: 312px;
+        height: 187px;
         border: 2px solid white;
         display: block;
         -webkit-transform-style: preserve-3d;
         -webkit-transition: 0.5s; }
         #works ul.flips li .flip img, #works ul.flips li .flip div {
-          width: 100%;
-          height: 100%;
+          width: 312px;
+          height: 187px;
           position: absolute;
           -webkit-backface-visibility: hidden;
           background: transparent;
