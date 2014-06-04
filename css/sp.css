@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: Verdana, "游ゴシック", YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  font-family: "Avenir next", "游ゴシック", YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
   letter-spacing: 1px; }
 
 .card {
@@ -55,7 +55,8 @@ body {
     .card .text_box .text {
       padding: 30px 10px;
       text-align: left;
-      font-size: 11px; }
+      font-size: 11px;
+      line-height: 2.2em; }
 
 #intro {
   -webkit-transform-origin: 0 0;
