@@ -8,24 +8,24 @@ body {
   -webkit-transform-origin: 0 0;
   transform-origin: 0 0;
   width: 80%;
-  height: 80%;
+  height: 100%;
+  padding: 10% 10%;
   position: fixed;
   top: 0px;
   left: 0px;
   background-color: #FFFFFF;
   z-index: 1;
-  padding: 10% 10% 10%;
   text-align: center; }
   #card .job {
     font-size: 11px;
     color: #333333; }
   #card .icon {
-    margin: 13%; }
+    margin: 12%; }
     #card .icon img {
       width: 120px;
       height: 120px; }
   #card .name .kanji {
-    font-size: 19px;
+    font-size: 18px;
     letter-spacing: 0.4em;
     margin-bottom: 0.3em; }
   #card .name .yomi {
@@ -56,13 +56,20 @@ body {
   overflow: hidden; }
   #bg1 img {
     height: 100%; }
+  #bg1 .white_text {
+    position: fixed;
+    top: 45%;
+    left: 0%;
+    width: 100%;
+    text-align: center;
+    color: #FFF;
+    font-size: 18px;
+    letter-spacing: 7px; }
 
-.white_text {
+#about {
   position: fixed;
-  top: 45%;
-  left: 0%;
+  z-index: 1;
   width: 100%;
-  text-align: center;
-  color: #FFF;
-  font-size: 19px;
-  letter-spacing: 7px; }
+  height: 1000px;
+  overflow: hidden;
+  background-color: #313437; }

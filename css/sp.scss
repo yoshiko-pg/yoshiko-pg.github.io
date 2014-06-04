@@ -1,4 +1,4 @@
-$font-l: 19px;
+$font-l: 18px;
 $font-m: 16px;
 $font-s: 11px;
 
@@ -12,20 +12,20 @@ body{
 #card{
   transform-origin:0 0;
   width: 80%;
-  height: 80%;
+  height: 100%;
+  padding: 10% 10%;
   position: fixed;
   top: 0px;
   left: 0px;
   background-color: #FFFFFF;
   z-index: 1;
-  padding: 10% 10% 10%;
   text-align: center;
   .job{
     font-size: $font-s;
     color: #333333;
   }
   .icon{
-    margin: 13%;
+    margin: 12%;
     img{
       width: 120px;
       height: 120px;
@@ -73,15 +73,24 @@ body{
   img{
     height: 100%;
   }
+  .white_text{
+    position: fixed;
+    top: 45%;
+    left: 0%;
+    width: 100%;
+    text-align: center;
+    color: #FFF;
+    font-size: $font-l;
+    letter-spacing: 7px;
+  }
 }
 
-.white_text{
-  position: fixed;
-  top: 45%;
-  left: 0%;
+#about{
+  position:fixed;
+  z-index: 1;
   width: 100%;
-  text-align: center;
-  color: #FFF;
-  font-size: $font-l;
-  letter-spacing: 7px;
+  height: 1000px;
+  overflow: hidden;
+  background-color: #313437;
 }
+
