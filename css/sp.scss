@@ -1,10 +1,11 @@
-$font-l: 20px;
+$font-l: 18px;
 $font-m: 16px;
 $font-s: 12px;
 
 body{
   margin:0;
   padding: 0;
+  font-family: Verdana, "游ゴシック", YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
 }
 
 #card{
@@ -19,8 +20,8 @@ body{
   .icon{
     margin: 15%;
     img{
-      width: 150px;
-      height: 150px;
+      width: 100px;
+      height: 100px;
     }
   }
   .name{
@@ -34,7 +35,7 @@ body{
     }
   }
   .links{
-    margin: 28% 0 0;
+    margin: 25% 0 0;
     padding: 0px;
     text-align: left;
     li{
