@@ -10,7 +10,7 @@ html lang="ja"
     script src="js/sp.js"
     link rel="shortcut icon" href="img/favicon.ico"
   body
-    #card data-0="top:0px;left:0px;transform:rotate(0deg);" data-500="top:-200px;left:-50px;transform:rotate(-90deg);"
+    #intro.card data-0="top:0px;left:0px;transform:rotate(0deg);" data-500="top:-200px;left:-50px;transform:rotate(-90deg);"
       .job WEBエンジニア
       .icon
         img src="img/card_img.png"
@@ -43,20 +43,41 @@ html lang="ja"
     img src="img/bg2.jpg"
     .white_text "Hello, World"
 
-  #about data-700="top:80%;left:-150%;" data-900="top:0%;left:0%;"
-    h2 ABOUT
-    img src="img/profile.jpg"
-    .text
-      | 都内在住Webエンジニア。
-      br
-      | 趣味も仕事もプログラミング。
-      br
-      | フロントエンドもサーバーサイドも
-      br
-      | どっちもすきです。
-      br
-      br
-      | よしだなので、よしこって名前でやってます。
+  #about.card data-600="top:80%;left:-150%;" data-800="top:0%;left:0%;"
+    .job ABOUT
+    .icon
+      img src="img/profile.jpg"
+    .text_box data-800="opacity:1;" data-900="opacity:0;"
+      .name
+        .yomi  Maasa Yoshida
+      .text
+        | 都内在住Webエンジニア。<br />
+          趣味も仕事もプログラミング。<br />
+        br
+        | フロントエンドもサーバーサイドも<br />
+          どっちもすきです。<br />
+        br
+        | よしだなので、よしこって名前でやってます。
+    .text_box data-900="opacity:0;" data-1000="opacity:1;" data-1100="opacity:0;"
+      .name
+        .yomi  history
+      .text
+        | 高校・大学と音楽を専攻。<br />
+          趣味はホームページ制作。<br />
+          いつからかプログラマーに憧れだすが、きっかけがつかめず。<br />
+          しかし音楽大学に進学後、作曲のレッスン中になぜかC言語の基礎を教えてもらい、やっぱり面白くなって翌年大学をやめてWeb制作会社に就職。Webエンジニアとして歩み始める。
+    .text_box data-1100="opacity:0;" data-1200="opacity:1;"
+      .name
+        .yomi  likes & tools
+      .text
+        | Music: 東京事変, 阿部芙蓉美, 荘野ジュリ<br />
+          Food: 中華, イタリアン, お寿司, 甘いもの<br />
+        br
+        | PC: Mac Book Air, Windows 8<br />
+          Keyboard: daskeyboard 4 Ultimate<br />
+          Editor: Vim, Sublime text<br />
+          Font: Ricty<br />
+          Browser: Google Chrome<br />
 
 
 

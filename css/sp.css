@@ -4,7 +4,7 @@ body {
   font-family: Verdana, "游ゴシック", YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
   letter-spacing: 1px; }
 
-#card {
+.card {
   -webkit-transform-origin: 0 0;
   transform-origin: 0 0;
   width: 80%;
@@ -16,35 +16,57 @@ body {
   background-color: #FFFFFF;
   z-index: 1;
   text-align: center; }
-  #card .job {
+  .card .job {
     font-size: 11px;
     color: #333333; }
-  #card .icon {
+  .card .icon {
     margin: 12%; }
-    #card .icon img {
+    .card .icon img {
       width: 120px;
-      height: 120px; }
-  #card .name .kanji {
+      height: 120px;
+      border-radius: 100%; }
+  .card .name .kanji {
     font-size: 18px;
     letter-spacing: 0.4em;
     margin-bottom: 0.3em; }
-  #card .name .yomi {
+  .card .name .yomi {
     font-size: 11px; }
-  #card .links {
+  .card .links {
     margin: 22% 0 0;
     padding: 0px;
     text-align: left; }
-    #card .links li {
+    .card .links li {
       list-style-type: none;
       font-size: 11px;
       margin-bottom: 7px; }
-      #card .links li a:link, #card .links li a:visited, #card .links li a:hover, #card .links li a:active {
+      .card .links li a:link, .card .links li a:visited, .card .links li a:hover, .card .links li a:active {
         text-decoration: none;
         color: #000000; }
-      #card .links li img {
+      .card .links li img {
         width: 11px;
         height: 11px;
         margin-right: 7px; }
+  .card .text_box {
+    position: absolute;
+    top: 38%;
+    left: 10%;
+    width: 80%;
+    opacity: 0; }
+    .card .text_box .text {
+      padding: 30px 10px;
+      text-align: left;
+      font-size: 11px; }
+
+#intro {
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+  background-color: #FFFFFF; }
+
+#about {
+  background-color: #313437;
+  color: #FFFFFF; }
+  #about .job {
+    color: #FFFFFF; }
 
 #bg1 {
   position: fixed;
@@ -65,11 +87,3 @@ body {
     color: #FFF;
     font-size: 18px;
     letter-spacing: 7px; }
-
-#about {
-  position: fixed;
-  z-index: 1;
-  width: 100%;
-  height: 1000px;
-  overflow: hidden;
-  background-color: #313437; }
