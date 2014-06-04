@@ -20,7 +20,7 @@ body {
     font-size: 11px;
     color: #333333; }
   .card .icon {
-    margin: 12%; }
+    margin: 11%; }
     .card .icon img {
       width: 120px;
       height: 120px;
@@ -32,7 +32,7 @@ body {
   .card .name .yomi {
     font-size: 11px; }
   .card .links {
-    margin: 22% 0 0;
+    margin: 20% 0 0;
     padding: 0px;
     text-align: left; }
     .card .links li {
@@ -48,7 +48,7 @@ body {
         margin-right: 7px; }
   .card .text_box {
     position: absolute;
-    top: 38%;
+    top: 230px;
     left: 10%;
     width: 80%;
     opacity: 0; }
@@ -56,7 +56,7 @@ body {
       padding: 30px 10px;
       text-align: left;
       font-size: 11px;
-      line-height: 2.2em; }
+      line-height: 1.8em; }
 
 #intro {
   -webkit-transform-origin: 0 0;
