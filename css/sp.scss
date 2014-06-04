@@ -13,7 +13,9 @@ body{
   transform-origin:0 0;
   width: 80%;
   height: 80%;
-  position: relative;
+  position: fixed;
+  top: 0px;
+  left: 0px;
   background-color: #FFFFFF;
   z-index: 1;
   padding: 10% 10% 10%;
@@ -23,7 +25,7 @@ body{
     color: #333333;
   }
   .icon{
-    margin: 15%;
+    margin: 13%;
     img{
       width: 120px;
       height: 120px;
@@ -33,7 +35,6 @@ body{
     .kanji{
       font-size: $font-l;
       letter-spacing: 0.4em;
-      font-weight: bold;
       margin-bottom: 0.3em;
     }
     .yomi{
@@ -82,5 +83,5 @@ body{
   text-align: center;
   color: #FFF;
   font-size: $font-l;
-  letter-spacing: 5px;
+  letter-spacing: 7px;
 }

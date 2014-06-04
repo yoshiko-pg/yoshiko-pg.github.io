@@ -9,7 +9,9 @@ body {
   transform-origin: 0 0;
   width: 80%;
   height: 80%;
-  position: relative;
+  position: fixed;
+  top: 0px;
+  left: 0px;
   background-color: #FFFFFF;
   z-index: 1;
   padding: 10% 10% 10%;
@@ -18,14 +20,13 @@ body {
     font-size: 11px;
     color: #333333; }
   #card .icon {
-    margin: 15%; }
+    margin: 13%; }
     #card .icon img {
       width: 120px;
       height: 120px; }
   #card .name .kanji {
     font-size: 19px;
     letter-spacing: 0.4em;
-    font-weight: bold;
     margin-bottom: 0.3em; }
   #card .name .yomi {
     font-size: 11px; }
@@ -64,4 +65,4 @@ body {
   text-align: center;
   color: #FFF;
   font-size: 19px;
-  letter-spacing: 5px; }
+  letter-spacing: 7px; }
