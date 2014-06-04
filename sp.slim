@@ -10,7 +10,7 @@ html lang="ja"
     script src="js/sp.js"
     link rel="shortcut icon" href="img/favicon.ico"
   body
-    #intro.card data-0="top:0px;left:0px;transform:rotate(0deg);" data-500="top:-200px;left:-50px;transform:rotate(-90deg);"
+    #intro.card data-0="top:0px;left:0px;transform:rotate(0deg);z-index:1;" data-500="top:-200px;left:-50px;transform:rotate(-90deg);" data-2900="top:-200px;left:-50px;transform:rotate(-90deg);z-index:0;" data-3000="top:0px;left:0px;transform:rotate(0deg);"
       .job WEBエンジニア
       .icon
         img src="img/card_img.png"
@@ -39,11 +39,11 @@ html lang="ja"
             img src="img/link_mail.png"
             | maasa.giss2@gmail.com
 
-  #bg1
+  #bg1 data-2900="display:block;" data-3000="display:none;"
     img src="img/bg2.jpg"
     .white_text "Hello, World"
 
-  #about.card data-600="top:80%;left:-150%;" data-1000="top:0%;left:0%;" data-2100="top:0%;left:0%;transform:rotate(0deg);" data-2300="top:-200px;left:-50px;transform:rotate(-90deg);"
+  #about.card data-600="top:80%;left:-150%;" data-1000="top:0%;left:0%;" data-2100="top:0%;left:0%;transform:rotate(0deg);" data-2400="top:-200px;left:-50px;transform:rotate(-90deg);"
     .job ABOUT
     .icon
       img src="img/profile.jpg"
@@ -79,7 +79,7 @@ html lang="ja"
           Font: Ricty<br />
           Browser: Google Chrome<br />
 
-  #skills.card data-1800="display:none;" data-2000="display:block;"
+  #skills.card data-1800="display:none;" data-2000="display:block;" data-3100="opacity:1;" data-3400="opacity:0;"
     img src="img/bg_skills.gif"
     .job SKILLS
     .fa.fa-check#JS   data-2400="display:none;" data-2500="display:block;"
@@ -88,9 +88,6 @@ html lang="ja"
     .fa.fa-check#RUBY data-2700="display:none;" data-2800="display:block;"
     .fa.fa-check#HTML data-2800="display:none;" data-2900="display:block;"
     .fa.fa-check#SASS data-2900="display:none;" data-3000="display:block;"
-
-
-
 
   javascript:
     skrollr.init();
