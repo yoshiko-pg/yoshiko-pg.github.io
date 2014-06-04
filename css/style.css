@@ -1517,7 +1517,7 @@ body {
         text-decoration: none; }
         #global_navi .navi_menu .logo a:link img, #global_navi .navi_menu .logo a:visited img, #global_navi .navi_menu .logo a:hover img, #global_navi .navi_menu .logo a:active img {
           float: left;
-          margin: 15px; }
+          margin: -2px 15px 0 0; }
         #global_navi .navi_menu .logo a:link span, #global_navi .navi_menu .logo a:visited span, #global_navi .navi_menu .logo a:hover span, #global_navi .navi_menu .logo a:active span {
           display: block;
           float: left; }
