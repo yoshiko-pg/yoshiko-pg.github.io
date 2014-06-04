@@ -1,17 +1,18 @@
 $font-l: 18px;
 $font-m: 16px;
-$font-s: 12px;
+$font-s: 11px;
 
 body{
   margin:0;
   padding: 0;
   font-family: Verdana, "游ゴシック", YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  letter-spacing: 1px;
 }
 
 #card{
   width: 80%;
-  height: 78%;
-  padding: 12% 10% 10%;
+  height: 80%;
+  padding: 10% 10% 10%;
   text-align: center;
   .job{
     font-size: $font-s;
@@ -20,8 +21,8 @@ body{
   .icon{
     margin: 15%;
     img{
-      width: 100px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
     }
   }
   .name{
@@ -35,7 +36,7 @@ body{
     }
   }
   .links{
-    margin: 25% 0 0;
+    margin: 22% 0 0;
     padding: 0px;
     text-align: left;
     li{
@@ -56,5 +57,20 @@ body{
 }
 
 #bg1{
+  width: 100%;
+  height: 1000px;
+  overflow: hidden;
+  img{
+    height: 100%;
+  }
+}
 
+.white_text{
+  position: fixed;
+  color: #FFF;
+  text-align: center;
+  font-size: 40px;
+  width: 100%;
+  z-index: 5;
+  letter-spacing: 10px;
 }
