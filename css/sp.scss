@@ -9,6 +9,10 @@ body{
   padding: 0;
   font-family: "Avenir next", "游ゴシック", YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
   letter-spacing: 1px;
+  a:link, a:visited, a:hover, a:active{
+    text-decoration: none;
+    color: #000000;
+  }
 }
 
 .card{
@@ -53,10 +57,6 @@ body{
       list-style-type: none;
       font-size: $font-s;
       margin-bottom: 7px;
-      a:link, a:visited, a:hover, a:active{
-        text-decoration: none;
-        color: #000000;
-      }
       img{
         width: $font-s;
         height: $font-s;
@@ -140,8 +140,31 @@ body{
   }
 }
 
+#works{
+  ul{
+    margin: 0;
+    padding: 0;
+    li{
+      list-style-type: none;
+      margin: 30px 0 0;
+      i{
+        $size: 100px;
+        width: $size;
+        height: $size;
+        border: 1px solid #000000;
+        border-radius: 100%;
+        font-size: $size - 60px;
+        text-align: center;
+        line-height: $size;
+      }
+      p{
+        font-size: $font-s;
+      }
+    }
+  }
+}
 
-#bg1{
+#bg1, #bg2{
   position:fixed;
   top: 0px;
   left: 0px;
