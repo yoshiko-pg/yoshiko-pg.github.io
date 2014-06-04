@@ -1325,17 +1325,14 @@ body {
 
 #about {
   background-color: #313437;
-  color: #FFFFFF;
-  -webkit-transform-origin: center center;
-  transform-origin: center center; }
+  color: #FFFFFF; }
   #about .job {
     color: #FFFFFF; }
 
 #skills {
-  -webkit-transform-origin: center center;
-  transform-origin: center center; }
+  z-index: 0; }
   #skills img {
-    width: 100%;
+    width: 320px;
     position: absolute;
     top: 0;
     left: 0; }
@@ -1346,29 +1343,29 @@ body {
     left: 0;
     top: 20px;
     background-color: #FFFFFF;
-    line-height: 3em; }
+    line-height: 2.6em; }
   #skills .fa-check {
     position: absolute;
     color: #000000;
     font-size: 1.6em; }
     #skills .fa-check#JS {
-      top: 10.5%;
-      left: 18%; }
+      top: 68px;
+      left: 58px; }
     #skills .fa-check#PHP {
-      top: 10.5%;
-      left: 18%; }
+      top: 148px;
+      left: 86px; }
     #skills .fa-check#CSS {
-      top: 10.5%;
-      left: 18%; }
+      top: 226px;
+      left: 158px; }
     #skills .fa-check#RUBY {
-      top: 10.5%;
-      left: 18%; }
+      top: 265px;
+      left: 58px; }
     #skills .fa-check#HTML {
-      top: 10.5%;
-      left: 18%; }
+      top: 305px;
+      left: 170px; }
     #skills .fa-check#SASS {
-      top: 10.5%;
-      left: 18%; }
+      top: 425px;
+      left: 200px; }
 
 #bg1 {
   position: fixed;

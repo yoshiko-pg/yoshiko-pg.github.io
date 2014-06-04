@@ -87,16 +87,15 @@ body{
 #about{
   background-color: #313437;
   color: #FFFFFF;
-  transform-origin: center center;
   .job{
     color: #FFFFFF;
   }
 }
 
 #skills{
-  transform-origin: center center;
+  z-index:0;
   img{
-    width:100%;
+    width:320px;
     position: absolute;
     top: 0;
     left: 0;
@@ -108,35 +107,35 @@ body{
     left: 0;
     top: 20px;
     background-color: #FFFFFF;
-    line-height: 3em;
+    line-height: 2.6em;
   }
   .fa-check{
     position: absolute;
     color: #000000;
     font-size: 1.6em;
     &#JS{
-      top: 10.5%;
-      left: 18%;
+      top: 68px;
+      left: 58px;
     }
     &#PHP{
-      top: 10.5%;
-      left: 18%;
+      top: 148px;
+      left: 86px;
     }
     &#CSS{
-      top: 10.5%;
-      left: 18%;
+      top: 226px;
+      left: 158px;
     }
     &#RUBY{
-      top: 10.5%;
-      left: 18%;
+      top: 265px;
+      left: 58px;
     }
     &#HTML{
-      top: 10.5%;
-      left: 18%;
+      top: 305px;
+      left: 170px;
     }
     &#SASS{
-      top: 10.5%;
-      left: 18%;
+      top: 425px;
+      left: 200px;
     }
   }
 }
