@@ -146,14 +146,14 @@ body{
     padding: 0;
     li{
       list-style-type: none;
-      margin: 30px 0 0;
+      margin: 40px 0 0;
       i{
         $size: 60px;
         width: $size;
         height: $size;
         border: 1px solid #000000;
         border-radius: 100%;
-        font-size: $size - 30px;
+        font-size: $size - 40px;
         text-align: center;
         line-height: $size;
       }
