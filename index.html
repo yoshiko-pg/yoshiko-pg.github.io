@@ -59,9 +59,9 @@
 <code id="code">echo "Hello, World";
 
 
-$me = new Human(strtotime('1991-12-15'));
+$me = new Human(); // 1991-12-15
 
-$me->sayName(); // "maasa yoshida"
+$me->setName('Maasa Yoshida');
 
 
 while($me->isLive()){
