@@ -1374,13 +1374,13 @@ body {
     list-style-type: none;
     margin: 30px 0 0; }
     #works ul li i {
-      width: 100px;
-      height: 100px;
+      width: 80px;
+      height: 80px;
       border: 1px solid #000000;
       border-radius: 100%;
-      font-size: 40px;
+      font-size: 20px;
       text-align: center;
-      line-height: 100px; }
+      line-height: 80px; }
     #works ul li p {
       font-size: 11px; }
 
