@@ -1369,8 +1369,7 @@ body {
             color: #313437; }
         #home .side dl dd a:link, #home .side dl dd a:visited, #home .side dl dd a:hover, #home .side dl dd a:active {
           color: #DADADA;
-          text-decoration: none;
-          cursor: default; }
+          text-decoration: none; }
         #home .side dl dd a:hover {
           color: #FFFFFF; }
   #home .main {
