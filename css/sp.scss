@@ -1,5 +1,59 @@
+$font-l: 20px;
+$font-m: 16px;
+$font-s: 12px;
+
 body{
-  background-color: yellow;
-  border: 5px solid black;
+  margin:0;
+  padding: 0;
 }
 
+#card{
+  width: 80%;
+  height: 78%;
+  padding: 12% 10% 10%;
+  text-align: center;
+  .job{
+    font-size: $font-s;
+    color: #333333;
+  }
+  .icon{
+    margin: 15%;
+    img{
+      width: 150px;
+      height: 150px;
+    }
+  }
+  .name{
+    .kanji{
+      font-size: $font-l;
+      letter-spacing: 0.3em;
+      margin-bottom: 0.2em;
+    }
+    .yomi{
+      font-size: $font-s;
+    }
+  }
+  .links{
+    margin: 28% 0 0;
+    padding: 0px;
+    text-align: left;
+    li{
+      list-style-type: none;
+      font-size: $font-s;
+      margin-bottom: 7px;
+      a:link, a:visited, a:hover, a:active{
+        text-decoration: none;
+        color: #000000;
+      }
+      img{
+        width: $font-s;
+        height: $font-s;
+        margin-right: 7px;
+      }
+    }
+  }
+}
+
+#bg1{
+
+}
