@@ -1,3 +1,5 @@
+@import './lib/fa/scss/font-awesome.scss';
+
 $font-l: 18px;
 $font-m: 16px;
 $font-s: 11px;
@@ -69,7 +71,7 @@ body{
     width: 80%;
     opacity: 0;
     .text{
-      padding: 30px 10px;
+      padding: 20px 10px;
       text-align: left;
       font-size: $font-s;
       line-height: 1.8em;
@@ -85,8 +87,57 @@ body{
 #about{
   background-color: #313437;
   color: #FFFFFF;
+  transform-origin: center center;
   .job{
     color: #FFFFFF;
+  }
+}
+
+#skills{
+  transform-origin: center center;
+  img{
+    width:100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .job{
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 20px;
+    background-color: #FFFFFF;
+    line-height: 3em;
+  }
+  .fa-check{
+    position: absolute;
+    color: #000000;
+    font-size: 1.6em;
+    &#JS{
+      top: 10.5%;
+      left: 18%;
+    }
+    &#PHP{
+      top: 10.5%;
+      left: 18%;
+    }
+    &#CSS{
+      top: 10.5%;
+      left: 18%;
+    }
+    &#RUBY{
+      top: 10.5%;
+      left: 18%;
+    }
+    &#HTML{
+      top: 10.5%;
+      left: 18%;
+    }
+    &#SASS{
+      top: 10.5%;
+      left: 18%;
+    }
   }
 }
 

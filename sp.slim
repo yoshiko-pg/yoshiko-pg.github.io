@@ -43,11 +43,11 @@ html lang="ja"
     img src="img/bg2.jpg"
     .white_text "Hello, World"
 
-  #about.card data-600="top:80%;left:-150%;" data-1000="top:0%;left:0%;" data-2400="" data-2600=""
+  #about.card data-600="top:80%;left:-150%;" data-1000="top:0%;left:0%;" data-2100="transform: rotateY(0deg);" data-2300="transform: rotateY(-90deg);"
     .job ABOUT
     .icon
       img src="img/profile.jpg"
-    .text_box data-1000="opacity:1;" data-1300="opacity:0;"
+    .text_box data-1000="opacity:1;" data-1200="opacity:0;"
       .name
         .yomi  Maasa Yoshida
       .text
@@ -58,7 +58,7 @@ html lang="ja"
           どっちもすきです。<br />
         br
         | よしだなので、よしこって名前でやってます。
-    .text_box data-1300="opacity:0;" data-1600="opacity:1;" data-1900="opacity:0;"
+    .text_box data-1200="opacity:0;" data-1400="opacity:1;" data-1600="opacity:0;"
       .name
         .yomi  history
       .text
@@ -66,7 +66,7 @@ html lang="ja"
           趣味はホームページ制作。<br />
           いつからかプログラマーに憧れだすが、きっかけがつかめず。<br />
           しかし音楽大学に進学後、作曲のレッスン中になぜかC言語の基礎を教えてもらい、やっぱり面白くなって翌年大学をやめてWeb制作会社に就職。Webエンジニアとして歩み始める。
-    .text_box data-1900="opacity:0;" data-2100="opacity:1;"
+    .text_box data-1600="opacity:0;" data-1800="opacity:1;"
       .name
         .yomi  likes & tools
       .text
@@ -79,8 +79,15 @@ html lang="ja"
           Font: Ricty<br />
           Browser: Google Chrome<br />
 
-  #skills.card data-2400="display: none;" data-2500=""
+  #skills.card data-2100="display:none;" data-2300="display:block;transform: rotateY(90deg);" data-2500="transform: rotateY(0deg);"
+    img src="img/bg_skills.gif"
     .job SKILLS
+    .fa.fa-check#JS   data-2500="display:none;" data-2600="display:block;"
+    .fa.fa-check#PHP  data-2600="display:none;" data-2700="display:block;"
+    .fa.fa-check#CSS  data-2700="display:none;" data-2800="display:block;"
+    .fa.fa-check#RUBY data-2800="display:none;" data-2900="display:block;"
+    .fa.fa-check#HTML data-2900="display:none;" data-3000="display:block;"
+    .fa.fa-check#SASS data-3000="display:none;" data-3100="display:block;"
 
 
 
