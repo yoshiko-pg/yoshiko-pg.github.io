@@ -1460,6 +1460,27 @@ body {
           #home .main .body pre code #cursor {
             margin: 0 5px;
             border-right: 1px white solid; }
+    #home .main #scroll_attention {
+      position: fixed;
+      right: 20px;
+      bottom: 30px;
+      text-align: center;
+      color: #3C3F42; }
+      #home .main #scroll_attention .down_arrow {
+        position: relative;
+        width: 0;
+        height: 0;
+        border: 16px solid transparent;
+        border-top-color: #3C3F42;
+        margin-top: 30px; }
+        #home .main #scroll_attention .down_arrow:after {
+          position: absolute;
+          content: '';
+          top: -32px;
+          left: -8px;
+          width: 16px;
+          height: 16px;
+          background: #3C3F42; }
 
 @-webkit-keyframes blink {
   from {
