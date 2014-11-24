@@ -1306,6 +1306,15 @@ h2 {
 img {
   border: none; }
 
+a {
+  color: #999;
+  text-decoration: none;
+  -webkit-transition: color 0.5s;
+  transition: color 0.5s; }
+
+a:hover {
+  color: #fff8a9; }
+
 html, body {
   height: 100%; }
 
