@@ -93,49 +93,58 @@ body{
 }
 
 #skills{
-  z-index:0;
-  img{
-    width:320px;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
+  z-index: 0;
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
+  height: 100%;
   .job{
     z-index: 1;
-    position: absolute;
+    position: relative;
     width: 100%;
     left: 0;
     top: 20px;
     background-color: #FFFFFF;
     line-height: 2.6em;
   }
-  .fa-check{
+  .skills_image {
     position: absolute;
-    color: #000000;
-    font-size: 1.6em;
-    &#JS{
-      top: 68px;
-      left: 58px;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    height: 100%;
+    img {
+      min-width: 100%;
+      height: 100%;
     }
-    &#PHP{
-      top: 148px;
-      left: 86px;
-    }
-    &#CSS{
-      top: 226px;
-      left: 158px;
-    }
-    &#RUBY{
-      top: 265px;
-      left: 58px;
-    }
-    &#HTML{
-      top: 305px;
-      left: 170px;
-    }
-    &#SASS{
-      top: 425px;
-      left: 200px;
+    .fa-check{
+      position: absolute;
+      color: #000000;
+      font-size: 1.6em;
+      &#JS{
+        top: 13.5%;
+        left: 18.5%;
+      }
+      &#PHP{
+        top: 28.4%;
+        left: 27.5%;
+      }
+      &#CSS{
+        top: 43.5%;
+        left: 50%;
+      }
+      &#RUBY{
+        top: 51%;
+        left: 18%;
+      }
+      &#HTML{
+        top: 58.5%;
+        left: 54%;
+      }
+      &#SASS{
+        top: 81%;
+        left: 63.5%;
+      }
     }
   }
 }

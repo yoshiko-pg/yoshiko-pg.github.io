@@ -1363,42 +1363,50 @@ body {
     color: #FFFFFF; }
 
 #skills {
-  z-index: 0; }
-  #skills img {
-    width: 320px;
-    position: absolute;
-    top: 0;
-    left: 0; }
+  z-index: 0;
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
+  height: 100%; }
   #skills .job {
     z-index: 1;
-    position: absolute;
+    position: relative;
     width: 100%;
     left: 0;
     top: 20px;
     background-color: #FFFFFF;
     line-height: 2.6em; }
-  #skills .fa-check {
+  #skills .skills_image {
     position: absolute;
-    color: #000000;
-    font-size: 1.6em; }
-    #skills .fa-check#JS {
-      top: 68px;
-      left: 58px; }
-    #skills .fa-check#PHP {
-      top: 148px;
-      left: 86px; }
-    #skills .fa-check#CSS {
-      top: 226px;
-      left: 158px; }
-    #skills .fa-check#RUBY {
-      top: 265px;
-      left: 58px; }
-    #skills .fa-check#HTML {
-      top: 305px;
-      left: 170px; }
-    #skills .fa-check#SASS {
-      top: 425px;
-      left: 200px; }
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    height: 100%; }
+    #skills .skills_image img {
+      min-width: 100%;
+      height: 100%; }
+    #skills .skills_image .fa-check {
+      position: absolute;
+      color: #000000;
+      font-size: 1.6em; }
+      #skills .skills_image .fa-check#JS {
+        top: 13.5%;
+        left: 18.5%; }
+      #skills .skills_image .fa-check#PHP {
+        top: 28.4%;
+        left: 27.5%; }
+      #skills .skills_image .fa-check#CSS {
+        top: 43.5%;
+        left: 50%; }
+      #skills .skills_image .fa-check#RUBY {
+        top: 51%;
+        left: 18%; }
+      #skills .skills_image .fa-check#HTML {
+        top: 58.5%;
+        left: 54%; }
+      #skills .skills_image .fa-check#SASS {
+        top: 81%;
+        left: 63.5%; }
 
 #works ul {
   margin: 0;
