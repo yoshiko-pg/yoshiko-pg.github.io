@@ -23,8 +23,8 @@
     }
   </script>
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="js/lib/highlight/styles/monokai_sublime.css">
-  <script src="js/lib/highlight/highlight.pack.js"></script>
+  <link rel="stylesheet" href="js/lib/monokai-sublime.css">
+  <script src="js/lib/highlight.pack.js"></script>
   <script src="js/lib/jquery-2.1.0.min.js"></script>
   <script src="js/lib/skrollr.js"></script>
   <script src="js/script.js"></script>
@@ -62,30 +62,27 @@
         <div class="lines">
           1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />10<br />11<br />12<br />13<br />14<br />15<br />16<br />17<br />18<br />19<br />20<br />21<br />22<br />23<br />24<br />25<br />26<br />27<br />28<br />29<br />30<br />31<br />32<br />33<br />34<br />35<br />36<br />37<br />38<br />39<br />40
         </div>
-<pre><code>&lt;?</code>
-<code id="comment">/************************************
+<pre><code id="comment">/************************************
 * yoshiko-pg.github.io
 *
 * Please program while scrolling :)
-************************************/
-</code>
-<code id="code">echo "Hello, World";
+************************************/</code>
+<code id="code">console.log('Hello, World');
 
 
-$me = new Human(); // 1991-12-15
+const me = new Human(); // 1991-12-15
 
-$me->setName('Maasa Yoshida');
+me.name = 'Maasa Yoshida';
+me.job = 'Web engineer';
 
-
-while($me->isLive()){
-  $me->coding();
-
-  if($me->isSleepy()){
-    sleep(60 * 60 * 6);
-  }
+while (me.isLive()) {
+  me.coding();
+  me.eat();
+  me.sleep();
 }
-</code>
-        </pre>
+
+console.log(me.getLastFeeling()); // How do I feel last time?
+</code></pre>
       </div>
 
       <div id="scroll_attention" data-0="opacity:1;" data-200="opacity:0;" >
@@ -97,10 +94,11 @@ while($me->isLive()){
     <div id="global_navi">
       <div class="editor_foot">
         <div class="float_left">
-          INSERT MODE, Line <span>1</span>, Column <span>1</span>
+          INSERT MODE, Line <span id="line-num">1</span>, Column <span id="col-num">1</span>
         </div>
         <div class="float_right">
-          UTF-8     PHP
+          <span class="charset">UTF-8</span>
+          <span>JavaScript</span>
         </div>
       </div>
 

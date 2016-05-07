@@ -16,13 +16,21 @@ $(function(){
 
   // scroll programming
   var $code = $('code#code');
-  var $text = hljs.highlightAuto($code.text()).value;
-  var cursor = '<span id="cursor" />';
+  var $lineNum = $('#line-num');
+  var $colNum = $('#col-num');
+  var commentLineNum = $('code#comment').text().match(/\n/g).length + 3;
+  var codeText = hljs.highlightAuto($code.text()).value;
+  var cursor = '<span id="cursor">';
   $code.html(cursor);
   $(window).scroll(function () {
     $scroll = $(this).scrollTop();
     if ($scroll < 4000) {
-      $code.html($text.substring(0, Math.round($scroll/5)) + cursor);
+      $code.html(codeText.substring(0, Math.round($scroll/6)) + cursor);
+      var currentCode = $code.text();
+      var lines = currentCode.match(/\n/g);
+      $lineNum.text(commentLineNum + (lines ? lines.length : 0));
+      var colText = currentCode.match(/(?:^|\n)(.*?)$/)[1];
+      $colNum.text(colText ? colText.length : 0);
     }
   });
 

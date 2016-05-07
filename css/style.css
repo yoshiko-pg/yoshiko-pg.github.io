@@ -1499,9 +1499,10 @@ body {
           color: #EEE;
           font-family: 'Inconsolata', sans-serif;
           font-size: 20px;
-          line-height: 1; }
+          line-height: 1.2;
+          background: transparent; }
           #home .main .body pre code #cursor {
-            margin: 0 5px;
+            margin: 0 10px 0 0;
             border-right: 1px white solid; }
     #home .main #scroll_attention {
       position: fixed;
@@ -1562,6 +1563,8 @@ body {
       content: "\0020"; }
     #global_navi .editor_foot:after {
       clear: both; }
+    #global_navi .editor_foot .charset {
+      margin-right: 12px; }
   #global_navi .navi_menu {
     padding-top: 1.1em; }
     #global_navi .navi_menu .logo {

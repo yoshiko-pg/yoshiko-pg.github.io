@@ -271,9 +271,10 @@ body{
           color: #EEE;
           font-family: 'Inconsolata', sans-serif;
           font-size: 20px;
-          line-height: 1;
+          line-height: 1.2;
+          background: transparent;
           #cursor{
-            margin: 0 5px;
+            margin: 0 10px 0 0;
             border-right: 1px white solid;
           }
         }
@@ -342,6 +343,10 @@ body{
     font-size: 11px;
     margin: 3px 15px;
     @include cf;
+
+    .charset {
+      margin-right: 12px;
+    }
   }
 
   .navi_menu{
