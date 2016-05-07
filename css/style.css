@@ -1876,9 +1876,17 @@ body {
   letter-spacing: 10px; }
 
 #share {
-  width: 600px;
+  width: 450px;
+  padding: 0;
   margin: 30px auto; }
   #share li {
     list-style-type: none;
-    float: left;
-    width: 150px; }
+    float: left; }
+    #share li.twitter {
+      width: 100px; }
+    #share li.facebook {
+      width: 130px; }
+    #share li.hatena {
+      width: 140px; }
+    #share li.github {
+      width: 80px; }

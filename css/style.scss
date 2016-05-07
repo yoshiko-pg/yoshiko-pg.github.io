@@ -706,11 +706,16 @@ body{
 }
 
 #share{
-  width: 600px;
+  width: 100px + 130px + 140px + 80px;
+  padding: 0;
   margin: 30px auto;
   li{
     list-style-type: none;
     float: left;
-    width: 150px;
+
+    &.twitter { width: 100px; }
+    &.facebook { width: 130px; }
+    &.hatena { width: 140px; }
+    &.github { width: 80px; }
   }
 }
