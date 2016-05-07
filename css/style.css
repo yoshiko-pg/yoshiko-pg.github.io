@@ -1641,6 +1641,7 @@ body {
       text-align: center; }
       #about .wrap .image img {
         height: 100%;
+        background-color: #fff;
         border-radius: 100%; }
     #about .wrap .textbox {
       width: 50%;

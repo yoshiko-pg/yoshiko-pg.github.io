@@ -1320,6 +1320,7 @@ body {
     .card .icon img {
       width: 120px;
       height: 120px;
+      background: #fff;
       border-radius: 100%; }
   .card .name .kanji {
     font-size: 18px;
