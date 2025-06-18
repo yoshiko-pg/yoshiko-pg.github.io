@@ -1,34 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import PdfScrollViewer from '../components/PdfScrollViewer';
+import { talks } from '../data/talks';
 import styles from './TalkDetail.module.css';
-
-interface Talk {
-  slug: string;
-  title: string;
-  event: string;
-  date: string;
-  description: string;
-  pdfPath: string;
-}
-
-const talks: Talk[] = [
-  {
-    slug: 'sample-talk-1',
-    title: 'Modern Frontend Development with React',
-    event: 'Frontend Conference 2024',
-    date: '2024-03-15',
-    description: 'A comprehensive overview of modern React development practices, including hooks, context, and performance optimization.',
-    pdfPath: '/slides/sample-talk-1.pdf'
-  },
-  {
-    slug: 'sample-talk-2',
-    title: 'TypeScript Best Practices',
-    event: 'Tech Meetup Tokyo',
-    date: '2024-01-20',
-    description: 'Deep dive into TypeScript best practices for large-scale applications and team collaboration.',
-    pdfPath: '/slides/sample-talk-2.pdf'
-  }
-];
 
 export default function TalkDetail() {
   const { slug } = useParams<{ slug: string }>();
