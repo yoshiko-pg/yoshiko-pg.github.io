@@ -1,0 +1,145 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  color: white;
+  text-align: center;
+}
+
+.heroContent {
+  max-width: 600px;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+  }
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.primaryButton {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  
+  &:hover {
+    background: white;
+    color: #667eea;
+    transform: translateY(-2px);
+  }
+}
+
+.projects {
+  padding: 5rem 2rem;
+  background: white;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #333;
+}
+
+.projectGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.projectCard {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+  
+  & h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  & p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.tech {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  
+  & span {
+    background: #f0f0f0;
+    color: #666;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+}
+
+.about {
+  padding: 5rem 2rem;
+  background: #f8f9fa;
+}
+
+.aboutContent {
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #666;
+  
+  & p {
+    margin-bottom: 1.5rem;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
