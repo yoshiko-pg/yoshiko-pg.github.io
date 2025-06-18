@@ -15,8 +15,8 @@ export const talks: Talk[] = [
     event: 'norents',
     date: '2025-06-13',
     description: '',
-    thumbnail: '/thumbnails/norents.png',
-    pdfPath: '/slides/norents.pdf'
+    thumbnail: '/thumbnails/20250613_norents.png',
+    pdfPath: '/slides/20250613_norents.pdf'
   },
   {
     slug: 'ui-mcp-2025',
@@ -24,8 +24,8 @@ export const talks: Talk[] = [
     event: 'THE UI EXPERTS - AI×MCPの可能性',
     date: '2025-05-12',
     description: '',
-    thumbnail: '/thumbnails/20250512-ui-mcp.png',
-    pdfPath: '/slides/20250512-ui-mcp.pdf'
+    thumbnail: '/thumbnails/20250512_UIExperts.png',
+    pdfPath: '/slides/20250512_UIExperts.pdf'
   },
   {
     slug: 'tech-front-meetup-2024',
@@ -33,8 +33,8 @@ export const talks: Talk[] = [
     event: 'Tech.Front Meetup',
     date: '2024-12-12',
     description: '',
-    thumbnail: '/thumbnails/4年間でのフロントエンド リアーキテクチャの変遷と進め方.png',
-    pdfPath: '/slides/4年間でのフロントエンド リアーキテクチャの変遷と進め方.pdf'
+    thumbnail: '/thumbnails/20241212_TechFrontMeetup.png',
+    pdfPath: '/slides/20241212_TechFrontMeetup.pdf'
   },
   {
     slug: 'web-frontend-study-2024',
@@ -42,8 +42,8 @@ export const talks: Talk[] = [
     event: 'Webフロントエンド勉強会',
     date: '2024-11-08',
     description: '',
-    thumbnail: '/thumbnails/コンパウンド戦略を支えるフロントエンド基盤設計.png',
-    pdfPath: '/slides/コンパウンド戦略を支えるフロントエンド基盤設計.pdf'
+    thumbnail: '/thumbnails/20241108_WebFrontendStudy.png',
+    pdfPath: '/slides/20241108_WebFrontendStudy.pdf'
   },
   {
     slug: 'frontend-conf-hokkaido-2024',
@@ -51,8 +51,8 @@ export const talks: Talk[] = [
     event: 'フロントエンドカンファレンス北海道',
     date: '2024-08-24',
     description: '',
-    thumbnail: '/thumbnails/腐敗防止層によるスムーズなライブラリ移行.png',
-    pdfPath: '/slides/腐敗防止層によるスムーズなライブラリ移行.pdf'
+    thumbnail: '/thumbnails/20240824_FrontendConfHokkaido.png',
+    pdfPath: '/slides/20240824_FrontendConfHokkaido.pdf'
   },
   {
     slug: 'encraft-12-2024',
@@ -60,8 +60,8 @@ export const talks: Talk[] = [
     event: 'Encraft #12',
     date: '2024-03-28',
     description: '',
-    thumbnail: '/thumbnails/Encraft #12 DOMクイズ！ のコピー.png',
-    pdfPath: '/slides/Encraft #12 DOMクイズ！ のコピー.pdf'
+    thumbnail: '/thumbnails/20240328_Encraft12.png',
+    pdfPath: '/slides/20240328_Encraft12.pdf'
   },
   {
     slug: 'encraft-6-2023',
@@ -69,8 +69,8 @@ export const talks: Talk[] = [
     event: 'Encraft #6',
     date: '2023-08-30',
     description: '',
-    thumbnail: '/thumbnails/ButtonとLink、どう実装する？ のコピー.png',
-    pdfPath: '/slides/ButtonとLink、どう実装する？ のコピー.pdf'
+    thumbnail: '/thumbnails/20230830_Encraft6.png',
+    pdfPath: '/slides/20230830_Encraft6.pdf'
   },
   {
     slug: 'encraft-4-2023',
@@ -78,8 +78,8 @@ export const talks: Talk[] = [
     event: 'Encraft #4',
     date: '2023-06-29',
     description: '',
-    thumbnail: '/thumbnails/Suspense Fetchを3年実用してみて - Encraft#4 のコピー.png',
-    pdfPath: '/slides/Suspense Fetchを3年実用してみて - Encraft#4 のコピー.pdf'
+    thumbnail: '/thumbnails/20230629_Encraft4.png',
+    pdfPath: '/slides/20230629_Encraft4.pdf'
   },
   {
     slug: 'harajuku-js-2023',
@@ -87,8 +87,8 @@ export const talks: Talk[] = [
     event: 'Harajuku.js Meetup',
     date: '2023-01-20',
     description: '',
-    thumbnail: '/thumbnails/20230120-Recoil勉強会 のコピー.png',
-    pdfPath: '/slides/20230120-Recoil勉強会 のコピー.pdf'
+    thumbnail: '/thumbnails/20230120_HarajukuJsMeetup.png',
+    pdfPath: '/slides/20230120_HarajukuJsMeetup.pdf'
   },
   {
     slug: 'devfest-2022',
@@ -96,8 +96,8 @@ export const talks: Talk[] = [
     event: 'DevFest 2022',
     date: '2022-12-16',
     description: '',
-    thumbnail: '/thumbnails/20221216_DevFest 2022 Web Session.png',
-    pdfPath: '/slides/20221216_DevFest 2022 Web Session.pdf'
+    thumbnail: '/thumbnails/20221216_DevFest2022.png',
+    pdfPath: '/slides/20221216_DevFest2022.pdf'
   },
   {
     slug: 'devfest-2021',
@@ -105,8 +105,8 @@ export const talks: Talk[] = [
     event: 'DevFest Tokyo 2021',
     date: '2021-12-11',
     description: '',
-    thumbnail: '/thumbnails/20211211_DevFest 2021 Web Session.png',
-    pdfPath: '/slides/20211211_DevFest 2021 Web Session.pdf'
+    thumbnail: '/thumbnails/20211211_DevFest2021.png',
+    pdfPath: '/slides/20211211_DevFest2021.pdf'
   },
   {
     slug: 'sample-talk-1',
