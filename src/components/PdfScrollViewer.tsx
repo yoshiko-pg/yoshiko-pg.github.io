@@ -1,62 +1,16 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { FixedSizeList as List } from 'react-window';
 import styles from './PdfScrollViewer.module.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface PdfScrollViewerProps {
   file: string;
-  width?: number;
-  maxWidth?: number;
 }
 
-interface PageItemProps {
-  index: number;
-  style: React.CSSProperties;
-  data: {
-    numPages: number;
-    width: number;
-    file: string;
-  };
-}
-
-const PageItem = ({ index, style, data }: PageItemProps) => {
-  const [loading, setLoading] = useState(true);
-  const pageNumber = index + 1;
-
-  return (
-    <div style={style} className={styles.pageContainer}>
-      {loading && (
-        <div className={styles.skeleton}>
-          <div className={styles.skeletonContent}>
-            Loading page {pageNumber}...
-          </div>
-        </div>
-      )}
-      <Page
-        pageNumber={pageNumber}
-        file={data.file}
-        width={data.width}
-        onLoadSuccess={() => setLoading(false)}
-        onLoadError={() => setLoading(false)}
-        loading=""
-        error=""
-        renderTextLayer={false}
-        renderAnnotationLayer={false}
-      />
-    </div>
-  );
-};
-
-export default function PdfScrollViewer({ 
-  file, 
-  width = 800, 
-  maxWidth = 800 
-}: PdfScrollViewerProps) {
+export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
   const [numPages, setNumPages] = useState<number>(0);
-  const [containerWidth, setContainerWidth] = useState<number>(width);
-  const [pageHeight, setPageHeight] = useState<number>(800);
+  const [containerWidth, setContainerWidth] = useState<number>(1000);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
@@ -66,12 +20,29 @@ export default function PdfScrollViewer({
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (event.key === 'j' || event.key === 'ArrowDown') {
       event.preventDefault();
-      setCurrentPage(prev => Math.min(prev + 1, numPages));
+      const nextPage = Math.min(currentPage + 1, numPages);
+      setCurrentPage(nextPage);
+      scrollToPage(nextPage);
     } else if (event.key === 'k' || event.key === 'ArrowUp') {
       event.preventDefault();
-      setCurrentPage(prev => Math.max(prev - 1, 1));
+      const prevPage = Math.max(currentPage - 1, 1);
+      setCurrentPage(prevPage);
+      scrollToPage(prevPage);
     }
-  }, [numPages]);
+  }, [numPages, currentPage]);
+
+  const scrollToPage = (pageNumber: number) => {
+    const element = document.getElementById(`page-${pageNumber}`);
+    if (element) {
+      const headerHeight = 80; // 固定ヘッダーの高さ
+      const elementPosition = element.offsetTop - headerHeight;
+      
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -81,24 +52,37 @@ export default function PdfScrollViewer({
   useEffect(() => {
     const handleResize = () => {
       const viewportWidth = window.innerWidth;
-      const calculatedWidth = Math.min(viewportWidth * 0.9, maxWidth);
+      const calculatedWidth = Math.min(viewportWidth * 0.8, 1200);
       setContainerWidth(calculatedWidth);
-      setPageHeight(calculatedWidth * 1.4);
     };
 
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [maxWidth]);
+  }, []);
 
   useEffect(() => {
-    if (currentPage > 0) {
-      const element = document.getElementById(`page-${currentPage}`);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const handleScroll = () => {
+      const headerHeight = 80;
+      const scrollPosition = window.scrollY + headerHeight + 100; // 少し余裕を持たせる
+      
+      for (let i = 1; i <= numPages; i++) {
+        const element = document.getElementById(`page-${i}`);
+        if (element) {
+          const elementTop = element.offsetTop;
+          const elementBottom = elementTop + element.offsetHeight;
+          
+          if (scrollPosition >= elementTop && scrollPosition < elementBottom) {
+            setCurrentPage(i);
+            break;
+          }
+        }
       }
-    }
-  }, [currentPage]);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [numPages]);
 
   if (!file) {
     return (
@@ -135,21 +119,30 @@ export default function PdfScrollViewer({
           </div>
         }
       >
-        {numPages > 0 && (
-          <List
-            height={window.innerHeight - 100}
-            itemCount={numPages}
-            itemSize={pageHeight + 20}
-            itemData={{
-              numPages,
-              width: containerWidth,
-              file,
-            }}
-            overscanCount={1}
-          >
-            {PageItem}
-          </List>
-        )}
+        <div className={styles.pagesContainer}>
+          {Array.from(new Array(numPages), (_, index) => (
+            <div 
+              key={`page_${index + 1}`} 
+              id={`page-${index + 1}`}
+              className={styles.pageWrapper}
+            >
+              <Page
+                pageNumber={index + 1}
+                width={containerWidth}
+                loading={
+                  <div className={styles.skeleton}>
+                    <div className={styles.skeletonContent}>
+                      Loading page {index + 1}...
+                    </div>
+                  </div>
+                }
+                error=""
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
+              />
+            </div>
+          ))}
+        </div>
       </Document>
     </div>
   );
