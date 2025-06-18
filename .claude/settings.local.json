@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npm install)",
       "Bash(npm install:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": []
   }
