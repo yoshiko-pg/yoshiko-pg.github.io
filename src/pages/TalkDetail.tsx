@@ -13,8 +13,8 @@ export default function TalkDetail() {
         <div className={styles.error}>
           <h1>Talk not found</h1>
           <p>The requested talk could not be found.</p>
-          <Link to="/talks" className={styles.backButton}>
-            ← Back to Talks
+          <Link to="/" className={styles.backButton}>
+            ← Back to Home
           </Link>
         </div>
       </div>
@@ -25,8 +25,8 @@ export default function TalkDetail() {
     <div className={styles.container}>
       <header className={styles.header}>
         <div className={styles.headerContent}>
-          <Link to="/talks" className={styles.backLink}>
-            ← Back to Talks
+          <Link to="/" className={styles.backLink}>
+            ← Back to Home
           </Link>
           <div className={styles.talkInfo}>
             <div className={styles.talkMeta}>
