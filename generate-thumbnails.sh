@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# PDFの1ページ目をサムネイル画像に変換するスクリプト
+# macOSのsipsコマンドを使用
+
+SLIDES_DIR="public/slides"
+THUMBNAILS_DIR="public/thumbnails"
+
+# サムネイル用ディレクトリが存在しない場合は作成
+mkdir -p "$THUMBNAILS_DIR"
+
+echo "PDFサムネイル生成を開始します..."
+
+# slides ディレクトリ内のすべてのPDFファイルを処理
+for pdf_file in "$SLIDES_DIR"/*.pdf; do
+    # ファイルが存在するかチェック
+    if [ ! -f "$pdf_file" ]; then
+        echo "PDFファイルが見つかりません: $pdf_file"
+        continue
+    fi
+    
+    # ファイル名（拡張子なし）を取得
+    filename=$(basename "$pdf_file" .pdf)
+    
+    # 出力画像パス
+    output_image="$THUMBNAILS_DIR/${filename}.png"
+    
+    echo "処理中: $pdf_file -> $output_image"
+    
+    # sipsコマンドでPDFの1ページ目をPNGに変換
+    # --resampleWidth 400: 幅を400pxにリサイズ
+    # --setProperty format png: PNG形式で出力
+    sips -s format png --resampleWidth 400 "$pdf_file" --out "$output_image" 2>/dev/null
+    
+    if [ $? -eq 0 ]; then
+        echo "✓ 成功: $output_image"
+    else
+        echo "✗ 失敗: $pdf_file の変換に失敗しました"
+    fi
+done
+
+echo "サムネイル生成完了！"
+echo "生成されたサムネイル:"
+ls -la "$THUMBNAILS_DIR"
