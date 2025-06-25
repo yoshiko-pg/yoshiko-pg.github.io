@@ -12,7 +12,7 @@ export const talks: Talk[] = [
   {
     slug: 'norents-2025',
     title: '全コードレビューコメントをAIに分析させて学びを得てみる',
-    event: 'norents',
+    event: 'noren.ts',
     date: '2025-06-13',
     description: '',
     thumbnail: '/thumbnails/20250613_norents.png',
@@ -29,7 +29,7 @@ export const talks: Talk[] = [
   },
   {
     slug: 'tech-front-meetup-2024',
-    title: '4年間でのフロントエンド リアーキテクチャの変遷と進め方',
+    title: '4年間でのフロントエンドリアーキテクチャの変遷と進め方',
     event: 'Tech-Front Meetup',
     date: '2024-12-12',
     description: '',
@@ -92,7 +92,7 @@ export const talks: Talk[] = [
   },
   {
     slug: 'devfest-2022',
-    title: 'Web Standard: 今まであった重いたプレ、これからこうう重けそう',
+    title: '今までああ書いてたアレ、これからはこう書けそう 2022',
     event: 'DevFest 2022',
     date: '2022-12-16',
     description: '',
@@ -101,7 +101,7 @@ export const talks: Talk[] = [
   },
   {
     slug: 'devfest-2021',
-    title: 'DevFest Tokyo 2021 Web Session',
+    title: '今までああ書いてたアレ、これからはこう書けそう 2021',
     event: 'DevFest Tokyo 2021',
     date: '2021-12-11',
     description: '',
