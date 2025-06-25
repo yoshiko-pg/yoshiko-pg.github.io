@@ -98,6 +98,14 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [numPages, isScrolling]);
 
+  useEffect(() => {
+    // Update page indicator in the fixed header
+    const pageIndicator = document.getElementById('page-indicator');
+    if (pageIndicator && numPages > 0) {
+      pageIndicator.innerHTML = `${currentPage}<br>・<br>${numPages}`;
+    }
+  }, [currentPage, numPages]);
+
   if (!file) {
     return (
       <div className={styles.error}>
@@ -106,14 +114,6 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
       </div>
     );
   }
-
-  useEffect(() => {
-    // Update page indicator in the fixed header
-    const pageIndicator = document.getElementById('page-indicator');
-    if (pageIndicator && numPages > 0) {
-      pageIndicator.innerHTML = `${currentPage}<br>・<br>${numPages}`;
-    }
-  }, [currentPage, numPages]);
 
   return (
     <div className={styles.container}>
