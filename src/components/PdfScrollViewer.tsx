@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
@@ -14,6 +14,8 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
   const [numPages, setNumPages] = useState<number>(0);
   const [containerWidth, setContainerWidth] = useState<number>(1000);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isScrolling, setIsScrolling] = useState<boolean>(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout>();
 
   const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -23,11 +25,13 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
     if (event.key === 'j' || event.key === 'ArrowDown') {
       event.preventDefault();
       const nextPage = Math.min(currentPage + 1, numPages);
+      setIsScrolling(true);
       setCurrentPage(nextPage);
       scrollToPage(nextPage);
     } else if (event.key === 'k' || event.key === 'ArrowUp') {
       event.preventDefault();
       const prevPage = Math.max(currentPage - 1, 1);
+      setIsScrolling(true);
       setCurrentPage(prevPage);
       scrollToPage(prevPage);
     }
@@ -40,6 +44,12 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
         top: element.offsetTop - 20,
         behavior: 'smooth'
       });
+      
+      // スクロール後にフラグをリセット
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, 600);
     }
   };
 
@@ -65,6 +75,9 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
 
   useEffect(() => {
     const handleScroll = () => {
+      // キーボード操作中はスクロールによるページ更新をスキップ
+      if (isScrolling) return;
+      
       const scrollPosition = window.scrollY + 100; // 少し余裕を持たせる
       
       for (let i = 1; i <= numPages; i++) {
@@ -83,7 +96,7 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [numPages]);
+  }, [numPages, isScrolling]);
 
   if (!file) {
     return (
