@@ -30,7 +30,7 @@ export const talks: Talk[] = [
   {
     slug: 'tech-front-meetup-2024',
     title: '4年間でのフロントエンド リアーキテクチャの変遷と進め方',
-    event: 'Tech.Front Meetup',
+    event: 'Tech-Front Meetup',
     date: '2024-12-12',
     description: '',
     thumbnail: '/thumbnails/20241212_TechFrontMeetup.png',

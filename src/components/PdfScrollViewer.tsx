@@ -34,11 +34,8 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
   const scrollToPage = (pageNumber: number) => {
     const element = document.getElementById(`page-${pageNumber}`);
     if (element) {
-      const headerHeight = 80; // 固定ヘッダーの高さ
-      const elementPosition = element.offsetTop - headerHeight;
-      
       window.scrollTo({
-        top: elementPosition,
+        top: element.offsetTop - 20,
         behavior: 'smooth'
       });
     }
@@ -52,7 +49,10 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
   useEffect(() => {
     const handleResize = () => {
       const viewportWidth = window.innerWidth;
-      const calculatedWidth = Math.min(viewportWidth * 0.8, 1200);
+      // talkInfoと同じ幅の計算ロジック
+      const maxWidth = 1200;
+      const padding = viewportWidth * 0.2; // 左右10%ずつ
+      const calculatedWidth = Math.min(viewportWidth - padding, maxWidth * 0.8);
       setContainerWidth(calculatedWidth);
     };
 
@@ -63,8 +63,7 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
 
   useEffect(() => {
     const handleScroll = () => {
-      const headerHeight = 80;
-      const scrollPosition = window.scrollY + headerHeight + 100; // 少し余裕を持たせる
+      const scrollPosition = window.scrollY + 100; // 少し余裕を持たせる
       
       for (let i = 1; i <= numPages; i++) {
         const element = document.getElementById(`page-${i}`);
@@ -93,14 +92,16 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
     );
   }
 
+  useEffect(() => {
+    // Update page indicator in the fixed header
+    const pageIndicator = document.getElementById('page-indicator');
+    if (pageIndicator && numPages > 0) {
+      pageIndicator.textContent = `${currentPage}/${numPages}`;
+    }
+  }, [currentPage, numPages]);
+
   return (
     <div className={styles.container}>
-      <div className={styles.controls}>
-        <span>Page {currentPage} of {numPages}</span>
-        <div className={styles.shortcuts}>
-          <span>Use J/K or ↓/↑ to navigate</span>
-        </div>
-      </div>
       
       <Document
         file={file}

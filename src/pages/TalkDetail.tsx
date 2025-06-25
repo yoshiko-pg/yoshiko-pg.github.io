@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import PdfScrollViewer from '../components/PdfScrollViewer';
+import Footer from '../components/Footer';
 import { talks } from '../data/talks';
 import styles from './TalkDetail.module.css';
 
@@ -23,33 +24,39 @@ export default function TalkDetail() {
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <Link to="/" className={styles.backLink}>
-            ← Back to Home
-          </Link>
-          <div className={styles.talkInfo}>
-            <div className={styles.talkMeta}>
-              <span className={styles.event}>{talk.event}</span>
-              <span className={styles.date}>
-                {new Date(talk.date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </span>
-            </div>
-            <h1 className={styles.title}>{talk.title}</h1>
-            <p className={styles.description}>{talk.description}</p>
-          </div>
+      <header className={styles.fixedHeader}>
+        <Link to="/" className={styles.backLink}>
+          ←
+        </Link>
+        <div className={styles.pageNumber} id="page-indicator">
+          {/* Page number will be updated by PdfScrollViewer */}
         </div>
       </header>
 
-      <main className={styles.main}>
-        <div className={styles.viewerContainer}>
-          <PdfScrollViewer file={talk.pdfPath} />
+      <div className={styles.content}>
+        <div className={styles.talkInfo}>
+          <div className={styles.talkMeta}>
+            <span className={styles.event}>{talk.event}</span>
+            <span className={styles.date}>
+              {new Date(talk.date).toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+              }).replace(/\//g, '/')}
+            </span>
+          </div>
+          <h1 className={styles.title}>{talk.title}</h1>
+          <p className={styles.description}>{talk.description}</p>
         </div>
-      </main>
+
+        <main className={styles.main}>
+          <div className={styles.viewerContainer}>
+            <PdfScrollViewer file={talk.pdfPath} />
+          </div>
+        </main>
+      </div>
+
+      <Footer />
     </div>
   );
 }
