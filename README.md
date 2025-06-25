@@ -1,2 +1,2 @@
-よしこです、よろしくおねがいします。  
-http://yoshiko-pg.github.io/
+こんにちは、よしこです。
+http://yoshiko-pg.github.io

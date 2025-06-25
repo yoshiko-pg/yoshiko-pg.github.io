@@ -1,0 +1,39 @@
+.container {
+  min-height: 100vh;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  background: var(--color-background);
+}
+
+.profileLink {
+  display: inline-block;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+  
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.profileImage {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+}
+
+.talks {
+  background: var(--color-background);
+}
+
+.sectionContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+

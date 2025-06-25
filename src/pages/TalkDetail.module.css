@@ -1,0 +1,150 @@
+.container {
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+.fixedHeader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-background);
+  border-bottom: 1px solid var(--color-border);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  height: 60px;
+  
+  @media (max-width: 768px) {
+    padding: 1rem 0.5rem;
+  }
+}
+
+
+.backLink {
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 1;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: #ff6b35;
+  }
+}
+
+.pageNumber {
+  color: var(--color-text-light);
+  font-size: 0.875rem;
+  font-weight: 300;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.talkInfo {
+  margin: 0 auto;
+  padding: 2rem calc((100% - 960px) / 2);
+  border-bottom: 1px solid #2c2c2c;
+  
+  @media (max-width: 768px) {
+    padding: 2rem 10%;
+  }
+}
+
+.talkMeta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.event {
+  background: #f0efed;
+  color: var(--color-text);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.date {
+  color: var(--color-text-light);
+  font-size: 0.875rem;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 400;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+}
+
+.description {
+  font-size: 1rem;
+  color: var(--color-text-light);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+.main {
+  background: var(--color-background);
+  padding: 0;
+}
+
+.viewerContainer {
+  width: 100%;
+  margin: 0;
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: 2rem;
+  
+  & h1 {
+    font-size: 1.75rem;
+    color: var(--color-text);
+    margin-bottom: 0.75rem;
+    font-weight: 400;
+  }
+  
+  & p {
+    font-size: 1rem;
+    color: var(--color-text-light);
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+}
+
+.backButton {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-background);
+  color: var(--color-text);
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 400;
+  font-size: 0.875rem;
+  border: 1px solid var(--color-border);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    color: #ff6b35;
+    border-color: #ff6b35;
+  }
+}
