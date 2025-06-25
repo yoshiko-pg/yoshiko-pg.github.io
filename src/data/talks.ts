@@ -8,6 +8,8 @@ export interface Talk {
   pdfPath: string;
 }
 
+const pdfPath = 'https://raw.githubusercontent.com/yoshiko-pg/yoshiko-pg.github.io/refs/heads/master/public/'
+
 export const talks: Talk[] = [
   {
     slug: 'norents-2025',
@@ -16,7 +18,7 @@ export const talks: Talk[] = [
     date: '2025-06-13',
     description: '',
     thumbnail: '/thumbnails/20250613_norents.png',
-    pdfPath: '/slides/20250613_norents.pdf'
+    pdfPath: `${pdfPath}slides/20250613_norents.pdf`
   },
   {
     slug: 'ui-mcp-2025',
@@ -25,7 +27,7 @@ export const talks: Talk[] = [
     date: '2025-05-12',
     description: '',
     thumbnail: '/thumbnails/20250512_UIExperts.png',
-    pdfPath: '/slides/20250512_UIExperts.pdf'
+    pdfPath: `${pdfPath}slides/20250512_UIExperts.pdf`
   },
   {
     slug: 'tech-front-meetup-2024',
@@ -34,7 +36,7 @@ export const talks: Talk[] = [
     date: '2024-12-12',
     description: '',
     thumbnail: '/thumbnails/20241212_TechFrontMeetup.png',
-    pdfPath: '/slides/20241212_TechFrontMeetup.pdf'
+    pdfPath: `${pdfPath}slides/20241212_TechFrontMeetup.pdf`
   },
   {
     slug: 'web-frontend-study-2024',
@@ -43,7 +45,7 @@ export const talks: Talk[] = [
     date: '2024-11-08',
     description: '',
     thumbnail: '/thumbnails/20241108_WebFrontendStudy.png',
-    pdfPath: '/slides/20241108_WebFrontendStudy.pdf'
+    pdfPath: `${pdfPath}slides/20241108_WebFrontendStudy.pdf`
   },
   {
     slug: 'frontend-conf-hokkaido-2024',
@@ -52,7 +54,7 @@ export const talks: Talk[] = [
     date: '2024-08-24',
     description: '',
     thumbnail: '/thumbnails/20240824_FrontendConfHokkaido.png',
-    pdfPath: '/slides/20240824_FrontendConfHokkaido.pdf'
+    pdfPath: `${pdfPath}slides/20240824_FrontendConfHokkaido.pdf`
   },
   {
     slug: 'encraft-12-2024',
@@ -61,7 +63,7 @@ export const talks: Talk[] = [
     date: '2024-03-28',
     description: '',
     thumbnail: '/thumbnails/20240328_Encraft12.png',
-    pdfPath: '/slides/20240328_Encraft12.pdf'
+    pdfPath: `${pdfPath}slides/20240328_Encraft12.pdf`
   },
   {
     slug: 'encraft-6-2023',
@@ -70,7 +72,7 @@ export const talks: Talk[] = [
     date: '2023-08-30',
     description: '',
     thumbnail: '/thumbnails/20230830_Encraft6.png',
-    pdfPath: '/slides/20230830_Encraft6.pdf'
+    pdfPath: `${pdfPath}slides/20230830_Encraft6.pdf`
   },
   {
     slug: 'encraft-4-2023',
@@ -79,7 +81,7 @@ export const talks: Talk[] = [
     date: '2023-06-29',
     description: '',
     thumbnail: '/thumbnails/20230629_Encraft4.png',
-    pdfPath: '/slides/20230629_Encraft4.pdf'
+    pdfPath: `${pdfPath}slides/20230629_Encraft4.pdf`
   },
   {
     slug: 'harajuku-js-2023',
@@ -88,7 +90,7 @@ export const talks: Talk[] = [
     date: '2023-01-20',
     description: '',
     thumbnail: '/thumbnails/20230120_HarajukuJsMeetup.png',
-    pdfPath: '/slides/20230120_HarajukuJsMeetup.pdf'
+    pdfPath: `${pdfPath}slides/20230120_HarajukuJsMeetup.pdf`
   },
   {
     slug: 'devfest-2022',
@@ -97,7 +99,7 @@ export const talks: Talk[] = [
     date: '2022-12-16',
     description: '',
     thumbnail: '/thumbnails/20221216_DevFest2022.png',
-    pdfPath: '/slides/20221216_DevFest2022.pdf'
+    pdfPath: `${pdfPath}slides/20221216_DevFest2022.pdf`
   },
   {
     slug: 'devfest-2021',
@@ -106,6 +108,6 @@ export const talks: Talk[] = [
     date: '2021-12-11',
     description: '',
     thumbnail: '/thumbnails/20211211_DevFest2021.png',
-    pdfPath: '/slides/20211211_DevFest2021.pdf'
+    pdfPath: `${pdfPath}slides/20211211_DevFest2021.pdf`
   },
 ];
