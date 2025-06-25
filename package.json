@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "postbuild": "cp dist/index.html dist/404.html",
     "preview": "vite preview",
-    "deploy": "npm run build && gh-pages -d dist",
+    "deploy": "pnpm run build && gh-pages -d dist",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "vitest"
   },

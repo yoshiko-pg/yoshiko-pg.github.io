@@ -15,7 +15,7 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
   const [containerWidth, setContainerWidth] = useState<number>(1000);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout>();
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
