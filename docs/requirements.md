@@ -1,58 +1,67 @@
-0. Purpose
+# Portfolio Site – Requirements
 
-Create a personal portfolio site that showcases projects and allows visitors to vertically scroll through past conference slide decks (PDF).
-Target hosting platform is GitHub Pages; the project must build to fully static assets that can be served from the gh-pages branch without a runtime.
+## 0. Purpose
 
-1. High-Level Stack
+Create a personal portfolio site that showcases projects **and** allows visitors to vertically scroll through past conference slide decks (PDF).
+Target hosting platform is **GitHub Pages**; the project must build to fully static assets that can be served from the `gh-pages` branch without a runtime.
 
-Layer	Choice	Notes
-Build Tooling	Vite 6	React/TS template (npm create vite@latest <name> -- --template react-ts).
-Framework	React 19	Client-side only; Server Components not required.
-Language	TypeScript 5.5	Strict mode.
-Styling	CSS Modules	.module.css; PostCSS nesting enabled. No Tailwind/CSS-in-JS.
-Animation	framer-motion 12	Optional; used for subtle page transitions/reveals.
-PDF Rendering	react-pdf ( + pdfjs-dist)	Canvas render; paired with react-window for virtualization.
-Virtual Scroll	react-window	FixedSizeList variant.
-Deployment	GitHub Actions + peaceiris/actions-gh-pages@v4	Workflow builds and publishes to gh-pages.
+## 1. High‑Level Stack
 
-2. Functional Requirements
+| Layer          | Choice                                              | Notes                                                                       |
+| -------------- | --------------------------------------------------- | --------------------------------------------------------------------------- |
+| Build Tooling  | **Vite 6**                                          | React/TS template (`npm create vite@latest <name> -- --template react-ts`). |
+| Framework      | **React 19**                                        | Client‑side only; Server Components not required.                           |
+| Language       | **TypeScript 5.5**                                  | Strict mode.                                                                |
+| Styling        | **CSS Modules**                                     | `.module.css`; PostCSS nesting enabled. No Tailwind/CSS‑in‑JS.              |
+| Animation      | **framer‑motion 12**                                | Optional; used for subtle page transitions/reveals.                         |
+| PDF Rendering  | **react‑pdf ( + pdfjs‑dist)**                       | Canvas render; paired with `react-window` for virtualization.               |
+| Virtual Scroll | **react‑window**                                    | FixedSizeList variant.                                                      |
+| Deployment     | **GitHub Actions + peaceiris/actions‑gh‑pages\@v4** | Workflow builds and publishes to `gh-pages`.                                |
 
-2.1 Pages & Routing
-	•	Home / – Landing with hero section, project cards.
-	•	Talks Index /talks – List of slide decks (title, event, date, thumbnail).
-	•	Talk Detail /talks/:slug – Vertical-scroll PDF viewer.
+## 2. Functional Requirements
 
-Routing lib: React Router v6.
-Scroll restoration: Preserve position when navigating back from a talk.
+### 2.1 Pages & Routing
 
-2.2 PDF Vertical Scroll Viewer
-	•	Renders all pages stacked vertically; user scrolls to read.
-	•	Virtualize: Only pages within viewport ±1 are mounted.
-	•	Canvas width responsive; max width ≈ 800 px.
-	•	Loading states: skeleton per page.
-	•	Keyboard shortcuts: J/K or ↓/↑ to jump one page.
-	•	Optional fallback: if PDF fails, show link to direct download.
+* **Home `/`** – Landing with hero section, project cards.
+* **Talks Index `/talks`** – List of slide decks (title, event, date, thumbnail).
+* **Talk Detail `/talks/:slug`** – Vertical‑scroll PDF viewer.
 
-2.3 PDF Asset Handling
-	•	PDFs stored under public/slides/.
-	•	No backend; CORS-safe paths.
-	•	If a deck exceeds 100 pages or >10 MB, convert to per-page PNGs at build time (stretch goal).
+> **Routing lib**: React Router v6.
+> **Scroll restoration**: Preserve position when navigating back from a talk.
 
-2.4 Performance Targets (Desktop Lighthouse)
+### 2.2 PDF Vertical Scroll Viewer
 
-Metric	Threshold
-FCP	≤ 1.5 s
-TTI	≤ 2.5 s
-CLS	< 0.1
+* Renders **all pages** stacked vertically; user scrolls to read.
+* **Virtualize**: Only pages within viewport ±1 are mounted.
+* Canvas width responsive; max width ≈ 800 px.
+* Loading states: skeleton per page.
+* Keyboard shortcuts: `J/K` or ↓/↑ to jump one page.
+* Optional fallback: if PDF fails, show link to direct download.
 
-3. Non-Functional Requirements
-	•	Accessibility: All interactive elements keyboard reachable; images with alt.
-	•	SEO / Metadata: Per-page title & description; Open Graph images.
-	•	Testing: unit (Vitest), component (React Testing Library) for viewer.
-	•	CI: pnpm lint && pnpm test && pnpm build must pass before deploy.
+### 2.3 PDF Asset Handling
 
-4. Project Structure (suggested)
+* PDFs stored under `public/slides/`.
+* No backend; CORS‑safe paths.
+* If a deck exceeds **100 pages or >10 MB**, convert to per‑page PNGs at build time *(stretch goal)*.
 
+### 2.4 Performance Targets (Desktop Lighthouse)
+
+| Metric | Threshold |
+| ------ | --------- |
+| FCP    | ≤ 1.5 s   |
+| TTI    | ≤ 2.5 s   |
+| CLS    | < 0.1     |
+
+## 3. Non‑Functional Requirements
+
+* **Accessibility**: All interactive elements keyboard reachable; images with `alt`.
+* **SEO / Metadata**: Per‑page title & description; Open Graph images.
+* **Testing**: unit (Vitest), component (React Testing Library) for viewer.
+* **CI**: `pnpm lint && pnpm test && pnpm build` must pass before deploy.
+
+## 4. Project Structure (suggested)
+
+```
 /portfolio-root
 ├─ public/
 │  └─ slides/
@@ -74,9 +83,11 @@ CLS	< 0.1
 ├─ .github/
 │  └─ workflows/deploy.yml
 └─ vite.config.ts
+```
 
-5. Key NPM Scripts
+## 5. Key NPM Scripts
 
+```jsonc
 {
   "scripts": {
     "dev": "vite",
@@ -87,9 +98,11 @@ CLS	< 0.1
     "test": "vitest"
   }
 }
+```
 
-6. Deployment Workflow (GitHub Actions)
+## 6. Deployment Workflow (GitHub Actions)
 
+```yaml
 name: Deploy
 on:
   push:
@@ -111,3 +124,13 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+```
+
+
+## 6.1 SPA Fallback for GitHub Pages
+
+To ensure that deep links to child routes (e.g., `/talks/my-deck`) don’t yield a **404** on GitHub Pages:
+
+1. **Router basename** – Wrap routes with `BrowserRouter basename="/REPO_NAME"` where `REPO_NAME` matches Vite’s `base`.
+2. **Static fallback page** – After `vite build`, copy `dist/index.html` to `dist/404.html` (add `"postbuild": "cp dist/index.html dist/404.html"` to `package.json`). GitHub Pages will serve this file for unknown paths, letting React handle routing.
+

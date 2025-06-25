@@ -5,7 +5,7 @@ import postcssNesting from 'postcss-nesting'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: './',
+  base: '/yoshiko-pg.github.io/',
   css: {
     postcss: {
       plugins: [
