@@ -8,7 +8,7 @@ export interface Talk {
   pdfPath: string;
 }
 
-const pdfPath = 'https://raw.githubusercontent.com/yoshiko-pg/yoshiko-pg.github.io/refs/heads/master/public/'
+const pdfPath = 'https://raw.githubusercontent.com/yoshiko-pg/yoshiko-pg.github.io/refs/heads/master/'
 
 export const talks: Talk[] = [
   {
