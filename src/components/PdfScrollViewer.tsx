@@ -96,7 +96,7 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
     // Update page indicator in the fixed header
     const pageIndicator = document.getElementById('page-indicator');
     if (pageIndicator && numPages > 0) {
-      pageIndicator.textContent = `${currentPage}/${numPages}`;
+      pageIndicator.innerHTML = `${currentPage}<br>・<br>${numPages}`;
     }
   }, [currentPage, numPages]);
 

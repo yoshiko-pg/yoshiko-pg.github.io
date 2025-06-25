@@ -3,6 +3,10 @@
   text-align: center;
   background-color: #5a5856;
   margin-top: 4rem;
+  
+  @media (max-width: 768px) {
+    margin-top: 2rem;
+  }
 }
 
 .footerLinks {

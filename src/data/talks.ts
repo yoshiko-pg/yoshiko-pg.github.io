@@ -48,7 +48,7 @@ export const talks: Talk[] = [
   {
     slug: 'frontend-conf-hokkaido-2024',
     title: '腐敗防止層によるスムーズなライブラリ移行',
-    event: 'フロントエンドカンファレンス北海道',
+    event: 'Frontend Conference 北海道',
     date: '2024-08-24',
     description: '',
     thumbnail: '/thumbnails/20240824_FrontendConfHokkaido.png',
