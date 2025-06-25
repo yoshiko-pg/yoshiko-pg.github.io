@@ -108,13 +108,4 @@ export const talks: Talk[] = [
     thumbnail: '/thumbnails/20211211_DevFest2021.png',
     pdfPath: '/slides/20211211_DevFest2021.pdf'
   },
-  {
-    slug: 'sample-talk-1',
-    title: 'Welcome to Slidev',
-    event: 'Sample Presentation',
-    date: '2024-01-01',
-    description: '',
-    thumbnail: '/thumbnails/sample-talk-1.png',
-    pdfPath: '/slides/sample-talk-1.pdf'
-  }
 ];

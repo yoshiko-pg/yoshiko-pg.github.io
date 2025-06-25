@@ -5,11 +5,6 @@ import styles from './TalksList.module.css';
 export default function TalksList() {
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Conference Talks</h2>
-      <p className={styles.subtitle}>
-        Technical presentations and slide decks from various conferences and meetups
-      </p>
-      
       <div className={styles.talksList}>
         {talks.map((talk) => (
           <Link 
@@ -17,27 +12,24 @@ export default function TalksList() {
             to={`/talks/${talk.slug}`}
             className={styles.talkCard}
           >
-            <div className={styles.talkContent}>
-              <div className={styles.talkMeta}>
-                <span className={styles.event}>{talk.event}</span>
-                <span className={styles.date}>
-                  {new Date(talk.date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </span>
-              </div>
-              <h3 className={styles.talkTitle}>{talk.title}</h3>
-              <div className={styles.viewSlides}>
-                View Slides →
-              </div>
-            </div>
             {talk.thumbnail && (
               <div className={styles.thumbnail}>
                 <img src={talk.thumbnail} alt={`${talk.title} thumbnail`} />
               </div>
             )}
+            <div className={styles.talkContent}>
+              <div className={styles.talkMeta}>
+                <span className={styles.event}>{talk.event}</span>
+                <span className={styles.date}>
+                  {new Date(talk.date).toLocaleDateString('ja-JP', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                  }).replace(/\//g, '/')}
+                </span>
+              </div>
+              <h3 className={styles.talkTitle}>{talk.title}</h3>
+            </div>
           </Link>
         ))}
       </div>

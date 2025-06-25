@@ -6,40 +6,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 60vh;
   padding: 3rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  text-align: center;
+  background: var(--color-background);
 }
 
-.heroContent {
-  max-width: 600px;
-}
-
-.title {
-  font-size: 3.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  line-height: 1.2;
+.profileLink {
+  display: inline-block;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
   
-  @media (max-width: 768px) {
-    font-size: 2.5rem;
+  &:hover {
+    opacity: 0.8;
   }
 }
 
-.subtitle {
-  font-size: 1.5rem;
-  margin-bottom: 0;
-  opacity: 0.9;
-  
-  @media (max-width: 768px) {
-    font-size: 1.25rem;
-  }
+.profileImage {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
 }
 
 .talks {
-  background: white;
+  background: var(--color-background);
 }
 
 .sectionContainer {
@@ -48,30 +36,30 @@
   padding: 0 2rem;
 }
 
-.about {
-  padding: 5rem 0;
-  background: #f8f9fa;
-}
-
-.sectionTitle {
-  font-size: 2.5rem;
+.footer {
+  padding: 2rem;
   text-align: center;
-  margin-bottom: 3rem;
-  color: #333;
+  background-color: #5a5856;
+  margin-top: 4rem;
 }
 
-.aboutContent {
-  max-width: 800px;
-  margin: 0 auto;
-  font-size: 1.125rem;
-  line-height: 1.7;
-  color: #666;
+.footerLinks {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
   
-  & p {
-    margin-bottom: 1.5rem;
+  & a {
+    color: #faf9f7;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
     
-    &:last-child {
-      margin-bottom: 0;
+    &:hover {
+      color: #ff6b35;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
   }
 }
+

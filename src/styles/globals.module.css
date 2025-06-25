@@ -2,16 +2,16 @@
 
 /* CSS Custom Properties */
 :root {
-  --color-primary: #667eea;
-  --color-primary-dark: #5a67d8;
-  --color-secondary: #764ba2;
-  --color-text: #333;
-  --color-text-light: #666;
-  --color-text-lighter: #999;
-  --color-background: #ffffff;
-  --color-background-light: #f8f9fa;
-  --color-border: #e0e0e0;
-  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-primary: #2c2c2c;
+  --color-primary-dark: #1a1a1a;
+  --color-secondary: #5a5a5a;
+  --color-text: #2c2c2c;
+  --color-text-light: #5a5a5a;
+  --color-text-lighter: #8a8a8a;
+  --color-background: #faf9f7;
+  --color-background-light: #f5f4f2;
+  --color-border: #e8e6e3;
+  --color-shadow: rgba(0, 0, 0, 0.05);
   
   --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -61,37 +61,39 @@ body {
   color: var(--color-text);
   background-color: var(--color-background);
   line-height: 1.6;
+  font-weight: 300;
 }
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  line-height: 1.2;
+  font-weight: 400;
+  line-height: 1.4;
   margin-bottom: 0.5em;
+  letter-spacing: -0.01em;
 }
 
 h1 {
-  font-size: 2.5rem;
-}
-
-h2 {
   font-size: 2rem;
 }
 
-h3 {
+h2 {
   font-size: 1.5rem;
 }
 
-h4 {
+h3 {
   font-size: 1.25rem;
 }
 
-h5 {
+h4 {
   font-size: 1.125rem;
 }
 
-h6 {
+h5 {
   font-size: 1rem;
+}
+
+h6 {
+  font-size: 0.9375rem;
 }
 
 p {
@@ -100,12 +102,14 @@ p {
 
 /* Links */
 a {
-  color: var(--color-primary);
-  text-decoration: none;
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
   transition: color var(--transition-fast);
   
   &:hover {
-    color: var(--color-primary-dark);
+    color: #ff6b35;
   }
 }
 
@@ -115,7 +119,7 @@ a:focus,
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 2px solid var(--color-primary);
+  outline: 1px solid var(--color-text-lighter);
   outline-offset: 2px;
 }
 

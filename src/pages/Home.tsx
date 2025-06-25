@@ -5,14 +5,9 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <section className={styles.hero}>
-        <div className={styles.heroContent}>
-          <h1 className={styles.title}>
-            Yoshiko's Portfolio
-          </h1>
-          <p className={styles.subtitle}>
-            Frontend Developer & Conference Speaker
-          </p>
-        </div>
+        <a href="https://x.com/yoshiko_pg" target="_blank" rel="noopener noreferrer" className={styles.profileLink}>
+          <img src="/yoshiko.png" alt="Yoshiko" className={styles.profileImage} />
+        </a>
       </section>
 
       <section className={styles.talks}>
@@ -21,21 +16,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className={styles.about}>
-        <div className={styles.sectionContainer}>
-          <h2 className={styles.sectionTitle}>About</h2>
-          <div className={styles.aboutContent}>
-            <p>
-              I'm a frontend developer passionate about creating great user experiences
-              and sharing knowledge through conference talks and technical presentations.
-            </p>
-            <p>
-              This portfolio showcases my work and provides easy access to my conference
-              slide decks with a custom vertical PDF viewer.
-            </p>
-          </div>
+      <footer className={styles.footer}>
+        <div className={styles.footerLinks}>
+          <a href="https://x.com/yoshiko_pg" target="_blank" rel="noopener noreferrer">X</a>
+          <a href="https://github.com/yoshiko-pg" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://zenn.dev/yoshiko" target="_blank" rel="noopener noreferrer">Zenn</a>
         </div>
-      </section>
+      </footer>
     </div>
   );
 }
