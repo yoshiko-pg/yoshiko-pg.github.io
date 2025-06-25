@@ -11,6 +11,4 @@ export const router = createBrowserRouter([
     path: '/talks/:slug',
     element: <TalkDetail />,
   },
-], {
-  basename: '/yoshiko-pg.github.io',
-});
+]);
