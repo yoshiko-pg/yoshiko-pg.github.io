@@ -1,5 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
 import styles from './PdfScrollViewer.module.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -138,8 +140,8 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
                   </div>
                 }
                 error=""
-                renderTextLayer={false}
-                renderAnnotationLayer={false}
+                renderTextLayer={true}
+                renderAnnotationLayer={true}
               />
             </div>
           ))}

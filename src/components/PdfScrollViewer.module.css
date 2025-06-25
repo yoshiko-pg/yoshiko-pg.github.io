@@ -20,6 +20,32 @@
   border-radius: 4px;
   overflow: hidden;
   background: white;
+  position: relative;
+  
+  /* テキスト選択のスタイル */
+  & ::selection {
+    background: rgba(255, 107, 53, 0.3);
+  }
+  
+  /* リンクのスタイル */
+  & a {
+    color: #ff6b35 !important;
+    text-decoration: none !important;
+    
+    &:hover {
+      text-decoration: underline !important;
+    }
+  }
+  
+  /* テキストレイヤーの位置調整 */
+  & .react-pdf__Page__textContent {
+    user-select: text;
+  }
+  
+  /* アノテーションレイヤーの位置調整 */
+  & .react-pdf__Page__annotations {
+    pointer-events: auto;
+  }
 }
 
 .skeleton {
