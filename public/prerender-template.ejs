@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title><%= title %></title>
   <link rel="canonical" href="https://yoshiko-pg.github.io/talks/<%= slug %>/" />
+  <link rel="stylesheet" href="<%= cssFile %>" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="article" />
@@ -22,6 +23,6 @@
 </head>
 <body>
   <div id="root"></div>
-  <script type="module" src="/assets/index.js"></script>
+  <script type="module" src="<%= jsFile %>"></script>
 </body>
 </html>

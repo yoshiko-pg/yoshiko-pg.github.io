@@ -2,29 +2,56 @@ import ejs from 'ejs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { talks } from '../src/data/talks.js';
-import type { ResolvedConfig } from 'vite';
 
-export async function render({ route, config }: { route: string; config: ResolvedConfig }) {
-  const slug = route.split('/').pop()!;
-  const talk = talks.find(t => t.slug === slug);
-  
-  if (!talk) {
-    throw new Error(`No talk found for slug: ${slug}`);
-  }
+async function findAssetFile(distDir: string, pattern: string): Promise<string> {
+  const assetsDir = path.join(distDir, 'assets');
+  const files = await fs.readdir(assetsDir);
+  const found = files.find(file => file.startsWith(pattern));
+  return found ? `/assets/${found}` : '/assets/index.js';
+}
 
+async function findCSSFile(distDir: string): Promise<string> {
+  const assetsDir = path.join(distDir, 'assets');
+  const files = await fs.readdir(assetsDir);
+  const found = files.find(file => file.endsWith('.css'));
+  return found ? `/assets/${found}` : '/assets/index.css';
+}
+
+async function generateStaticPages() {
+  const distDir = 'dist';
   const templatePath = path.resolve('public/prerender-template.ejs');
-  const template = await fs.readFile(templatePath, 'utf8');
   
-  const description = talk.description || `${talk.event}での発表「${talk.title}」のスライドです。`;
-  
-  const html = ejs.render(template, {
-    slug: talk.slug,
-    title: talk.title,
-    description,
-    thumbnail: talk.thumbnail
-  });
+  try {
+    const template = await fs.readFile(templatePath, 'utf8');
+    const jsFile = await findAssetFile(distDir, 'index-');
+    const cssFile = await findCSSFile(distDir);
+    
+    for (const talk of talks) {
+      const description = talk.description || `${talk.date.replaceAll('-', '/')}の${talk.event}での発表「${talk.title}」のスライドです。`;
+      
+      const html = ejs.render(template, {
+        slug: talk.slug,
+        title: talk.title,
+        description,
+        thumbnail: talk.thumbnail,
+        jsFile,
+        cssFile
+      });
 
-  const outPath = path.join(config.build.outDir, route, 'index.html');
-  await fs.mkdir(path.dirname(outPath), { recursive: true });
-  await fs.writeFile(outPath, html);
+      const talkDir = path.join(distDir, 'talks', talk.slug);
+      await fs.mkdir(talkDir, { recursive: true });
+      await fs.writeFile(path.join(talkDir, 'index.html'), html);
+      
+      console.log(`Generated: /talks/${talk.slug}/index.html`);
+    }
+    
+    console.log(`✅ Generated ${talks.length} prerendered pages`);
+  } catch (error) {
+    console.error('❌ Error generating static pages:', error);
+    process.exit(1);
+  }
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  generateStaticPages();
 }
