@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title><%= title %></title>
+  <link rel="canonical" href="https://yoshiko-pg.github.io/talks/<%= slug %>/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="<%= title %>" />
+  <meta property="og:description" content="<%= description %>" />
+  <meta property="og:image" content="https://yoshiko-pg.github.io<%= thumbnail %>" />
+  <meta property="og:url" content="https://yoshiko-pg.github.io/talks/<%= slug %>/" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="<%= title %>" />
+  <meta name="twitter:description" content="<%= description %>" />
+  <meta name="twitter:image" content="https://yoshiko-pg.github.io<%= thumbnail %>" />
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/assets/index.js"></script>
+</body>
+</html>
