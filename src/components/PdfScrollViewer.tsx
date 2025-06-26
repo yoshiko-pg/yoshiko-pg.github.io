@@ -124,7 +124,7 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
         onLoadError={(error) => console.error('PDF load error:', error)}
         loading={
           <div className={styles.loading}>
-            <div className={styles.loadingSpinner}></div>
+            <div className={styles.loadingDot}></div>
             <p>Loading PDF...</p>
           </div>
         }
@@ -147,6 +147,7 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
                 width={containerWidth}
                 loading={
                   <div className={styles.skeleton}>
+                    <div className={styles.loadingDot}></div>
                     <div className={styles.skeletonContent}>
                       Loading page {index + 1}...
                     </div>
