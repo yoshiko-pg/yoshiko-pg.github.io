@@ -12,8 +12,8 @@
   font-size: 0.875rem;
   
   &:hover {
-    background: rgba(29, 155, 240, 0.1);
-    color: #1d9bf0;
+    background: rgba(229, 90, 43, 0.1);
+    color: #e55a2b;
   }
   
   &:active {
