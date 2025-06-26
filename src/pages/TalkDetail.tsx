@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import PdfScrollViewer from '../components/PdfScrollViewer';
 import Footer from '../components/Footer';
+import XShareButton from '../components/XShareButton';
 import { talks } from '../data/talks';
 import styles from './TalkDetail.module.css';
 
@@ -28,8 +29,14 @@ export default function TalkDetail() {
         <Link to="/" className={styles.backLink}>
           ←
         </Link>
-        <div className={styles.pageNumber} id="page-indicator">
-          {/* Page number will be updated by PdfScrollViewer */}
+        <div className={styles.headerRight}>
+          <div className={styles.pageNumber} id="page-indicator">
+            {/* Page number will be updated by PdfScrollViewer */}
+          </div>
+          <XShareButton 
+            text={`${talk.title}\n`}
+            url={`https://yoshiko-pg.github.io/talks/${talk.slug}/`}
+          />
         </div>
       </header>
 
