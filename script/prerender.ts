@@ -3,10 +3,10 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { talks } from '../src/data/talks.js';
 
-async function findAssetFile(distDir: string, pattern: string): Promise<string> {
+async function findJSFile(distDir: string): Promise<string> {
   const assetsDir = path.join(distDir, 'assets');
   const files = await fs.readdir(assetsDir);
-  const found = files.find(file => file.startsWith(pattern));
+  const found = files.find(file => file.startsWith('index-') && file.endsWith('.js'));
   return found ? `/assets/${found}` : '/assets/index.js';
 }
 
@@ -23,7 +23,7 @@ async function generateStaticPages() {
   
   try {
     const template = await fs.readFile(templatePath, 'utf8');
-    const jsFile = await findAssetFile(distDir, 'index-');
+    const jsFile = await findJSFile(distDir);
     const cssFile = await findCSSFile(distDir);
     
     for (const talk of talks) {
