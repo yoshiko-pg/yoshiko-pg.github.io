@@ -12,6 +12,15 @@ const pdfPath = 'https://raw.githubusercontent.com/yoshiko-pg/yoshiko-pg.github.
 
 export const talks: Talk[] = [
   {
+    slug: 'findy-2025',
+    title: 'よしこさんと実践！公開Vibe Coding',
+    event: 'Findy',
+    date: '2025-06-26',
+    description: '',
+    thumbnail: '/thumbnails/20250626_findy.png',
+    pdfPath: `${pdfPath}slides/20250626_findy.pdf`
+  },
+  {
     slug: 'norents-2025',
     title: '全コードレビューコメントをAIに分析させて学びを得てみる',
     event: 'noren.ts',
