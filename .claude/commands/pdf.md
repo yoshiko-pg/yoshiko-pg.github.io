@@ -1,0 +1,5 @@
+- $ARGUMENTS を軽量化して。original fileは残さない。mvで上書きして。
+  - 落とし具合は `gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dQUIET -dBATCH` ぐらい
+- $ARGUMENTS のサムネイル画像生成して。 `script/generate-thumbnails.sh $ARGUMENTS` で
+- 生成したサムネイル画像からスライドの内容を把握して、 @src/data/talks.ts にデータ追加して。
+- コミットして。
