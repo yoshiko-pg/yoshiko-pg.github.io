@@ -18,7 +18,7 @@
   height: fit-content;
   
   @media (max-width: 768px) {
-    padding: 2rem 4px 1rem 4px;
+    padding: 38px 4px 1rem;
   }
 }
 
@@ -36,8 +36,8 @@
   }
   
   @media (max-width: 768px) {
-    font-size: 1.3rem;
-    margin-left: 4px;
+    font-size: 1.2rem;
+    margin-left: 6px;
   }
 }
 
