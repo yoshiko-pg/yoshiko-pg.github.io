@@ -19,17 +19,28 @@ async function findCSSFile(distDir: string): Promise<string> {
 
 async function generateStaticPages() {
   const distDir = 'dist';
-  const templatePath = path.resolve('public/prerender-template.ejs');
+  const talkTemplatePath = path.resolve('public/prerender-template.ejs');
+  const indexTemplatePath = path.resolve('public/index-template.ejs');
   
   try {
-    const template = await fs.readFile(templatePath, 'utf8');
     const jsFile = await findJSFile(distDir);
     const cssFile = await findCSSFile(distDir);
     
+    // Generate index.html with OGP
+    const indexTemplate = await fs.readFile(indexTemplatePath, 'utf8');
+    const indexHtml = ejs.render(indexTemplate, {
+      jsFile,
+      cssFile
+    });
+    await fs.writeFile(path.join(distDir, 'index.html'), indexHtml);
+    console.log('Generated: /index.html with OGP');
+    
+    // Generate talk pages
+    const talkTemplate = await fs.readFile(talkTemplatePath, 'utf8');
     for (const talk of talks) {
       const description = talk.description || `${talk.date.replaceAll('-', '/')}の${talk.event}での発表「${talk.title}」のスライドです。`;
       
-      const html = ejs.render(template, {
+      const html = ejs.render(talkTemplate, {
         slug: talk.slug,
         title: talk.title,
         description,
@@ -45,7 +56,7 @@ async function generateStaticPages() {
       console.log(`Generated: /talks/${talk.slug}/index.html`);
     }
     
-    console.log(`✅ Generated ${talks.length} prerendered pages`);
+    console.log(`✅ Generated 1 index page + ${talks.length} talk pages`);
   } catch (error) {
     console.error('❌ Error generating static pages:', error);
     process.exit(1);
