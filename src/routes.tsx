@@ -25,6 +25,10 @@ export const router = createBrowserRouter([
         path: 'talks/:slug',
         element: <TalkDetail />,
       },
+      {
+        path: 'talks/:slug/',
+        element: <TalkDetail />,
+      },
     ],
   },
 ]);

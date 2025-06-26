@@ -9,7 +9,7 @@ export default function TalksList() {
         {talks.map((talk) => (
           <Link 
             key={talk.slug}
-            to={`/talks/${talk.slug}`}
+            to={`/talks/${talk.slug}/`}
             className={styles.talkCard}
           >
             {talk.thumbnail && (
