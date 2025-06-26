@@ -109,8 +109,8 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
   if (!file) {
     return (
       <div className={styles.error}>
+        <div className={styles.errorIcon}>✕</div>
         <p>PDF file not specified</p>
-        <a href={file} download>Download PDF</a>
       </div>
     );
   }
@@ -130,8 +130,8 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
         }
         error={
           <div className={styles.error}>
+            <div className={styles.errorIcon}>✕</div>
             <p>Failed to load PDF</p>
-            <a href={file} download>Download PDF</a>
           </div>
         }
       >
