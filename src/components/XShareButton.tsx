@@ -7,9 +7,8 @@ interface XShareButtonProps {
 
 export default function XShareButton({ text, url }: XShareButtonProps) {
   const handleShare = () => {
-    const tweetText = encodeURIComponent(text);
-    const tweetUrl = encodeURIComponent(url);
-    const xShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
+    const tweetText = encodeURIComponent(text + '\n') + encodeURIComponent(url);
+    const xShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
     window.open(xShareUrl, '_blank', 'width=550,height=420');
   };
 

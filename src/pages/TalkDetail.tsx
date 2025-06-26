@@ -34,7 +34,7 @@ export default function TalkDetail() {
             {/* Page number will be updated by PdfScrollViewer */}
           </div>
           <XShareButton 
-            text={`${talk.title}\n`}
+            text={talk.title}
             url={`https://yoshiko-pg.github.io/talks/${talk.slug}/`}
           />
         </div>
