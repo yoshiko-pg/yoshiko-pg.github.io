@@ -12,6 +12,15 @@ const pdfPath = 'https://raw.githubusercontent.com/yoshiko-pg/yoshiko-pg.github.
 
 export const talks: Talk[] = [
   {
+    slug: 'colab-conf-2025',
+    title: '友達のつくりかた',
+    event: 'CoLab Conf',
+    date: '2025-07-13',
+    description: '',
+    thumbnail: '/thumbnails/20250713_CoLabConf.png',
+    pdfPath: `${pdfPath}slides/20250713_CoLabConf.pdf`
+  },
+  {
     slug: 'findy-2025',
     title: 'よしこさんと実践！公開Vibe Coding',
     event: 'Findy',
