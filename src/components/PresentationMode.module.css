@@ -1,0 +1,219 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+}
+
+.floatingBar {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #faf9f7;
+  border-radius: 25px;
+  padding: 12px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
+.navigationGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+}
+
+.pageContainer {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.pageContainer canvas {
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain;
+}
+
+.navButton {
+  background: transparent;
+  color: #2c2c2c;
+  border: none;
+  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.navButton:hover:not(:disabled) {
+  background: rgba(255, 107, 53, 0.1);
+  color: #ff6b35;
+}
+
+.navButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  color: #2c2c2c;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0;
+  min-width: 60px;
+  text-align: center;
+}
+
+.closeButton {
+  background: transparent;
+  color: #2c2c2c;
+  border: none;
+  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  margin-left: 4px;
+}
+
+.closeButton:hover {
+  background: rgba(255, 107, 53, 0.1);
+  color: #ff6b35;
+}
+
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: white;
+}
+
+.loadingDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: white;
+}
+
+.errorIcon {
+  font-size: 48px;
+  color: #ff4444;
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: white;
+  width: 80vw;
+  height: 60vh;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  justify-content: center;
+}
+
+.skeletonContent {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* キーボードナビゲーション用のフォーカススタイル */
+.navButton:focus {
+  outline: 2px solid rgba(44, 44, 44, 0.3);
+  outline-offset: 2px;
+}
+
+.closeButton:focus {
+  outline: 2px solid rgba(44, 44, 44, 0.3);
+  outline-offset: 2px;
+}
+
+.visible {
+  opacity: 1;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .floatingBar {
+    bottom: 20px;
+    gap: 10px;
+    padding: 10px 16px;
+  }
+  
+  .navButton {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+  
+  .closeButton {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .pageInfo {
+    font-size: 13px;
+    min-width: 50px;
+  }
+}

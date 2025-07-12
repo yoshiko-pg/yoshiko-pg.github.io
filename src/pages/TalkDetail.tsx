@@ -1,5 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
+import { useState } from 'react';
 import PdfScrollViewer from '../components/PdfScrollViewer';
+import PresentationMode from '../components/PresentationMode';
 import Footer from '../components/Footer';
 import XShareButton from '../components/XShareButton';
 import { talks } from '../data/talks';
@@ -8,6 +10,7 @@ import styles from './TalkDetail.module.css';
 export default function TalkDetail() {
   const { slug } = useParams<{ slug: string }>();
   const talk = talks.find(t => t.slug === slug);
+  const [isPresentationMode, setIsPresentationMode] = useState(false);
 
   if (!talk) {
     return (
@@ -52,7 +55,15 @@ export default function TalkDetail() {
               }).replace(/\//g, '/')}
             </span>
           </div>
-          <h1 className={styles.title}>{talk.title}</h1>
+          <h1 className={styles.title}>
+            {talk.title} <span 
+              className={styles.presentationIcon}
+              onClick={() => setIsPresentationMode(true)}
+              title="プレゼンテーションモード"
+            >
+              ⛶
+            </span>
+          </h1>
           <p className={styles.description}>{talk.description}</p>
         </div>
 
@@ -64,6 +75,13 @@ export default function TalkDetail() {
       </div>
 
       <Footer />
+      
+      {isPresentationMode && (
+        <PresentationMode
+          file={talk.pdfPath}
+          onClose={() => setIsPresentationMode(false)}
+        />
+      )}
     </div>
   );
 }
