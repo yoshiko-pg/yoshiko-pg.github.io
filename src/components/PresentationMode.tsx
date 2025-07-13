@@ -15,6 +15,7 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showControls, setShowControls] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -83,6 +84,21 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
     };
   }, []);
 
+  useEffect(() => {
+    // Check if mobile device
+    const checkMobile = () => {
+      const mobile = window.matchMedia('(max-width: 768px)').matches;
+      setIsMobile(mobile);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
   return (
     <div 
       className={styles.overlay}
@@ -130,7 +146,7 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
         </Document>
       </div>
 
-      <div className={`${styles.floatingBar} ${showControls ? styles.visible : styles.hidden}`}>
+      <div className={`${styles.floatingBar} ${isMobile || showControls ? styles.visible : styles.hidden}`}>
         <div className={styles.navigationGroup}>
           <button 
             className={styles.navButton} 
