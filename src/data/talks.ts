@@ -17,8 +17,8 @@ export const talks: Talk[] = [
     event: 'CoLab Conf',
     date: '2025-07-13',
     description: '',
-    thumbnail: '/thumbnails/20250713_CoLabConf2025.png',
-    pdfPath: `${pdfPath}slides/20250713_CoLabConf2025.pdf`
+    thumbnail: '/thumbnails/20250713_CoLabCon.png',
+    pdfPath: `${pdfPath}slides/20250713_CoLabCon.pdf`
   },
   {
     slug: 'findy-2025',
