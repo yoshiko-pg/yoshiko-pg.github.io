@@ -11,7 +11,7 @@
 }
 
 .floatingBar {
-  position: absolute;
+  position: fixed;
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
@@ -190,9 +190,9 @@
 
 .hidden {
   opacity: 0;
+  pointer-events: none;
 }
 
-/* モバイル対応 */
 @media (max-width: 768px) {
   .floatingBar {
     bottom: 20px;

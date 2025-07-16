@@ -86,10 +86,9 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
   }, []);
 
   useEffect(() => {
-    // Check if mobile device
     const checkMobile = () => {
-      const mobile = window.matchMedia('(max-width: 768px)').matches;
-      setIsMobile(mobile);
+      const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+      setIsMobile(isTouchDevice);
     };
     
     checkMobile();
