@@ -133,10 +133,14 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
   useEffect(() => {
     return () => {
       // Safariのメモリを強制的に解放
-      document.querySelectorAll('canvas').forEach(canvas => {
-        canvas.width = 0;
-        canvas.height = 0;
-      });
+      // プレゼンテーションモード内のcanvasのみを対象にする
+      const presentationContainer = document.querySelector(`.${styles.container}`);
+      if (presentationContainer) {
+        presentationContainer.querySelectorAll('canvas').forEach(canvas => {
+          canvas.width = 0;
+          canvas.height = 0;
+        });
+      }
     };
   }, []);
 
