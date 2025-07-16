@@ -17,6 +17,7 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
   const [showControls, setShowControls] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [loadedPages, setLoadedPages] = useState<Set<number>>(new Set());
+  const [isRotated, setIsRotated] = useState<boolean>(false);
 
   const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -101,7 +102,7 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
 
   return (
     <div 
-      className={styles.overlay}
+      className={`${styles.overlay} ${isRotated ? styles.rotated : ''}`}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
@@ -185,6 +186,15 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
             →
           </button>
         </div>
+        {isMobile && (
+          <button 
+            className={styles.rotateButton} 
+            onClick={() => setIsRotated(!isRotated)}
+            title={isRotated ? "縦向きに戻す" : "横向きで表示"}
+          >
+            ↻
+          </button>
+        )}
         <button className={styles.closeButton} onClick={onClose}>
           ✕
         </button>

@@ -114,6 +114,26 @@
   color: #ff6b35;
 }
 
+.rotateButton {
+  background: transparent;
+  color: #2c2c2c;
+  border: none;
+  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.rotateButton:hover {
+  background: rgba(255, 107, 53, 0.1);
+  color: #ff6b35;
+}
+
 
 .loading {
   display: flex;
@@ -193,6 +213,56 @@
   pointer-events: none;
 }
 
+/* 横向き表示用のスタイル */
+.rotated .container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  width: 100vh;
+  height: 100vw;
+}
+
+.rotated .pageContainer {
+  width: 100vh;
+  height: 100vw;
+}
+
+.rotated .pageContainer canvas {
+  max-width: 100vh !important;
+  max-height: 100vw !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain;
+}
+
+/* 横向きモードでのナビゲーションバー */
+.rotated .floatingBar {
+  background: transparent;
+  box-shadow: none;
+  gap: 12px;
+  padding: 12px;
+  left: auto;
+  right: 20px;
+  transform: translateX(0);
+}
+
+.rotated .navigationGroup {
+  display: none;
+}
+
+.rotated .closeButton,
+.rotated .rotateButton {
+  background: rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+}
+
+.rotated .closeButton:hover,
+.rotated .rotateButton:hover {
+  background: rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+}
+
 @media (max-width: 768px) {
   .floatingBar {
     bottom: 20px;
@@ -215,5 +285,24 @@
   .pageInfo {
     font-size: 13px;
     min-width: 50px;
+  }
+  
+  .rotateButton {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+  
+  /* 横向きモードでのモバイル調整 */
+  .rotated .floatingBar {
+    bottom: 10px;
+    padding: 8px;
+    right: 10px;
+  }
+  
+  .rotated .closeButton,
+  .rotated .rotateButton {
+    width: 32px;
+    height: 32px;
   }
 }
