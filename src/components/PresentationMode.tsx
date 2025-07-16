@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
@@ -18,6 +18,7 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [loadedPages, setLoadedPages] = useState<Set<number>>(new Set());
   const [isRotated, setIsRotated] = useState<boolean>(false);
+  const [pageScale, setPageScale] = useState<number>(1);
 
   const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -90,6 +91,12 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
     const checkMobile = () => {
       const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
       setIsMobile(isTouchDevice);
+      // モバイルデバイスの場合はdevicePixelRatioを制限してメモリ使用量を削減
+      if (isTouchDevice) {
+        setPageScale(Math.min(window.devicePixelRatio, 2));
+      } else {
+        setPageScale(window.devicePixelRatio || 1);
+      }
     };
     
     checkMobile();
@@ -97,6 +104,25 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
     
     return () => {
       window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
+  // メモリ節約のため、現在のページと前後数ページのみをレンダリング
+  const PRELOAD_RANGE = isMobile ? 1 : 2; // モバイルでは前後1ページ、デスクトップでは前後2ページ
+  const pagesToRender = useMemo(() => {
+    const start = Math.max(1, currentPage - PRELOAD_RANGE);
+    const end = Math.min(numPages, currentPage + PRELOAD_RANGE);
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  }, [currentPage, numPages, isMobile]);
+
+  // コンポーネントのアンマウント時にcanvasメモリを解放
+  useEffect(() => {
+    return () => {
+      // Safariのメモリを強制的に解放
+      document.querySelectorAll('canvas').forEach(canvas => {
+        canvas.width = 0;
+        canvas.height = 0;
+      });
     };
   }, []);
 
@@ -127,8 +153,8 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
         >
           {numPages > 0 && (
             <div className={styles.pageContainer} onClick={handleSlideClick}>
-              {/* 全ページを事前にレンダリングして、表示切り替えで管理 */}
-              {Array.from({ length: numPages }, (_, i) => i + 1).map((pageNum) => (
+              {/* メモリ節約のため、表示範囲のページのみをレンダリング */}
+              {pagesToRender.map((pageNum) => (
                 <div
                   key={pageNum}
                   style={{
@@ -142,6 +168,7 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
                   <Page
                     pageNumber={pageNum}
                     scale={1}
+                    devicePixelRatio={pageScale}
                     loading={
                       !loadedPages.has(pageNum) ? (
                         <div className={styles.skeleton}>
