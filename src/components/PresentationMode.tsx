@@ -16,6 +16,7 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showControls, setShowControls] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [loadedPages, setLoadedPages] = useState<Set<number>>(new Set());
 
   const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -126,21 +127,40 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
         >
           {numPages > 0 && (
             <div className={styles.pageContainer} onClick={handleSlideClick}>
-              <Page
-                pageNumber={currentPage}
-                scale={1}
-                loading={
-                  <div className={styles.skeleton}>
-                    <div className={styles.loadingDot}></div>
-                    <div className={styles.skeletonContent}>
-                      Loading page {currentPage}...
-                    </div>
-                  </div>
-                }
-                error=""
-                renderTextLayer={false}
-                renderAnnotationLayer={false}
-              />
+              {/* 全ページを事前にレンダリングして、表示切り替えで管理 */}
+              {Array.from({ length: numPages }, (_, i) => i + 1).map((pageNum) => (
+                <div
+                  key={pageNum}
+                  style={{
+                    display: pageNum === currentPage ? 'flex' : 'none',
+                    width: '100%',
+                    height: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <Page
+                    pageNumber={pageNum}
+                    scale={1}
+                    loading={
+                      !loadedPages.has(pageNum) ? (
+                        <div className={styles.skeleton}>
+                          <div className={styles.loadingDot}></div>
+                          <div className={styles.skeletonContent}>
+                            Loading page {pageNum}...
+                          </div>
+                        </div>
+                      ) : null
+                    }
+                    error=""
+                    renderTextLayer={false}
+                    renderAnnotationLayer={false}
+                    onRenderSuccess={() => {
+                      setLoadedPages(prev => new Set(prev).add(pageNum));
+                    }}
+                  />
+                </div>
+              ))}
             </div>
           )}
         </Document>
