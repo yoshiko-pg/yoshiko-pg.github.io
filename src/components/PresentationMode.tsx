@@ -64,13 +64,27 @@ export default function PresentationMode({ file, onClose }: PresentationModeProp
 
   const handleSlideClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
-    const centerX = rect.width / 2;
-
-    if (clickX > centerX) {
-      nextPage();
+    
+    if (isRotated) {
+      // 横表示時：縦持ちで上半分/下半分でページめくり
+      const clickY = event.clientY - rect.top;
+      const centerY = rect.height / 2;
+      
+      if (clickY > centerY) {
+        nextPage();
+      } else {
+        prevPage();
+      }
     } else {
-      prevPage();
+      // 通常表示時：左右でページめくり
+      const clickX = event.clientX - rect.left;
+      const centerX = rect.width / 2;
+      
+      if (clickX > centerX) {
+        nextPage();
+      } else {
+        prevPage();
+      }
     }
   };
 
