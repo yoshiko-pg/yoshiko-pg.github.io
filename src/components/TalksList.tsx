@@ -1,13 +1,13 @@
-import { Link } from 'react-router-dom';
-import { talks } from '../data/talks';
-import styles from './TalksList.module.css';
+import { Link } from "react-router-dom";
+import { talks } from "../data/talks";
+import styles from "./TalksList.module.css";
 
 export default function TalksList() {
   return (
     <div className={styles.container}>
       <div className={styles.talksList}>
         {talks.map((talk) => (
-          <Link 
+          <Link
             key={talk.slug}
             to={`/talks/${talk.slug}/`}
             className={styles.talkCard}
@@ -21,11 +21,13 @@ export default function TalksList() {
               <div className={styles.talkMeta}>
                 <span className={styles.event}>{talk.event}</span>
                 <span className={styles.date}>
-                  {new Date(talk.date).toLocaleDateString('ja-JP', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                  }).replace(/\//g, '/')}
+                  {new Date(talk.date)
+                    .toLocaleDateString("ja-JP", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })
+                    .replace(/\//g, "/")}
                 </span>
               </div>
               <h3 className={styles.talkTitle}>{talk.title}</h3>

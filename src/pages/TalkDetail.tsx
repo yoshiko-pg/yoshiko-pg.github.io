@@ -1,15 +1,15 @@
-import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
-import PdfScrollViewer from '../components/PdfScrollViewer';
-import PresentationMode from '../components/PresentationMode';
-import Footer from '../components/Footer';
-import XShareButton from '../components/XShareButton';
-import { talks } from '../data/talks';
-import styles from './TalkDetail.module.css';
+import { useParams, Link } from "react-router-dom";
+import { useState } from "react";
+import PdfScrollViewer from "../components/PdfScrollViewer";
+import PresentationMode from "../components/PresentationMode";
+import Footer from "../components/Footer";
+import XShareButton from "../components/XShareButton";
+import { talks } from "../data/talks";
+import styles from "./TalkDetail.module.css";
 
 export default function TalkDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const talk = talks.find(t => t.slug === slug);
+  const talk = talks.find((t) => t.slug === slug);
   const [isPresentationMode, setIsPresentationMode] = useState(false);
 
   if (!talk) {
@@ -36,7 +36,7 @@ export default function TalkDetail() {
           <div className={styles.pageNumber} id="page-indicator">
             {/* Page number will be updated by PdfScrollViewer */}
           </div>
-          <XShareButton 
+          <XShareButton
             text={talk.title}
             url={`https://yoshiko-pg.github.io/talks/${talk.slug}/`}
           />
@@ -48,15 +48,18 @@ export default function TalkDetail() {
           <div className={styles.talkMeta}>
             <span className={styles.event}>{talk.event}</span>
             <span className={styles.date}>
-              {new Date(talk.date).toLocaleDateString('ja-JP', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-              }).replace(/\//g, '/')}
+              {new Date(talk.date)
+                .toLocaleDateString("ja-JP", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                })
+                .replace(/\//g, "/")}
             </span>
           </div>
           <h1 className={styles.title}>
-            {talk.title} <span 
+            {talk.title}{" "}
+            <span
               className={styles.presentationIcon}
               onClick={() => setIsPresentationMode(true)}
               title="プレゼンテーションモード"
@@ -75,7 +78,7 @@ export default function TalkDetail() {
       </div>
 
       <Footer />
-      
+
       {isPresentationMode && (
         <PresentationMode
           file={talk.pdfPath}

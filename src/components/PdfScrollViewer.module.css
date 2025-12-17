@@ -4,7 +4,6 @@
   min-height: 100vh;
 }
 
-
 .pagesContainer {
   display: flex;
   flex-direction: column;
@@ -21,27 +20,27 @@
   overflow: hidden;
   background: white;
   position: relative;
-  
+
   /* テキスト選択のスタイル */
   & ::selection {
     background: rgba(255, 107, 53, 0.3);
   }
-  
+
   /* リンクのスタイル */
   & a {
     color: #ff6b35 !important;
     text-decoration: none !important;
-    
+
     &:hover {
       text-decoration: underline !important;
     }
   }
-  
+
   /* テキストレイヤーの位置調整 */
   & .react-pdf__Page__textContent {
     user-select: text;
   }
-  
+
   /* アノテーションレイヤーの位置調整 */
   & .react-pdf__Page__annotations {
     pointer-events: auto;
@@ -85,7 +84,7 @@
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
-  
+
   & p {
     margin-top: 1rem;
     color: #666;
@@ -101,7 +100,8 @@
 }
 
 @keyframes heartbeat {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(0.7);
     opacity: 0.6;
   }
@@ -117,7 +117,7 @@
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
-  
+
   & p {
     margin-top: 1rem;
     color: #666;

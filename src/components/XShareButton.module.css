@@ -10,12 +10,12 @@
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
-  
+
   &:hover {
     background: rgba(229, 90, 43, 0.1);
     color: #e55a2b;
   }
-  
+
   &:active {
     transform: scale(0.95);
   }

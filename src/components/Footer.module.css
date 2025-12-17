@@ -3,7 +3,7 @@
   text-align: center;
   background-color: #4a4a4a;
   margin-top: 4rem;
-  
+
   @media (max-width: 768px) {
     margin-top: 2rem;
   }
@@ -14,13 +14,13 @@
   gap: 2rem;
   justify-content: center;
   align-items: center;
-  
+
   & a {
     color: #faf9f7;
     font-size: 0.875rem;
     text-decoration: none;
     transition: color 0.2s ease;
-    
+
     &:hover {
       color: #ff6b35;
       text-decoration: underline;

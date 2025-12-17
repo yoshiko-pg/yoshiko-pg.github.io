@@ -134,7 +134,6 @@
   color: #ff6b35;
 }
 
-
 .loading {
   display: flex;
   flex-direction: column;
@@ -152,7 +151,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.6;
     transform: scale(1);
   }
@@ -269,37 +269,37 @@
     gap: 10px;
     padding: 10px 16px;
   }
-  
+
   .navButton {
     width: 32px;
     height: 32px;
     font-size: 16px;
   }
-  
+
   .closeButton {
     width: 32px;
     height: 32px;
     font-size: 16px;
   }
-  
+
   .pageInfo {
     font-size: 13px;
     min-width: 50px;
   }
-  
+
   .rotateButton {
     width: 32px;
     height: 32px;
     font-size: 16px;
   }
-  
+
   /* 横向きモードでのモバイル調整 */
   .rotated .floatingBar {
     bottom: 10px;
     padding: 8px;
     right: 10px;
   }
-  
+
   .rotated .closeButton,
   .rotated .rotateButton {
     width: 32px;

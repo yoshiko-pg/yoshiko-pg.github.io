@@ -26,7 +26,8 @@
 }
 
 @keyframes shake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0);
   }
   10% {
@@ -67,5 +68,3 @@
   margin: 0 auto;
   padding: 0 2rem;
 }
-
-

@@ -1,7 +1,7 @@
-import { createBrowserRouter, Outlet } from 'react-router-dom';
-import Home from './pages/Home';
-import TalkDetail from './pages/TalkDetail';
-import ScrollToTop from './components/ScrollToTop';
+import { createBrowserRouter, Outlet } from "react-router-dom";
+import Home from "./pages/Home";
+import TalkDetail from "./pages/TalkDetail";
+import ScrollToTop from "./components/ScrollToTop";
 
 function Layout() {
   return (
@@ -14,7 +14,7 @@ function Layout() {
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Layout />,
     children: [
       {
@@ -22,11 +22,11 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: 'talks/:slug',
+        path: "talks/:slug",
         element: <TalkDetail />,
       },
       {
-        path: 'talks/:slug/',
+        path: "talks/:slug/",
         element: <TalkDetail />,
       },
     ],
