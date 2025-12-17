@@ -132,10 +132,10 @@ export default function PresentationMode({
   }, []);
 
   // メモリ節約のため、現在のページと前後数ページのみをレンダリング
-  const PRELOAD_RANGE = isMobile ? 1 : 2; // モバイルでは前後1ページ、デスクトップでは前後2ページ
   const pagesToRender = useMemo(() => {
-    const start = Math.max(1, currentPage - PRELOAD_RANGE);
-    const end = Math.min(numPages, currentPage + PRELOAD_RANGE);
+    const preloadRange = isMobile ? 1 : 2; // モバイルでは前後1ページ、デスクトップでは前後2ページ
+    const start = Math.max(1, currentPage - preloadRange);
+    const end = Math.min(numPages, currentPage + preloadRange);
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }, [currentPage, numPages, isMobile]);
 

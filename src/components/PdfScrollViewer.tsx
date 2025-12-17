@@ -26,6 +26,22 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
     [],
   );
 
+  const scrollToPage = useCallback((pageNumber: number) => {
+    const element = document.getElementById(`page-${pageNumber}`);
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop - 20,
+        behavior: "smooth",
+      });
+
+      // スクロール後にフラグをリセット
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, 600);
+    }
+  }, []);
+
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === "j" || event.key === "ArrowDown") {
@@ -42,24 +58,8 @@ export default function PdfScrollViewer({ file }: PdfScrollViewerProps) {
         scrollToPage(prevPage);
       }
     },
-    [numPages, currentPage],
+    [numPages, currentPage, scrollToPage],
   );
-
-  const scrollToPage = (pageNumber: number) => {
-    const element = document.getElementById(`page-${pageNumber}`);
-    if (element) {
-      window.scrollTo({
-        top: element.offsetTop - 20,
-        behavior: "smooth",
-      });
-
-      // スクロール後にフラグをリセット
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-      scrollTimeoutRef.current = setTimeout(() => {
-        setIsScrolling(false);
-      }, 600);
-    }
-  };
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
