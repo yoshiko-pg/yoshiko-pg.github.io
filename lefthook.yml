@@ -1,0 +1,14 @@
+pre-push:
+  parallel: true
+  jobs:
+    - name: lint
+      run: pnpm run lint
+
+    - name: format
+      run: pnpm run format:check
+
+    - name: typecheck
+      run: pnpm exec tsc --noEmit
+
+    - name: test
+      run: pnpm run test run --passWithNoTests
