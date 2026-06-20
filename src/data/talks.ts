@@ -13,6 +13,15 @@ const pdfPath =
 
 export const talks: Talk[] = [
   {
+    slug: "zennfes-2026",
+    title: "伝わる発信のつくりかた",
+    event: "Zennfes",
+    date: "2026-06-19",
+    description: "",
+    thumbnail: "/thumbnails/20260619_Zennfes.png",
+    pdfPath: `${pdfPath}slides/20260619_Zennfes.pdf`,
+  },
+  {
     slug: "colab-conf-2025",
     title: "友達のつくりかた",
     event: "CoLab Conf",
