@@ -22,7 +22,6 @@ interface Light {
   c: string;
   stage: number;
   cool: number;
-  decayT: number;
   note: number;
 }
 
@@ -357,7 +356,7 @@ export function createRainEngine(
       bgx.beginPath();
       bgx.arc(x, y, r, 0, 6.2832);
       bgx.fill();
-      LIGHTS.push({ x, y, c, stage: 0, cool: 0, decayT: 0, note: i });
+      LIGHTS.push({ x, y, c, stage: 0, cool: 0, note: i });
     }
     for (let i = 0; i < 26; i++) {
       const x = Math.random() * W,
@@ -715,7 +714,6 @@ export function createRainEngine(
       if (Math.hypot(L.x - x, L.y - y) < 58) {
         L.stage++;
         L.cool = 1500;
-        L.decayT = 0;
         if (L.stage === 1) {
           revealSound(); // 消えたランプが姿を見せる
         } else {
@@ -756,16 +754,6 @@ export function createRainEngine(
     }
     for (const L of LIGHTS) {
       if (L.cool > 0) L.cool -= dt;
-      if (L.stage === 2) {
-        // 灯ったあかりだけ、ゆっくり眠りに戻る(姿は残る)
-        L.decayT += dt;
-        if (L.decayT > 40000) {
-          L.decayT = 0;
-          L.stage = 1;
-          litCount--;
-          celebrated = false;
-        }
-      }
     }
 
     autoTimer -= dt;
