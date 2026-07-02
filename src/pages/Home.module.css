@@ -79,6 +79,24 @@
   background: var(--color-accent);
   color: var(--color-page-background);
   transform: rotate(-3deg);
+  transform-origin: top center;
+}
+
+.sectionTitle:hover {
+  animation: swing 1s ease-in-out infinite;
+}
+
+@keyframes swing {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  25% {
+    transform: rotate(-5.5deg);
+  }
+  75% {
+    transform: rotate(-0.5deg);
+  }
 }
 
 .sectionContainer {
