@@ -87,7 +87,7 @@ function RainApp() {
                 <path d="M18.2 15.4l-1.9 5" />
               </svg>
             </span>
-            <span className={styles.lbl}>RAIN</span>
+            <span className={styles.lbl}>AUTO</span>
           </button>
           <button
             type="button"
