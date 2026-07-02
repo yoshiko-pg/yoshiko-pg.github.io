@@ -82,8 +82,8 @@
   transform-origin: top center;
 }
 
-.sectionTitle:hover {
-  animation: swing 1s ease-in-out infinite;
+.swinging {
+  animation: swing 1.2s ease-in-out;
 }
 
 @keyframes swing {
@@ -91,11 +91,17 @@
   100% {
     transform: rotate(-3deg);
   }
-  25% {
+  20% {
     transform: rotate(-5.5deg);
   }
-  75% {
-    transform: rotate(-0.5deg);
+  45% {
+    transform: rotate(-0.8deg);
+  }
+  70% {
+    transform: rotate(-4.4deg);
+  }
+  90% {
+    transform: rotate(-2.2deg);
   }
 }
 
