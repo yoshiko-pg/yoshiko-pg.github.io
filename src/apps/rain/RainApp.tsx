@@ -84,7 +84,7 @@ function RainApp() {
             type="button"
             className={`${styles.ctl} ${autoMode ? styles.on : ""}`}
             aria-pressed={autoMode}
-            aria-label="オートモード切替"
+            aria-label="雨がふるモード切替"
             onClick={toggleAuto}
           >
             <span className={styles.ic}>
@@ -93,7 +93,7 @@ function RainApp() {
                 <circle cx="12" cy="12" r="2.6" />
               </svg>
             </span>
-            <span className={styles.lbl}>AUTO</span>
+            <span className={styles.lbl}>雨がふる</span>
           </button>
           <button
             type="button"

@@ -327,7 +327,8 @@ export function createRainEngine(
   let townIdx = 0,
     townBlend = 1; // 1=切替完了
   let mist = 0, // 夜霧の濃さ(移動の前にふわっと現れ、着いてから晴れる)
-    mistOn = false;
+    mistOn = false,
+    travelPending = false; // 霧が濃くなりきるのを待って移動を始める
   let prevLights: Light[] = []; // 流れていく前のまちのあかり
   const bgPrev = document.createElement("canvas"),
     bpx = bgPrev.getContext("2d")!;
@@ -456,8 +457,11 @@ export function createRainEngine(
     scene.height = H * DPR;
     scx.setTransform(DPR, 0, 0, DPR, 0, 0);
     townBlend = 1; // リサイズ時は移り変わりを打ち切る
-    mistOn = false;
-    mist = 0;
+    if (!travelPending) {
+      // 移動待ちの霧は消さない(消すと移動のきっかけが失われる)
+      mistOn = false;
+      mist = 0;
+    }
     paintBackground();
     paintFog();
   }
@@ -819,8 +823,11 @@ export function createRainEngine(
             if (!FLAVORS) FLAVORS = [...WAKE_TEXTS, ...TRAVEL_TEXTS];
             hooks.showFlavor(pick(FLAVORS));
             later(() => hooks.fadeHint(), 7400); // 移動が終わる頃まで
-            later(() => (mistOn = true), 1400); // 動き出す前に夜霧で切れ目を隠す
-            later(nextTown, 3200); // 余韻のあとで次のまちへ
+            // 余韻のあとで夜霧がふわっと立ちこめ、濃くなりきってから動き出す
+            later(() => {
+              mistOn = true;
+              travelPending = true;
+            }, 1400);
           }
         }
       }
@@ -862,7 +869,12 @@ export function createRainEngine(
         hooks.showTown(TOWNS[townIdx].name); // 着いたまちの名前をそっと知らせる
       }
     }
-    mist += ((mistOn ? 1 : 0) - mist) * (1 - Math.pow(0.9965, dt));
+    mist += ((mistOn ? 1 : 0) - mist) * (1 - Math.pow(0.998, dt));
+    if (travelPending && mist >= 0.98) {
+      // 夜霧がまちをすっかり包んでから、次のまちへ動き出す
+      travelPending = false;
+      nextTown();
+    }
 
     // 曇りは初期の濃さを上限にじんわり戻る(全部拭いても30秒ほどで元どおり)
     fogRegrow += dt;
