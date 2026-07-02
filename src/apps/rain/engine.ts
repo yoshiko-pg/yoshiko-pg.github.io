@@ -714,8 +714,6 @@ export function createRainEngine(
   let litCount = 0,
     celebrated = false,
     fogRegrow = 0;
-  let flashA = 0,
-    thunderTimer = rnd(30000, 70000);
   function shortestAngle(a: number, b: number) {
     return Math.atan2(Math.sin(b - a), Math.cos(b - a));
   }
@@ -771,21 +769,6 @@ export function createRainEngine(
       if (L.cool > 0) L.cool -= dt;
       // 灯るときはぱっとではなく、ふわっと明るくなる
       if (L.stage >= 2 && L.glow < 1) L.glow = Math.min(1, L.glow + dt / 600);
-    }
-
-    // 遠くの雷:たまに空がほのかに二度またたいて、遅れて低い音が届く
-    thunderTimer -= dt;
-    if (thunderTimer < 0) {
-      thunderTimer = rnd(40000, 100000);
-      flashA = rnd(0.1, 0.18);
-      later(() => (flashA = Math.max(flashA, rnd(0.16, 0.26))), 130);
-      const far = rnd(0.8, 2.2); // 遠さのぶん音が遅れる
-      tone(52, 2.8, 0.09, "sine", 0.55, far, 0.5);
-      tone(38, 3.6, 0.07, "sine", 0.7, far + 0.25, 0.9);
-    }
-    if (flashA > 0) {
-      flashA *= Math.pow(0.994, dt);
-      if (flashA < 0.003) flashA = 0;
     }
 
     autoTimer -= dt;
@@ -1133,15 +1116,6 @@ export function createRainEngine(
   function render() {
     composeScene();
     ctx.drawImage(scene, 0, 0, scene.width, scene.height, 0, 0, W, H);
-    if (flashA > 0) {
-      // 空だけが光る:上端からすっと消えるグラデーション(街とは混ざらない)
-      const fh = H * 0.28;
-      const fg = ctx.createLinearGradient(0, 0, 0, fh);
-      fg.addColorStop(0, `rgba(190,215,245,${flashA})`);
-      fg.addColorStop(1, "rgba(190,215,245,0)");
-      ctx.fillStyle = fg;
-      ctx.fillRect(0, 0, W, fh);
-    }
 
     for (const s of stuck) {
       if (s.r < 6) drawDot(s.x, s.y, s.r, s.a, s.sq, s.rot);
