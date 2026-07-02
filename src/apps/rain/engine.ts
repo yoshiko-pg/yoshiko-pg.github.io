@@ -514,12 +514,10 @@ export function createRainEngine(
     tone(f, 1.8, 0.07, "sine", 0, 0.06);
   }
   function revealSound(i: number) {
-    // ランプが姿を見せる、ふわっと柔らかい音(灯る時と同じ音階の1オクターブ下)
-    const f =
-      (196 * Math.pow(2, PENTA[i % 5] / 12)) / (Math.floor(i / 5) % 2 ? 2 : 1);
-    // ゆっくり立ち上がる、わずかにうねる2音の重なり
-    tone(f, 1.3, 0.022, "sine", 0, 0, 0.4);
-    tone(f * 1.006, 1.3, 0.016, "sine", 0, 0.03, 0.5);
+    // ランプが姿を見せる、低くて柔らかいベース音(音階は灯る時と同じ)
+    const f = 98 * Math.pow(2, PENTA[i % 5] / 12);
+    tone(f, 1.6, 0.055, "sine", 0, 0, 0.05);
+    tone(f * 2, 0.9, 0.014, "sine", 0, 0, 0.06); // 倍音をうっすら重ねて輪郭を出す
   }
   function lampSound(i: number) {
     const f =
