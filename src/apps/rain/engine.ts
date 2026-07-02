@@ -47,6 +47,14 @@ interface TrailDot {
   a: number;
 }
 
+interface RainLine {
+  x: number;
+  y: number;
+  len: number;
+  spd: number;
+  a: number;
+}
+
 interface Slurp {
   x0: number;
   y0: number;
@@ -568,6 +576,9 @@ export function createRainEngine(
   }
   let autoMode = false;
 
+  /* ================= 窓の外に降る雨 ================= */
+  const rainLines: RainLine[] = [];
+
   /* ================= 雫 ================= */
   const stuck: Stuck[] = [],
     fallers: Faller[] = [];
@@ -850,6 +861,28 @@ export function createRainEngine(
     }
     mist += ((mistOn ? 1 : 0) - mist) * (1 - Math.pow(0.9965, dt));
 
+    // 窓の外に降る雨:雨脚とまちの気候で密度が変わる
+    const lineTarget = Math.round((8 + 30 * rainy) * TR.pace);
+    if (rainLines.length < lineTarget && Math.random() < 0.4)
+      rainLines.push({
+        x: rnd(-20, W + 20),
+        y: -rnd(30, 110),
+        len: rnd(26, 60),
+        spd: rnd(0.5, 0.85) * TR.fall,
+        a: rnd(0.04, 0.09),
+      });
+    for (let i = rainLines.length - 1; i >= 0; i--) {
+      const l = rainLines[i];
+      l.y += l.spd * dt;
+      if (l.y - l.len > H) {
+        if (rainLines.length > lineTarget) rainLines.splice(i, 1);
+        else {
+          l.y = -l.len - rnd(0, 80);
+          l.x = rnd(-20, W + 20);
+        }
+      }
+    }
+
     // 曇りは初期の濃さを上限にじんわり戻る(全部拭いても30秒ほどで元どおり)
     fogRegrow += dt;
     if (fogRegrow > 200) {
@@ -1101,6 +1134,16 @@ export function createRainEngine(
     for (const L of LIGHTS) {
       if (L.stage <= 0) continue;
       drawLamp(L.x, L.y, L);
+    }
+    // 窓の外に降る雨:遠くの雨は細くうっすら
+    scx.lineWidth = 1;
+    scx.lineCap = "round";
+    for (const l of rainLines) {
+      scx.strokeStyle = `rgba(190,215,235,${l.a})`;
+      scx.beginPath();
+      scx.moveTo(l.x, l.y - l.len);
+      scx.lineTo(l.x - l.len * 0.12, l.y);
+      scx.stroke();
     }
     if (wakeT >= 0) {
       // まちの目覚め:全部灯った瞬間、まち全体がゆっくり息を吸って吐く
