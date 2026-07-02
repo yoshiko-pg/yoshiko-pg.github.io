@@ -448,13 +448,13 @@ export function createRainEngine(
       master.connect(AC.destination);
       // 雨音BGM:録音した雨のループ、これひとつだけ
       const rg = AC.createGain();
-      rg.gain.value = 0.15; // 基準音量
+      rg.gain.value = 0.105; // 基準音量(ゆらぎ込みで0.09〜0.12)
       rg.connect(master);
       // 遠くなったり近くなったり、ゆるやかな強弱のゆらぎ
       const lfo = AC.createOscillator();
       lfo.frequency.value = 1 / 28; // 28秒でひとまわり
       const lfoDepth = AC.createGain();
-      lfoDepth.gain.value = 0.06;
+      lfoDepth.gain.value = 0.015;
       lfo.connect(lfoDepth);
       lfoDepth.connect(rg.gain);
       lfo.start();
