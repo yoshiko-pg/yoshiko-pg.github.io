@@ -11,6 +11,8 @@
 }
 
 :root {
+  --color-accent: #ff6b35;
+
   font-family:
     system-ui,
     -apple-system,
