@@ -516,8 +516,8 @@ export function createRainEngine(
   function revealSound(i: number) {
     // ランプが姿を見せる、低くて柔らかいベース音(音階は灯る時と同じ)
     const f = 98 * Math.pow(2, PENTA[i % 5] / 12);
-    tone(f, 1.6, 0.055, "sine", 0, 0, 0.05);
-    tone(f * 2, 0.9, 0.014, "sine", 0, 0, 0.06); // 倍音をうっすら重ねて輪郭を出す
+    tone(f, 1.6, 0.038, "sine", 0, 0, 0.05);
+    tone(f * 2, 0.9, 0.01, "sine", 0, 0, 0.06); // 倍音をうっすら重ねて輪郭を出す
   }
   function lampSound(i: number) {
     const f =
