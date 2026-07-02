@@ -1053,7 +1053,12 @@ export function createRainEngine(
     else if (L.stage >= 2) {
       const g = L.glow * (2 - L.glow);
       if (g < 1) lampDark(x, y, fade * (1 - g)); // グレーのランプからふわっと灯る
-      lampGlow(x, y, L.c, fade * g);
+      // それぞれ別の呼吸でごくわずかにまたたく
+      const flicker =
+        0.94 +
+        0.04 * Math.sin(last * 0.0011 + L.note * 2.1) +
+        0.02 * Math.sin(last * 0.0037 + L.note * 5.3);
+      lampGlow(x, y, L.c, fade * g * flicker);
     }
   }
   function composeScene() {
