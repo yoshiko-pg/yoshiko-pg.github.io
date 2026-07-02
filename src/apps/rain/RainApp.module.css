@@ -147,7 +147,8 @@
   text-align: center;
   font-size: 12.5px;
   letter-spacing: 0.3em;
-  opacity: 0.55;
+  color: #dceef7;
+  opacity: 0.75;
   pointer-events: none;
   transition: opacity 2.5s ease;
   z-index: 2;
