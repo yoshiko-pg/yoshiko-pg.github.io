@@ -794,7 +794,7 @@ export function createRainEngine(
       autoTimer =
         (autoMode ? rnd(700, 1900) : rnd(3000, 7000)) * (1.4 - 0.8 * rainy);
       breakFree(
-        rnd(W * 0.08, W * 0.92),
+        rnd(6, W - 6),
         rnd(-20, 40),
         autoMode ? rnd(6, 13) : rnd(7, 12),
         true,
