@@ -22,6 +22,7 @@ interface Light {
   c: string;
   stage: number;
   cool: number;
+  glow: number;
   note: number;
 }
 
@@ -356,7 +357,7 @@ export function createRainEngine(
       bgx.beginPath();
       bgx.arc(x, y, r, 0, 6.2832);
       bgx.fill();
-      LIGHTS.push({ x, y, c, stage: 0, cool: 0, note: i });
+      LIGHTS.push({ x, y, c, stage: 0, cool: 0, glow: 0, note: i });
     }
     for (let i = 0; i < 26; i++) {
       const x = Math.random() * W,
@@ -770,6 +771,8 @@ export function createRainEngine(
     }
     for (const L of LIGHTS) {
       if (L.cool > 0) L.cool -= dt;
+      // 灯るときはぱっとではなく、ふわっと明るくなる
+      if (L.stage >= 2 && L.glow < 1) L.glow = Math.min(1, L.glow + dt / 600);
     }
 
     // 遠くの雷:たまに空がほのかに二度またたいて、遅れて低い音が届く
@@ -908,7 +911,11 @@ export function createRainEngine(
   }
   function drawLamp(x: number, y: number, L: Light, fade = 1) {
     if (L.stage === 1) lampDark(x, y, fade);
-    else if (L.stage >= 2) lampGlow(x, y, L.c, fade);
+    else if (L.stage >= 2) {
+      const g = L.glow * (2 - L.glow);
+      if (g < 1) lampDark(x, y, fade * (1 - g)); // グレーのランプからふわっと灯る
+      lampGlow(x, y, L.c, fade * g);
+    }
   }
   function composeScene() {
     // 背景+あかり+曇り → 雫はこれを映す
