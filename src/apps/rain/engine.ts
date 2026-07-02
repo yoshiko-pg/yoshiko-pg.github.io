@@ -747,11 +747,11 @@ export function createRainEngine(
       if (townBlend >= 1) prevLights.length = 0; // 前のまちのあかりは見えなくなった
     }
 
-    // 曇りは初期の濃さを上限にゆっくり戻る
+    // 曇りは初期の濃さを上限にじんわり戻る(全部拭いても30秒ほどで元どおり)
     fogRegrow += dt;
     if (fogRegrow > 200) {
       fogRegrow = 0;
-      fgx.fillStyle = "rgba(148,174,190,.004)";
+      fgx.fillStyle = "rgba(148,174,190,.02)";
       fgx.fillRect(0, 0, W, H);
     }
     for (const L of LIGHTS) {
