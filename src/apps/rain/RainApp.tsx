@@ -89,11 +89,13 @@ function RainApp() {
           >
             <span className={styles.ic}>
               <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" />
-                <circle cx="12" cy="12" r="2.6" />
+                <path d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24" />
+                <path d="M9.2 15.4l-1.9 5" />
+                <path d="M13.7 15.4l-1.9 5" />
+                <path d="M18.2 15.4l-1.9 5" />
               </svg>
             </span>
-            <span className={styles.lbl}>雨がふる</span>
+            <span className={styles.lbl}>RAIN</span>
           </button>
           <button
             type="button"
