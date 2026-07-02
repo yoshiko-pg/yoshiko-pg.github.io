@@ -882,11 +882,12 @@ export function createRainEngine(
       nextTown();
     }
 
-    // 曇りは初期の濃さを上限にじんわり戻る(全部拭いても30秒ほどで元どおり)
+    // 曇りは初期の濃さを上限にじんわり戻る(本降りほど速く、こぬか雨はゆっくり)
     fogRegrow += dt;
     if (fogRegrow > 200) {
       fogRegrow = 0;
-      fgx.fillStyle = "rgba(148,174,190,.02)";
+      const fa = 0.02 * (0.4 + 1.2 * rainy); // 基準0.02(約30秒で元どおり)
+      fgx.fillStyle = `rgba(148,174,190,${fa})`;
       fgx.fillRect(0, 0, W, H);
     }
     for (const L of LIGHTS) {
