@@ -559,6 +559,32 @@ export function createRainEngine(
       tone(f, 2.4, 0.05, "sine", 0, i * 0.12),
     );
   }
+  function townSound() {
+    // まちの音:たまに遠くから、そのまちの気配だけが届く
+    switch (townIdx) {
+      case 0: // よるのまち:時計台の鐘がふたつ
+        tone(262, 2.8, 0.022, "sine", 0, 0, 0.02);
+        tone(524, 1.2, 0.006, "sine", 0, 0, 0.02);
+        tone(262, 2.8, 0.02, "sine", 0, 1.6, 0.02);
+        tone(524, 1.2, 0.005, "sine", 0, 1.6, 0.02);
+        break;
+      case 1: // みなとまち:遠い汽笛
+        tone(104, 2.6, 0.03, "triangle", 0.97, 0, 0.5);
+        tone(156, 2.6, 0.012, "triangle", 0.97, 0, 0.6);
+        break;
+      case 2: // ゆうぐれのまち:教会の鐘が下りてくる
+        tone(392, 2.2, 0.02, "sine", 0, 0, 0.02);
+        tone(784, 1, 0.006, "sine", 0, 0, 0.02);
+        tone(330, 2.6, 0.02, "sine", 0, 1.3, 0.02);
+        tone(660, 1.1, 0.005, "sine", 0, 1.3, 0.02);
+        break;
+      default: // ゆきのまち:そりの鈴
+        tone(1568, 0.5, 0.008, "sine", 0, 0, 0.008);
+        tone(1568, 0.5, 0.007, "sine", 0, 0.35, 0.008);
+        tone(1760, 0.6, 0.007, "sine", 0, 0.7, 0.008);
+        break;
+    }
+  }
   let autoMode = false;
 
   /* ================= 雫 ================= */
@@ -746,6 +772,7 @@ export function createRainEngine(
     celebrated = false,
     fogRegrow = 0,
     wakeT = -1; // まちの目覚め演出の経過時間(-1=なし)
+  let townVoiceTimer = rnd(90000, 150000);
   function shortestAngle(a: number, b: number) {
     return Math.atan2(Math.sin(b - a), Math.cos(b - a));
   }
@@ -813,6 +840,13 @@ export function createRainEngine(
     if (wakeT >= 0) {
       wakeT += dt;
       if (wakeT > 3600) wakeT = -1;
+    }
+
+    // まちの音:2〜3分に一度だけ、移動中でなければ
+    townVoiceTimer -= dt;
+    if (townVoiceTimer < 0) {
+      townVoiceTimer = rnd(120000, 180000);
+      if (townBlend >= 1) townSound();
     }
 
     autoTimer -= dt;
