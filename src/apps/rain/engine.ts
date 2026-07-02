@@ -516,6 +516,7 @@ export function createRainEngine(
     if (AC.state === "suspended") void AC.resume();
     return AC;
   }
+  const SE_GAIN = 1.2; // 効果音全体の音量係数(BGMには掛からない)
   function tone(
     freq: number,
     dur: number,
@@ -534,7 +535,7 @@ export function createRainEngine(
     o.frequency.setValueAtTime(freq, t);
     if (glide) o.frequency.exponentialRampToValueAtTime(freq * glide, t + dur);
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(vol, t + atk);
+    g.gain.linearRampToValueAtTime(vol * SE_GAIN, t + atk);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     o.connect(g);
     g.connect(master!);
