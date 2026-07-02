@@ -35,21 +35,16 @@ function RainApp() {
         setHintFaded(true);
       },
       showTown(name) {
-        // タイトルがふわっと街名になり、しばらくしてRAIN.に戻る
+        // タイトルがふわっと今いる街の名前になる
         titleTimers.current.forEach(clearTimeout);
         titleTimers.current = [];
-        const push = (fn: () => void, ms: number) =>
-          titleTimers.current.push(window.setTimeout(fn, ms));
         setTitleFaded(true);
-        push(() => {
-          setTitle(name);
-          setTitleFaded(false);
-        }, 1000);
-        push(() => setTitleFaded(true), 7000);
-        push(() => {
-          setTitle("RAIN.");
-          setTitleFaded(false);
-        }, 8000);
+        titleTimers.current.push(
+          window.setTimeout(() => {
+            setTitle(name);
+            setTitleFaded(false);
+          }, 1000),
+        );
       },
     });
     engineRef.current = engine;
