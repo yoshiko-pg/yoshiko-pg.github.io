@@ -1,0 +1,166 @@
+@import url("https://fonts.googleapis.com/css2?family=Marcellus&display=swap");
+
+.root,
+.root * {
+  box-sizing: border-box;
+}
+
+.root {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #0a1018;
+  font-family:
+    "Marcellus", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+  color: #a9c3d2;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.stage {
+  position: fixed;
+  inset: 0;
+  touch-action: none;
+  display: block;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  opacity: 0.8;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+  transition: opacity 0.9s ease;
+}
+
+.title.fade {
+  opacity: 0;
+}
+
+.btns {
+  pointer-events: auto;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.ctl {
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #a9c3d2;
+
+  & .ic {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(169, 195, 210, 0.08);
+    border: 1px solid rgba(169, 195, 210, 0.28);
+    backdrop-filter: blur(6px);
+    transition:
+      background 0.6s ease,
+      border-color 0.6s ease,
+      box-shadow 0.6s ease,
+      opacity 0.6s ease;
+  }
+
+  & svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  & .lbl {
+    font-size: 10.5px;
+    letter-spacing: 0.26em;
+    opacity: 0.6;
+    transition: opacity 0.6s ease;
+  }
+
+  &:hover {
+    border-color: transparent;
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:focus-visible .ic {
+    outline: 2px solid #dceef7;
+    outline-offset: 2px;
+  }
+}
+
+.ctl.on {
+  /* ながめる中:あかりのように灯る */
+  & .ic {
+    background: rgba(255, 214, 150, 0.14);
+    border-color: rgba(255, 220, 170, 0.55);
+    box-shadow: 0 0 16px rgba(255, 214, 150, 0.28);
+    color: #ffe9c9;
+  }
+
+  & .lbl {
+    opacity: 0.85;
+    color: #ffe9c9;
+  }
+}
+
+.ctl.dim {
+  & .ic {
+    opacity: 0.4;
+  }
+
+  & .lbl {
+    opacity: 0.35;
+  }
+}
+
+.hint {
+  position: fixed;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 12.5px;
+  letter-spacing: 0.3em;
+  color: #dceef7;
+  opacity: 0.75;
+  pointer-events: none;
+  transition: opacity 2.5s ease;
+  z-index: 2;
+  line-height: 2.2;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+}
+
+.hint.fade {
+  opacity: 0;
+}

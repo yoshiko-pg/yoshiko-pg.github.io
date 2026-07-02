@@ -29,5 +29,11 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
     },
-  }
+  },
+  {
+    files: ["script/**/*.ts"],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 );

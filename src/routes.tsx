@@ -29,6 +29,12 @@ export const router = createBrowserRouter([
         path: "talks/:slug/",
         element: <TalkDetail />,
       },
+      {
+        path: "apps/rain",
+        lazy: async () => ({
+          Component: (await import("./apps/rain/RainApp")).default,
+        }),
+      },
     ],
   },
 ]);
