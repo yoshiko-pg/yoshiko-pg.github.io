@@ -638,7 +638,6 @@
         }
         function plopSound(r, x) {
           // 落ちた場所で音程が変わる(左が低く右が高く)
-          tone(430 - r * 2.2, 0.16, 0.13, "sine", 0.5);
           const idx = Math.max(0, Math.min(4, Math.floor((x / W) * 5)));
           const f = 196 * Math.pow(2, PENTA[idx] / 12) * (r > 34 ? 1 : 2); // 大きい雫は低め
           tone(f, 1.8, 0.07, "sine", 0, 0.06);
