@@ -1,825 +1,1307 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>RAIN.</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet">
-<style>
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%;overflow:hidden;background:#0a1018}
-  body{font-family:"Marcellus","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;color:#a9c3d2}
-  #stage{position:fixed;inset:0;touch-action:none;display:block}
-  header{
-    position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;
-    align-items:center;padding:16px 20px;pointer-events:none;z-index:2;
-  }
-  h1{font-size:18px;font-weight:400;letter-spacing:.14em;opacity:.8;text-shadow:0 1px 8px rgba(0,0,0,.6)}
-  .count{font-size:12px;letter-spacing:.25em;opacity:.65;font-variant-numeric:tabular-nums}
-  .btns{pointer-events:auto;display:flex;gap:14px;align-items:center}
-  .ctl{
-    background:none;border:none;padding:0;cursor:pointer;font-family:inherit;
-    display:flex;flex-direction:column;align-items:center;gap:4px;color:#a9c3d2;
-  }
-  .ctl .ic{
-    width:38px;height:38px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    background:rgba(169,195,210,.08);border:1px solid rgba(169,195,210,.28);
-    backdrop-filter:blur(6px);
-    transition:background .6s ease,border-color .6s ease,box-shadow .6s ease,opacity .6s ease;
-  }
-  .ctl svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-  .ctl .lbl{font-size:10.5px;letter-spacing:.26em;opacity:.6;transition:opacity .6s ease}
-  .ctl.on .ic{ /* ながめる中:あかりのように灯る */
-    background:rgba(255,214,150,.14);border-color:rgba(255,220,170,.55);
-    box-shadow:0 0 16px rgba(255,214,150,.28);color:#ffe9c9;
-  }
-  .ctl.on .lbl{opacity:.85;color:#ffe9c9}
-  .ctl.dim .ic{opacity:.4}
-  .ctl.dim .lbl{opacity:.35}
-  .ctl:focus-visible .ic{outline:2px solid #dceef7;outline-offset:2px}
-  #hint{
-    position:fixed;bottom:30px;left:0;right:0;text-align:center;font-size:12.5px;
-    letter-spacing:.3em;opacity:.55;pointer-events:none;transition:opacity 2.5s ease;
-    z-index:2;line-height:2.2;text-shadow:0 1px 8px rgba(0,0,0,.8);
-  }
-  #hint.fade{opacity:0}
-</style>
-</head>
-<body>
-<canvas id="stage" aria-label="雨の日の窓ガラス。なぞって雫を集める画面"></canvas>
-<header>
-  <h1>RAIN.</h1>
-  <div class="btns">
-    <button id="auto" class="ctl" aria-pressed="false" aria-label="オートモード切替">
-      <span class="ic">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/>
-          <circle cx="12" cy="12" r="2.6"/>
-        </svg>
-      </span>
-      <span class="lbl">AUTO</span>
-    </button>
-    <button id="mute" class="ctl" aria-pressed="false" aria-label="音の切替">
-      <span class="ic">
-        <svg id="icSndOn" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/>
-          <path d="M15.5 9a4.2 4.2 0 0 1 0 6"/>
-          <path d="M17.8 7a7.2 7.2 0 0 1 0 10"/>
-        </svg>
-        <svg id="icSndOff" viewBox="0 0 24 24" aria-hidden="true" style="display:none">
-          <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/>
-          <path d="M15.5 9.5l5 5M20.5 9.5l-5 5"/>
-        </svg>
-      </span>
-      <span class="lbl">SOUND</span>
-    </button>
-  </div>
-</header>
-<div id="hint">しずくに ふれて つれていって<br>おもくなると ひとりでに おちる</div>
-
-<script>
-(() => {
-"use strict";
-const cv=document.getElementById("stage");
-const ctx=cv.getContext("2d");
-const hintEl=document.getElementById("hint");
-const countEl=document.getElementById("count");
-const muteBtn=document.getElementById("mute");
-const PI=Math.PI;
-
-let W=0,H=0,DPR=1;
-const bg=document.createElement("canvas"),   bgx=bg.getContext("2d");
-const fog=document.createElement("canvas"),  fgx=fog.getContext("2d");   // 曇りマスク
-const scene=document.createElement("canvas"),scx=scene.getContext("2d"); // 背景+あかり+曇りの合成
-const FOGA=.15; // 曇りの最大濃度(初期値=上限)
-const LIGHTS=[];
-
-/* ---------- まち(全部灯すと次のまちへ) ---------- */
-const TOWNS=[
- {name:"よるのまち",
-  base:["#0a1220","#0d1826","#16202e"],
-  lights:[
-   [.16,.72,.30,"255,190,110",.30],[.34,.80,.22,"255,160, 90",.22],
-   [.55,.68,.34,"120,200,215",.20],[.74,.78,.26,"255,205,130",.26],
-   [.88,.62,.20,"170,150,220",.14],[.08,.50,.18,"120,190,210",.12],
-   [.45,.55,.16,"255,235,180",.10],[.65,.88,.30,"255,150, 80",.18],
-   [.25,.60,.12,"200,230,255",.08],[.93,.85,.22,"140,210,200",.16]],
-  spark:["255,210,140","150,215,225"]},
- {name:"みなとまち",
-  base:["#071018","#0a1d24","#0e2a30"],
-  lights:[
-   [.12,.78,.26,"120,225,210",.26],[.30,.66,.30,"90,190,230",.22],
-   [.50,.84,.22,"255,230,170",.20],[.68,.70,.28,"110,210,190",.24],
-   [.86,.80,.24,"140,200,255",.18],[.06,.58,.16,"180,240,230",.12],
-   [.42,.56,.14,"220,245,255",.10],[.60,.90,.26,"90,170,210",.16],
-   [.78,.55,.14,"170,230,220",.10],[.94,.66,.18,"120,190,230",.14]],
-  spark:["190,240,230","140,200,240"]},
- {name:"ゆうぐれのまち",
-  base:["#1a0f1e","#2a1626","#3a1e2a"],
-  lights:[
-   [.14,.70,.30,"255,150,120",.28],[.32,.82,.24,"255,120, 90",.22],
-   [.52,.66,.32,"255,180,200",.18],[.72,.78,.26,"255,200,120",.24],
-   [.90,.64,.20,"230,140,190",.16],[.08,.52,.16,"255,170,150",.12],
-   [.44,.54,.14,"255,220,180",.10],[.64,.88,.28,"255,130,110",.18],
-   [.24,.62,.12,"255,190,210",.08],[.94,.84,.20,"250,160,140",.14]],
-  spark:["255,190,150","255,160,190"]},
- {name:"ゆきのまち",
-  base:["#0d141f","#141e2c","#1d2938"],
-  lights:[
-   [.15,.74,.28,"200,225,255",.24],[.33,.80,.22,"235,240,255",.18],
-   [.53,.68,.30,"170,210,250",.18],[.73,.78,.24,"255,240,210",.20],
-   [.89,.62,.18,"190,215,245",.14],[.07,.54,.16,"210,230,255",.10],
-   [.45,.56,.14,"240,245,255",.08],[.63,.88,.26,"200,220,255",.16],
-   [.25,.60,.12,"225,235,255",.08],[.93,.84,.20,"210,235,255",.14]],
-  spark:["240,245,255","190,215,250"]},
-];
-const TRAVEL_TEXTS=[
- "せんろの つなぎめを かぞえる おと",
- "とんねるの かぜが まどを たたいた",
- "あまつぶが よこに ながれていく",
- "とおくの てっきょうを わたる おと",
- "くらやみに でんちゅうが ひとつずつ",
- "だれも いない ホームを とおりすぎた",
- "あめの においが こくなってきた",
- "まどの くもりに ゆびの あとが のこっている",
- "かさを わすれた ひとの はしる おと",
- "しんごうの あかが あめに にじむ",
- "よふけの かもつれっしゃと すれちがう",
- "たんぼの みずが そらを うつしている",
- "どこかで ふみきりが なりやんだ",
- "やまの むこうで かみなりが ひとつ",
- "あめあしが つよくなって よわくなった",
- "しらない かわを わたった",
- "ぬれた アスファルトの ひかりが ながれる",
- "くさはらの あめは やわらかい おとがする",
- "バスていに ひとりぶんの かさの あと",
- "でんせんに あまつぶが ならんでいる",
- "といの みずが うたみたいに きこえる",
- "とりが ひくいところを とんでいった",
- "こうじょうの ゆげが あめに とけていく",
- "じはんきの ひかりだけが おきていた",
- "なまえの ない えきを とおりすぎた",
- "うみの ほうから しおの におい",
- "きりの なかで おとが まるくなる",
- "ちいさな はしの したで あめやどりの かげ",
- "よるの プールに あめが ふっている",
- "だれかの くちぶえが とぎれて きえた",
- "あめは やねごとに ちがう おとで なる",
- "マンホールの まるが ひかっている",
- "こうさてんで かさが すれちがう",
- "のきさきの すずめが みじろぎ ひとつ",
- "ゆうやけの いろが みずたまりに しずむ",
- "コインランドリーの まるい まどが まわる",
- "でんしゃの まどに ひたいを あてる ひと",
- "かんばんの もじが ひとつだけ きえている",
- "こうえんの ブランコが ひとりでに ゆれた",
- "あめどいを のぼる みずの こえ",
- "やおやの ひさしから しずくが ひとすじ",
- "とけいだいが ぬれて ふかい いろに なる",
- "さかみちを みずが えらんで ながれる",
- "しょうてんがいの アーケードに あめの こだま",
- "だれかが ながぐつを ほめられていた",
- "ふるい ポストが あめに うたれている",
- "せんたくものを とりこむ おとが した",
- "こんびにの ひかりが みちを しかくく きる",
- "わすれられた かさが かべに もたれている",
- "すいどうかんの なかを とおる みずの うわさ",
- "よるの がっこうは あめの おとだけ",
- "プラットホームの はしで ひかりが たまる",
- "タクシーの ワイパーが ふたつ うなずく",
- "はとが のきしたで じゅんばんを まっている",
- "かわらやねを あめが かぞえて あるく",
- "こうばんの まえで かさが ひらいた",
- "みずたまりが そらの つづきに なっている",
- "えんとつの けむりが あめに おされて ひくい",
- "しらない いえの ゆうげの におい",
- "じてんしゃの ベルが とおくで ひとつ",
- "でんちゅうの ひかりに あめが むらがる",
- "かんばんねこの せとものが ぬれて つやつや",
- "ちかみちの トンネルで おとが ふとる",
- "かえりみちの ひとの かげが ながい",
- "やたいの ちょうちんが ひとつ ともった",
- "うらどおりの みずたまりを またぐ あしおと",
- "ビニールがさに あめの つぶが おどる",
- "こうしゃの チャイムが あめに とけた",
- "つりばしの ロープが しずくを ならべる",
- "ゆきの においが まじりはじめた",
- "ストーブの けむりが よこに ながれる",
- "くつしたの まま まどべに たつ ひと",
- "じどうはんばいきが つりせんを かんがえている",
- "よぞらの すみが すこし あかるい",
- "かもめが てすりで あめやどり",
- "ふねの ひかりが なみに きざまれる",
- "とだなの おくで コップが なる いえ",
- "おんがくしつから ピアノが ひとおと",
- "かいだんの おどりばに まるい ひかり",
- "だれかの でんわの こえが やさしかった",
- "あめの ひは とけいが ゆっくり すすむ",
- "かさたての なかで かさが やすんでいる",
- "まちの ちずには ない ほそい みち",
- "やねの うえを ひかりが すべっていく",
- "こうしゅうでんわが ひかっていた",
- "せんろわきの あじさいが おもたい",
- "ゆうびんうけに あめが すこし はいった",
- "ガードしたで おとが ひとまわり おおきい",
- "しんぶんはいたつの カブが みずを はねた",
- "よるの としょかんの まどが ひとつ あかるい",
- "かいだんを おりる ながぐつの リズム",
- "とおくの かんらんしゃが ゆっくり ひかる",
- "あめの むこうで まちが にじんで ひとつに なる",
- "こうそくどうろの おとが うみに にている",
- "だれかが ドアを そっと しめた",
- "すべりだいに あまみずの みち",
- "ろじうらの きんもくせいが つよく におう",
- "でんきやの テレビが みんな おなじ ゆめ",
- "かわの おもてを あめが けずっていく",
- "はしの したの こえは よく ひびく",
- "ひさしぶりの ほしが ひとつ みえた",
- "せんろが ぬれて ぎんいろに なる",
- "パーキングの ライトが じゅんばんに ねむる",
- "ふうりんが ひとこと だけ いった",
- "あめがっぱの こどもが かけていった",
- "こうえんの すなばに ちいさな みずうみ",
- "まどガラスの むこうと こちらの おんど",
- "バケツが いっぱいに なる おとで めが さめる",
- "とりいの あかが あめで ふかく なる",
- "うちがわから くもりを ふく てのひら",
- "しんやの スーパーに かごが ひとつ",
- "かみなりの あとの しずけさが ながい",
- "みちの さきが きりに つつまれて まっしろ",
- "のらいぬが のきしたで まるく なる",
- "こうじげんばの ブルーシートが うたう",
- "つきが くもの うすいところを えらぶ",
- "ふとんの なかから きく あめは べつの おと",
- "すいぞくかんの まえで うみの ゆめを みる",
- "ネオンの みどりが みずたまりで およぐ",
- "だれも みていない はなびが あがった",
- "やまの えきは あめの おとが ちかい",
- "かいそくでんしゃが かぜを おいていった",
- "こうちゃの ゆげと まどの くもり",
- "くだりざかの みずが さきを いそぐ",
- "しめった ダンボールの におい",
- "まよなかの こうしゃてんの ひかりが またたく",
- "あめの ひの えんそくの バス",
- "ちいさな みせの のれんが おもい",
- "かえるの こえが ひとつ ふえた",
- "あさが ちかい いろの あめに なった",
-];
-const WAKE_TEXTS=[
- "まちが めを さました",
- "だれかが カーテンを あけた",
- "こんやは みんな おきている",
- "とおくで だれかが わらった",
- "ゆうびんやが じてんしゃで かけていく",
- "パンやの かまどに ひが はいった",
- "ふろやの えんとつから けむりが たつ",
- "ふみきりの おとが きこえる",
- "まちじゅうの やかんが なきだした",
- "きょうも だれかの いえに あかりが ともる",
-];
-const pick=a=>a[Math.floor(Math.random()*a.length)];
-let FLAVORS=null; // WAKE_TEXTSとTRAVEL_TEXTSを合わせたもの(初回に生成)
-let townIdx=0, townBlend=1; // 1=切替完了
-let prevLights=[];          // 流れていく前のまちのあかり
-const bgPrev=document.createElement("canvas"), bpx=bgPrev.getContext("2d");
-
-function paintBackground(){
-  const T=TOWNS[townIdx];
-  bg.width=W*DPR; bg.height=H*DPR;
-  bgx.setTransform(DPR,0,0,DPR,0,0);
-  const base=bgx.createLinearGradient(0,0,0,H);
-  base.addColorStop(0,T.base[0]); base.addColorStop(.55,T.base[1]); base.addColorStop(1,T.base[2]);
-  bgx.fillStyle=base; bgx.fillRect(0,0,W,H);
-  LIGHTS.length=0;
-  // あかりの場所は毎回ランダム(近すぎる配置は避ける)
-  const NLIGHTS=12, minD=Math.min(W,H)*.18, placed=[];
-  for(let i=0;i<NLIGHTS;i++){
-    const [,,pr,c,a]=T.lights[i%T.lights.length];
-    let x,y,tries=0;
-    do{
-      x=(.06+Math.random()*.88)*W;
-      y=(.32+Math.random()*.58)*H;
-      tries++;
-    }while(tries<60 && placed.some(p=>Math.hypot(p[0]-x,p[1]-y)<minD));
-    placed.push([x,y]);
-    const r=pr*Math.max(W,H);
-    const g=bgx.createRadialGradient(x,y,0,x,y,r);
-    g.addColorStop(0,`rgba(${c},${a})`); g.addColorStop(.5,`rgba(${c},${a*.4})`);
-    g.addColorStop(1,`rgba(${c},0)`);
-    bgx.fillStyle=g; bgx.beginPath(); bgx.arc(x,y,r,0,6.2832); bgx.fill();
-    LIGHTS.push({x,y,c,stage:0,cool:0,decayT:0,note:i});
-  }
-  for(let i=0;i<26;i++){
-    const x=Math.random()*W, y=H*(.35+Math.random()*.55), r=4+Math.random()*14;
-    const c=T.spark[Math.random()<.7?0:1];
-    const g=bgx.createRadialGradient(x,y,0,x,y,r*3);
-    g.addColorStop(0,`rgba(${c},.20)`); g.addColorStop(1,`rgba(${c},0)`);
-    bgx.fillStyle=g; bgx.beginPath(); bgx.arc(x,y,r*3,0,6.2832); bgx.fill();
-  }
-  const vig=bgx.createLinearGradient(0,0,0,H);
-  vig.addColorStop(0,"rgba(4,8,14,.55)"); vig.addColorStop(.45,"rgba(4,8,14,.15)");
-  vig.addColorStop(1,"rgba(4,8,14,.30)");
-  bgx.fillStyle=vig; bgx.fillRect(0,0,W,H);
-}
-function nextTown(){ // 今の景色を残したまま、次のまちへゆっくり明け渡す
-  prevLights=LIGHTS.map(L=>({...L})); // あかりは灯ったまま景色と一緒に流れていく
-  bgPrev.width=bg.width; bgPrev.height=bg.height;
-  bpx.setTransform(1,0,0,1,0,0);
-  bpx.drawImage(bg,0,0);
-  townIdx=(townIdx+1)%TOWNS.length;
-  paintBackground();          // LIGHTSも新しいまちのものに
-  litCount=0; celebrated=false; updateLampUI();
-  townBlend=0;
-}
-function paintFog(){ // マスク:不透明=曇り最大。増えてもここが上限
-  fog.width=W*DPR; fog.height=H*DPR;
-  fgx.setTransform(DPR,0,0,DPR,0,0);
-  fgx.fillStyle="rgb(148,174,190)"; fgx.fillRect(0,0,W,H);
-}
-function wipeFog(x,y,r,strength){
-  fgx.save();
-  fgx.globalCompositeOperation="destination-out";
-  const g=fgx.createRadialGradient(x,y,0,x,y,r);
-  g.addColorStop(0,`rgba(0,0,0,${strength})`); g.addColorStop(1,"rgba(0,0,0,0)");
-  fgx.fillStyle=g; fgx.beginPath(); fgx.arc(x,y,r,0,6.2832); fgx.fill();
-  fgx.restore();
-}
-function resize(){
-  DPR=Math.min(window.devicePixelRatio||1,1.5);
-  W=window.innerWidth; H=window.innerHeight;
-  cv.width=W*DPR; cv.height=H*DPR;
-  cv.style.width=W+"px"; cv.style.height=H+"px";
-  ctx.setTransform(DPR,0,0,DPR,0,0);
-  scene.width=W*DPR; scene.height=H*DPR;
-  scx.setTransform(DPR,0,0,DPR,0,0);
-  townBlend=1; // リサイズ時は移り変わりを打ち切る
-  paintBackground(); paintFog();
-}
-window.addEventListener("resize",resize); resize();
-
-/* ================= 音 ================= */
-let AC=null,master=null,muted=false;
-const PENTA=[0,2,4,7,9];
-function ac(){
-  if(!AC){
-    AC=new (window.AudioContext||window.webkitAudioContext)();
-    master=AC.createGain(); master.gain.value=.55; master.connect(AC.destination);
-    // 雨音:遠くの雨のごうごう、これひとつだけ
-    const len=AC.sampleRate*2, buf=AC.createBuffer(1,len,AC.sampleRate);
-    const ch=buf.getChannelData(0); let l=0;
-    for(let i=0;i<len;i++){ l=l*.97+(Math.random()*2-1)*.03; ch[i]=l*3; }
-    const src=AC.createBufferSource(); src.buffer=buf; src.loop=true;
-    const lp=AC.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=700;
-    const rg=AC.createGain(); rg.gain.value=.16;
-    src.connect(lp); lp.connect(rg); rg.connect(master); src.start();
-  }
-  if(AC.state==="suspended") AC.resume();
-  return AC;
-}
-function tone(freq,dur,vol,type="sine",glide=0,delay=0,atk=.012){
-  if(muted)return;
-  const a=ac(),t=a.currentTime+delay;
-  const o=a.createOscillator(),g=a.createGain();
-  o.type=type; o.frequency.setValueAtTime(freq,t);
-  if(glide) o.frequency.exponentialRampToValueAtTime(freq*glide,t+dur);
-  g.gain.setValueAtTime(0,t);
-  g.gain.linearRampToValueAtTime(vol,t+atk);
-  g.gain.exponentialRampToValueAtTime(.0001,t+dur);
-  o.connect(g); g.connect(master); o.start(t); o.stop(t+dur+.05);
-}
-let lastTick=0;
-function tickSound(r){
-  const now=performance.now();
-  if(now-lastTick<80) return; lastTick=now;
-  tone(620-r*4+Math.random()*60, .05, .014, "sine", .7);
-}
-function slipSound(){ tone(300,.32,.035,"sine",.5); }
-function plopSound(r,x){ // 落ちた場所で音程が変わる(左が低く右が高く)
-  tone(430-r*2.2, .16, .13, "sine", .5);
-  const idx=Math.max(0,Math.min(4,Math.floor(x/W*5)));
-  const f=196*Math.pow(2,PENTA[idx]/12)*(r>34?1:2); // 大きい雫は低め
-  tone(f,1.8,.07,"sine",0,.06);
-}
-function revealSound(){ // ランプが姿を見せる、ひそやかな音
-  tone(233,.4,.028,"sine",.8);
-}
-function lampSound(i){
-  const f=392*Math.pow(2,PENTA[i%5]/12)/((Math.floor(i/5)%2)?2:1);
-  tone(f,1.4,.06,"sine");
-  tone(f*2,.7,.02,"sine",0,.03);
-}
-function chordSound(){
-  [262,392,523,659].forEach((f,i)=>tone(f,2.4,.05,"sine",0,i*.12));
-}
-muteBtn.addEventListener("click",()=>{
-  muted=!muted;
-  if(master) master.gain.value=muted?0:.55;
-  muteBtn.classList.toggle("dim",muted);
-  document.getElementById("icSndOn").style.display = muted?"none":"";
-  document.getElementById("icSndOff").style.display = muted?"":"none";
-  muteBtn.setAttribute("aria-pressed",String(muted));
-});
-const autoBtn=document.getElementById("auto");
-let autoMode=false;
-autoBtn.addEventListener("click",()=>{
-  ac();
-  autoMode=!autoMode;
-  autoBtn.classList.toggle("on",autoMode);
-  autoBtn.setAttribute("aria-pressed",String(autoMode));
-  if(autoMode) autoTimer=0; // すぐ降り始める
-});
-
-/* ================= 雫 ================= */
-const stuck=[], fallers=[];
-const TARGET=210, INITIAL=88, BASE_R=7; // 最初はまばら、雨で増えていく
-let BREAK_R=15;       // 落下サイズは以前の7割
-let dropped=0;
-const rnd=(a,b)=>a+Math.random()*(b-a);
-
-function randR(){ // たまに大粒も混ざる
-  const q=Math.random();
-  return q<.76 ? rnd(1.6,5.2) : q<.93 ? rnd(6,9.5) : rnd(10,16);
-}
-function spawnStuck(x,y,r,fade){
-  const nx=x??rnd(6,W-6), ny=y??rnd(60,H-10), nr=r??randR();
-  // 同じ場所に降ったら、そこにある雫と合体する(指で集める時と同じ)
-  for(let i=0;i<stuck.length;i++){
-    const s=stuck[i];
-    if(Math.hypot(s.x-nx,s.y-ny) < s.r*.92 + nr){
-      s.r=Math.min(50, Math.sqrt(s.r*s.r + nr*nr*.95));
-      if(s.r>=BREAK_R){ // 重くなりすぎたら、ひとりでに流れ出す
-        stuck.splice(i,1);
-        breakFree(s.x,s.y,s.r,true);
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>RAIN.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
       }
-      return;
-    }
-  }
-  stuck.push({
-    x:nx, y:ny, r:nr,
-    a:fade?0:1, tail:rnd(.4,1.1),
-    sq:rnd(.88,1.12), rot:rnd(-.3,.3)
-  });
-}
-for(let i=0;i<INITIAL;i++) spawnStuck();
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+        background: #0a1018;
+      }
+      body {
+        font-family:
+          "Marcellus", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP",
+          serif;
+        color: #a9c3d2;
+      }
+      #stage {
+        position: fixed;
+        inset: 0;
+        touch-action: none;
+        display: block;
+      }
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        pointer-events: none;
+        z-index: 2;
+      }
+      h1 {
+        font-size: 18px;
+        font-weight: 400;
+        letter-spacing: 0.14em;
+        opacity: 0.8;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+      }
+      .count {
+        font-size: 12px;
+        letter-spacing: 0.25em;
+        opacity: 0.65;
+        font-variant-numeric: tabular-nums;
+      }
+      .btns {
+        pointer-events: auto;
+        display: flex;
+        gap: 14px;
+        align-items: center;
+      }
+      .ctl {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        font-family: inherit;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #a9c3d2;
+      }
+      .ctl .ic {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(169, 195, 210, 0.08);
+        border: 1px solid rgba(169, 195, 210, 0.28);
+        backdrop-filter: blur(6px);
+        transition:
+          background 0.6s ease,
+          border-color 0.6s ease,
+          box-shadow 0.6s ease,
+          opacity 0.6s ease;
+      }
+      .ctl svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .ctl .lbl {
+        font-size: 10.5px;
+        letter-spacing: 0.26em;
+        opacity: 0.6;
+        transition: opacity 0.6s ease;
+      }
+      .ctl.on .ic {
+        /* ながめる中:あかりのように灯る */
+        background: rgba(255, 214, 150, 0.14);
+        border-color: rgba(255, 220, 170, 0.55);
+        box-shadow: 0 0 16px rgba(255, 214, 150, 0.28);
+        color: #ffe9c9;
+      }
+      .ctl.on .lbl {
+        opacity: 0.85;
+        color: #ffe9c9;
+      }
+      .ctl.dim .ic {
+        opacity: 0.4;
+      }
+      .ctl.dim .lbl {
+        opacity: 0.35;
+      }
+      .ctl:focus-visible .ic {
+        outline: 2px solid #dceef7;
+        outline-offset: 2px;
+      }
+      #hint {
+        position: fixed;
+        bottom: 30px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 12.5px;
+        letter-spacing: 0.3em;
+        opacity: 0.55;
+        pointer-events: none;
+        transition: opacity 2.5s ease;
+        z-index: 2;
+        line-height: 2.2;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+      }
+      #hint.fade {
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas
+      id="stage"
+      aria-label="雨の日の窓ガラス。なぞって雫を集める画面"
+    ></canvas>
+    <header>
+      <h1>RAIN.</h1>
+      <div class="btns">
+        <button
+          id="auto"
+          class="ctl"
+          aria-pressed="false"
+          aria-label="オートモード切替"
+        >
+          <span class="ic">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" />
+              <circle cx="12" cy="12" r="2.6" />
+            </svg>
+          </span>
+          <span class="lbl">AUTO</span>
+        </button>
+        <button
+          id="mute"
+          class="ctl"
+          aria-pressed="false"
+          aria-label="音の切替"
+        >
+          <span class="ic">
+            <svg id="icSndOn" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z" />
+              <path d="M15.5 9a4.2 4.2 0 0 1 0 6" />
+              <path d="M17.8 7a7.2 7.2 0 0 1 0 10" />
+            </svg>
+            <svg
+              id="icSndOff"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              style="display: none"
+            >
+              <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z" />
+              <path d="M15.5 9.5l5 5M20.5 9.5l-5 5" />
+            </svg>
+          </span>
+          <span class="lbl">SOUND</span>
+        </button>
+      </div>
+    </header>
+    <div id="hint">
+      しずくに ふれて つれていって<br />おもくなると ひとりでに おちる
+    </div>
 
-const collector={active:false,x:0,y:0,px:0,py:0,vx:0,vy:0,rot:0,r:BASE_R,wob:0,wobA:0,speed:0};
+    <script>
+      (() => {
+        "use strict";
+        const cv = document.getElementById("stage");
+        const ctx = cv.getContext("2d");
+        const hintEl = document.getElementById("hint");
+        const countEl = document.getElementById("count");
+        const muteBtn = document.getElementById("mute");
+        const PI = Math.PI;
 
-function absorbInto(t,silent){
-  let got=false;
-  for(let i=stuck.length-1;i>=0;i--){
-    const s=stuck[i];
-    if(Math.hypot(t.x-s.x,t.y-s.y) < t.r*.92 + s.r){
-      t.r=Math.min(50, Math.sqrt(t.r*t.r + s.r*s.r*.95));
-      stuck.splice(i,1);
-      if(!silent) tickSound(t.r); // 音が鳴るのは指で集めた時だけ
-      got=true;
-    }
-  }
-  return got;
-}
-function breakFree(x,y,r,silent){
-  fallers.push({x,y,r,vy:rnd(.15,.35),sway:Math.random()*6.28,trail:[],lastTrail:0});
-  if(!silent){ slipSound(); if(navigator.vibrate) navigator.vibrate([8,50,12]); }
-}
+        let W = 0,
+          H = 0,
+          DPR = 1;
+        const bg = document.createElement("canvas"),
+          bgx = bg.getContext("2d");
+        const fog = document.createElement("canvas"),
+          fgx = fog.getContext("2d"); // 曇りマスク
+        const scene = document.createElement("canvas"),
+          scx = scene.getContext("2d"); // 背景+あかり+曇りの合成
+        const FOGA = 0.15; // 曇りの最大濃度(初期値=上限)
+        const LIGHTS = [];
 
-/* ================= 入力 ================= */
-let hintShown=true;
-const pointer={down:false,x:0,y:0};
-function sag(){ return 14 + collector.r*.5; }
-function tryGrab(x,y){ // 触れた場所に雫があれば掴む。なければ何も起きない
-  for(let i=stuck.length-1;i>=0;i--){
-    const s=stuck[i];
-    if(Math.hypot(s.x-x,s.y-y) < s.r+16){
-      stuck.splice(i,1);
-      collector.active=true;
-      collector.r=Math.max(4.5,s.r);
-      collector.px=x; collector.py=y;
-      collector.x=s.x; collector.y=s.y;
-      collector.vx=0; collector.vy=0; collector.rot=0;
-      collector.wobA=1.5; collector.wob=0; collector.speed=0;
-      tickSound(collector.r);
-      if(navigator.vibrate) navigator.vibrate(5);
-      return true;
-    }
-  }
-  return false;
-}
-cv.addEventListener("pointerdown",e=>{
-  ac();
-  pointer.down=true; pointer.x=e.clientX; pointer.y=e.clientY;
-  tryGrab(e.clientX,e.clientY);
-  if(hintShown){hintShown=false; hintEl.classList.add("fade");}
-});
-cv.addEventListener("pointermove",e=>{
-  if(!pointer.down)return;
-  pointer.x=e.clientX; pointer.y=e.clientY;
-  if(collector.active){
-    collector.px=e.clientX; collector.py=e.clientY;
-  }else{
-    tryGrab(e.clientX,e.clientY); // なぞる途中で雫に触れたら拾う
-  }
-});
-window.addEventListener("pointerup",()=>{
-  pointer.down=false;
-  if(!collector.active)return;
-  collector.active=false;
-  if(collector.r>5){
-    stuck.push({x:collector.x,y:collector.y,r:collector.r,a:1,tail:.8,sq:1,rot:0});
-  }
-});
+        /* ---------- まち(全部灯すと次のまちへ) ---------- */
+        const TOWNS = [
+          {
+            name: "よるのまち",
+            base: ["#0a1220", "#0d1826", "#16202e"],
+            lights: [
+              [0.16, 0.72, 0.3, "255,190,110", 0.3],
+              [0.34, 0.8, 0.22, "255,160, 90", 0.22],
+              [0.55, 0.68, 0.34, "120,200,215", 0.2],
+              [0.74, 0.78, 0.26, "255,205,130", 0.26],
+              [0.88, 0.62, 0.2, "170,150,220", 0.14],
+              [0.08, 0.5, 0.18, "120,190,210", 0.12],
+              [0.45, 0.55, 0.16, "255,235,180", 0.1],
+              [0.65, 0.88, 0.3, "255,150, 80", 0.18],
+              [0.25, 0.6, 0.12, "200,230,255", 0.08],
+              [0.93, 0.85, 0.22, "140,210,200", 0.16],
+            ],
+            spark: ["255,210,140", "150,215,225"],
+          },
+          {
+            name: "みなとまち",
+            base: ["#071018", "#0a1d24", "#0e2a30"],
+            lights: [
+              [0.12, 0.78, 0.26, "120,225,210", 0.26],
+              [0.3, 0.66, 0.3, "90,190,230", 0.22],
+              [0.5, 0.84, 0.22, "255,230,170", 0.2],
+              [0.68, 0.7, 0.28, "110,210,190", 0.24],
+              [0.86, 0.8, 0.24, "140,200,255", 0.18],
+              [0.06, 0.58, 0.16, "180,240,230", 0.12],
+              [0.42, 0.56, 0.14, "220,245,255", 0.1],
+              [0.6, 0.9, 0.26, "90,170,210", 0.16],
+              [0.78, 0.55, 0.14, "170,230,220", 0.1],
+              [0.94, 0.66, 0.18, "120,190,230", 0.14],
+            ],
+            spark: ["190,240,230", "140,200,240"],
+          },
+          {
+            name: "ゆうぐれのまち",
+            base: ["#1a0f1e", "#2a1626", "#3a1e2a"],
+            lights: [
+              [0.14, 0.7, 0.3, "255,150,120", 0.28],
+              [0.32, 0.82, 0.24, "255,120, 90", 0.22],
+              [0.52, 0.66, 0.32, "255,180,200", 0.18],
+              [0.72, 0.78, 0.26, "255,200,120", 0.24],
+              [0.9, 0.64, 0.2, "230,140,190", 0.16],
+              [0.08, 0.52, 0.16, "255,170,150", 0.12],
+              [0.44, 0.54, 0.14, "255,220,180", 0.1],
+              [0.64, 0.88, 0.28, "255,130,110", 0.18],
+              [0.24, 0.62, 0.12, "255,190,210", 0.08],
+              [0.94, 0.84, 0.2, "250,160,140", 0.14],
+            ],
+            spark: ["255,190,150", "255,160,190"],
+          },
+          {
+            name: "ゆきのまち",
+            base: ["#0d141f", "#141e2c", "#1d2938"],
+            lights: [
+              [0.15, 0.74, 0.28, "200,225,255", 0.24],
+              [0.33, 0.8, 0.22, "235,240,255", 0.18],
+              [0.53, 0.68, 0.3, "170,210,250", 0.18],
+              [0.73, 0.78, 0.24, "255,240,210", 0.2],
+              [0.89, 0.62, 0.18, "190,215,245", 0.14],
+              [0.07, 0.54, 0.16, "210,230,255", 0.1],
+              [0.45, 0.56, 0.14, "240,245,255", 0.08],
+              [0.63, 0.88, 0.26, "200,220,255", 0.16],
+              [0.25, 0.6, 0.12, "225,235,255", 0.08],
+              [0.93, 0.84, 0.2, "210,235,255", 0.14],
+            ],
+            spark: ["240,245,255", "190,215,250"],
+          },
+        ];
+        const TRAVEL_TEXTS = [
+          "せんろの つなぎめを かぞえる おと",
+          "とんねるの かぜが まどを たたいた",
+          "あまつぶが よこに ながれていく",
+          "とおくの てっきょうを わたる おと",
+          "くらやみに でんちゅうが ひとつずつ",
+          "だれも いない ホームを とおりすぎた",
+          "あめの においが こくなってきた",
+          "まどの くもりに ゆびの あとが のこっている",
+          "かさを わすれた ひとの はしる おと",
+          "しんごうの あかが あめに にじむ",
+          "よふけの かもつれっしゃと すれちがう",
+          "たんぼの みずが そらを うつしている",
+          "どこかで ふみきりが なりやんだ",
+          "やまの むこうで かみなりが ひとつ",
+          "あめあしが つよくなって よわくなった",
+          "しらない かわを わたった",
+          "ぬれた アスファルトの ひかりが ながれる",
+          "くさはらの あめは やわらかい おとがする",
+          "バスていに ひとりぶんの かさの あと",
+          "でんせんに あまつぶが ならんでいる",
+          "といの みずが うたみたいに きこえる",
+          "とりが ひくいところを とんでいった",
+          "こうじょうの ゆげが あめに とけていく",
+          "じはんきの ひかりだけが おきていた",
+          "なまえの ない えきを とおりすぎた",
+          "うみの ほうから しおの におい",
+          "きりの なかで おとが まるくなる",
+          "ちいさな はしの したで あめやどりの かげ",
+          "よるの プールに あめが ふっている",
+          "だれかの くちぶえが とぎれて きえた",
+          "あめは やねごとに ちがう おとで なる",
+          "マンホールの まるが ひかっている",
+          "こうさてんで かさが すれちがう",
+          "のきさきの すずめが みじろぎ ひとつ",
+          "ゆうやけの いろが みずたまりに しずむ",
+          "コインランドリーの まるい まどが まわる",
+          "でんしゃの まどに ひたいを あてる ひと",
+          "かんばんの もじが ひとつだけ きえている",
+          "こうえんの ブランコが ひとりでに ゆれた",
+          "あめどいを のぼる みずの こえ",
+          "やおやの ひさしから しずくが ひとすじ",
+          "とけいだいが ぬれて ふかい いろに なる",
+          "さかみちを みずが えらんで ながれる",
+          "しょうてんがいの アーケードに あめの こだま",
+          "だれかが ながぐつを ほめられていた",
+          "ふるい ポストが あめに うたれている",
+          "せんたくものを とりこむ おとが した",
+          "こんびにの ひかりが みちを しかくく きる",
+          "わすれられた かさが かべに もたれている",
+          "すいどうかんの なかを とおる みずの うわさ",
+          "よるの がっこうは あめの おとだけ",
+          "プラットホームの はしで ひかりが たまる",
+          "タクシーの ワイパーが ふたつ うなずく",
+          "はとが のきしたで じゅんばんを まっている",
+          "かわらやねを あめが かぞえて あるく",
+          "こうばんの まえで かさが ひらいた",
+          "みずたまりが そらの つづきに なっている",
+          "えんとつの けむりが あめに おされて ひくい",
+          "しらない いえの ゆうげの におい",
+          "じてんしゃの ベルが とおくで ひとつ",
+          "でんちゅうの ひかりに あめが むらがる",
+          "かんばんねこの せとものが ぬれて つやつや",
+          "ちかみちの トンネルで おとが ふとる",
+          "かえりみちの ひとの かげが ながい",
+          "やたいの ちょうちんが ひとつ ともった",
+          "うらどおりの みずたまりを またぐ あしおと",
+          "ビニールがさに あめの つぶが おどる",
+          "こうしゃの チャイムが あめに とけた",
+          "つりばしの ロープが しずくを ならべる",
+          "ゆきの においが まじりはじめた",
+          "ストーブの けむりが よこに ながれる",
+          "くつしたの まま まどべに たつ ひと",
+          "じどうはんばいきが つりせんを かんがえている",
+          "よぞらの すみが すこし あかるい",
+          "かもめが てすりで あめやどり",
+          "ふねの ひかりが なみに きざまれる",
+          "とだなの おくで コップが なる いえ",
+          "おんがくしつから ピアノが ひとおと",
+          "かいだんの おどりばに まるい ひかり",
+          "だれかの でんわの こえが やさしかった",
+          "あめの ひは とけいが ゆっくり すすむ",
+          "かさたての なかで かさが やすんでいる",
+          "まちの ちずには ない ほそい みち",
+          "やねの うえを ひかりが すべっていく",
+          "こうしゅうでんわが ひかっていた",
+          "せんろわきの あじさいが おもたい",
+          "ゆうびんうけに あめが すこし はいった",
+          "ガードしたで おとが ひとまわり おおきい",
+          "しんぶんはいたつの カブが みずを はねた",
+          "よるの としょかんの まどが ひとつ あかるい",
+          "かいだんを おりる ながぐつの リズム",
+          "とおくの かんらんしゃが ゆっくり ひかる",
+          "あめの むこうで まちが にじんで ひとつに なる",
+          "こうそくどうろの おとが うみに にている",
+          "だれかが ドアを そっと しめた",
+          "すべりだいに あまみずの みち",
+          "ろじうらの きんもくせいが つよく におう",
+          "でんきやの テレビが みんな おなじ ゆめ",
+          "かわの おもてを あめが けずっていく",
+          "はしの したの こえは よく ひびく",
+          "ひさしぶりの ほしが ひとつ みえた",
+          "せんろが ぬれて ぎんいろに なる",
+          "パーキングの ライトが じゅんばんに ねむる",
+          "ふうりんが ひとこと だけ いった",
+          "あめがっぱの こどもが かけていった",
+          "こうえんの すなばに ちいさな みずうみ",
+          "まどガラスの むこうと こちらの おんど",
+          "バケツが いっぱいに なる おとで めが さめる",
+          "とりいの あかが あめで ふかく なる",
+          "うちがわから くもりを ふく てのひら",
+          "しんやの スーパーに かごが ひとつ",
+          "かみなりの あとの しずけさが ながい",
+          "みちの さきが きりに つつまれて まっしろ",
+          "のらいぬが のきしたで まるく なる",
+          "こうじげんばの ブルーシートが うたう",
+          "つきが くもの うすいところを えらぶ",
+          "ふとんの なかから きく あめは べつの おと",
+          "すいぞくかんの まえで うみの ゆめを みる",
+          "ネオンの みどりが みずたまりで およぐ",
+          "だれも みていない はなびが あがった",
+          "やまの えきは あめの おとが ちかい",
+          "かいそくでんしゃが かぜを おいていった",
+          "こうちゃの ゆげと まどの くもり",
+          "くだりざかの みずが さきを いそぐ",
+          "しめった ダンボールの におい",
+          "まよなかの こうしゃてんの ひかりが またたく",
+          "あめの ひの えんそくの バス",
+          "ちいさな みせの のれんが おもい",
+          "かえるの こえが ひとつ ふえた",
+          "あさが ちかい いろの あめに なった",
+        ];
+        const WAKE_TEXTS = [
+          "まちが めを さました",
+          "だれかが カーテンを あけた",
+          "こんやは みんな おきている",
+          "とおくで だれかが わらった",
+          "ゆうびんやが じてんしゃで かけていく",
+          "パンやの かまどに ひが はいった",
+          "ふろやの えんとつから けむりが たつ",
+          "ふみきりの おとが きこえる",
+          "まちじゅうの やかんが なきだした",
+          "きょうも だれかの いえに あかりが ともる",
+        ];
+        const pick = (a) => a[Math.floor(Math.random() * a.length)];
+        let FLAVORS = null; // WAKE_TEXTSとTRAVEL_TEXTSを合わせたもの(初回に生成)
+        let townIdx = 0,
+          townBlend = 1; // 1=切替完了
+        let prevLights = []; // 流れていく前のまちのあかり
+        const bgPrev = document.createElement("canvas"),
+          bpx = bgPrev.getContext("2d");
 
-/* ================= 更新 ================= */
-let last=performance.now(), autoTimer=rnd(2500,6000);
-let litCount=0, celebrated=false, fogRegrow=0;
-function shortestAngle(a,b){ return Math.atan2(Math.sin(b-a),Math.cos(b-a)); }
-function updateLampUI(){} // カウンター表示は廃止
-updateLampUI();
-
-function tryLight(x,y){
-  if(townBlend<1) return; // 景色が流れている間は灯らない
-  for(const L of LIGHTS){
-    if(L.stage>=2 || L.cool>0) continue;
-    if(Math.hypot(L.x-x,L.y-y)<58){
-      L.stage++; L.cool=1500; L.decayT=0;
-      if(L.stage===1){
-        revealSound(); // 消えたランプが姿を見せる
-      }else{
-        lampSound(L.note); // 灯る
-        litCount++; updateLampUI();
-        if(navigator.vibrate) navigator.vibrate(12);
-        if(litCount===LIGHTS.length && !celebrated){
-          celebrated=true; chordSound();
-          if(!FLAVORS) FLAVORS=[...WAKE_TEXTS,...TRAVEL_TEXTS];
-          hintEl.textContent=pick(FLAVORS);
-          hintEl.classList.remove("fade");
-          setTimeout(()=>hintEl.classList.add("fade"),7400); // 移動が終わる頃まで
-          setTimeout(nextTown,3200); // 余韻のあとで次のまちへ
+        function paintBackground() {
+          const T = TOWNS[townIdx];
+          bg.width = W * DPR;
+          bg.height = H * DPR;
+          bgx.setTransform(DPR, 0, 0, DPR, 0, 0);
+          const base = bgx.createLinearGradient(0, 0, 0, H);
+          base.addColorStop(0, T.base[0]);
+          base.addColorStop(0.55, T.base[1]);
+          base.addColorStop(1, T.base[2]);
+          bgx.fillStyle = base;
+          bgx.fillRect(0, 0, W, H);
+          LIGHTS.length = 0;
+          // あかりの場所は毎回ランダム(近すぎる配置は避ける)
+          const NLIGHTS = 12,
+            minD = Math.min(W, H) * 0.18,
+            placed = [];
+          for (let i = 0; i < NLIGHTS; i++) {
+            const [, , pr, c, a] = T.lights[i % T.lights.length];
+            let x,
+              y,
+              tries = 0;
+            do {
+              x = (0.06 + Math.random() * 0.88) * W;
+              y = (0.32 + Math.random() * 0.58) * H;
+              tries++;
+            } while (
+              tries < 60 &&
+              placed.some((p) => Math.hypot(p[0] - x, p[1] - y) < minD)
+            );
+            placed.push([x, y]);
+            const r = pr * Math.max(W, H);
+            const g = bgx.createRadialGradient(x, y, 0, x, y, r);
+            g.addColorStop(0, `rgba(${c},${a})`);
+            g.addColorStop(0.5, `rgba(${c},${a * 0.4})`);
+            g.addColorStop(1, `rgba(${c},0)`);
+            bgx.fillStyle = g;
+            bgx.beginPath();
+            bgx.arc(x, y, r, 0, 6.2832);
+            bgx.fill();
+            LIGHTS.push({ x, y, c, stage: 0, cool: 0, decayT: 0, note: i });
+          }
+          for (let i = 0; i < 26; i++) {
+            const x = Math.random() * W,
+              y = H * (0.35 + Math.random() * 0.55),
+              r = 4 + Math.random() * 14;
+            const c = T.spark[Math.random() < 0.7 ? 0 : 1];
+            const g = bgx.createRadialGradient(x, y, 0, x, y, r * 3);
+            g.addColorStop(0, `rgba(${c},.20)`);
+            g.addColorStop(1, `rgba(${c},0)`);
+            bgx.fillStyle = g;
+            bgx.beginPath();
+            bgx.arc(x, y, r * 3, 0, 6.2832);
+            bgx.fill();
+          }
+          const vig = bgx.createLinearGradient(0, 0, 0, H);
+          vig.addColorStop(0, "rgba(4,8,14,.55)");
+          vig.addColorStop(0.45, "rgba(4,8,14,.15)");
+          vig.addColorStop(1, "rgba(4,8,14,.30)");
+          bgx.fillStyle = vig;
+          bgx.fillRect(0, 0, W, H);
         }
-      }
-    }
-  }
-}
+        function nextTown() {
+          // 今の景色を残したまま、次のまちへゆっくり明け渡す
+          prevLights = LIGHTS.map((L) => ({ ...L })); // あかりは灯ったまま景色と一緒に流れていく
+          bgPrev.width = bg.width;
+          bgPrev.height = bg.height;
+          bpx.setTransform(1, 0, 0, 1, 0, 0);
+          bpx.drawImage(bg, 0, 0);
+          townIdx = (townIdx + 1) % TOWNS.length;
+          paintBackground(); // LIGHTSも新しいまちのものに
+          litCount = 0;
+          celebrated = false;
+          updateLampUI();
+          townBlend = 0;
+        }
+        function paintFog() {
+          // マスク:不透明=曇り最大。増えてもここが上限
+          fog.width = W * DPR;
+          fog.height = H * DPR;
+          fgx.setTransform(DPR, 0, 0, DPR, 0, 0);
+          fgx.fillStyle = "rgb(148,174,190)";
+          fgx.fillRect(0, 0, W, H);
+        }
+        function wipeFog(x, y, r, strength) {
+          fgx.save();
+          fgx.globalCompositeOperation = "destination-out";
+          const g = fgx.createRadialGradient(x, y, 0, x, y, r);
+          g.addColorStop(0, `rgba(0,0,0,${strength})`);
+          g.addColorStop(1, "rgba(0,0,0,0)");
+          fgx.fillStyle = g;
+          fgx.beginPath();
+          fgx.arc(x, y, r, 0, 6.2832);
+          fgx.fill();
+          fgx.restore();
+        }
+        function resize() {
+          DPR = Math.min(window.devicePixelRatio || 1, 1.5);
+          W = window.innerWidth;
+          H = window.innerHeight;
+          cv.width = W * DPR;
+          cv.height = H * DPR;
+          cv.style.width = W + "px";
+          cv.style.height = H + "px";
+          ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+          scene.width = W * DPR;
+          scene.height = H * DPR;
+          scx.setTransform(DPR, 0, 0, DPR, 0, 0);
+          townBlend = 1; // リサイズ時は移り変わりを打ち切る
+          paintBackground();
+          paintFog();
+        }
+        window.addEventListener("resize", resize);
+        resize();
 
-function update(dt){
-  // 雨が降り続ける:結露がどんどん増える
-  if(stuck.length<TARGET && Math.random()<.24) spawnStuck(null,null,null,true);
-  for(const s of stuck) if(s.a<1) s.a=Math.min(1,s.a+dt*.002);
+        /* ================= 音 ================= */
+        let AC = null,
+          master = null,
+          muted = false;
+        const PENTA = [0, 2, 4, 7, 9];
+        function ac() {
+          if (!AC) {
+            AC = new (window.AudioContext || window.webkitAudioContext)();
+            master = AC.createGain();
+            master.gain.value = 0.55;
+            master.connect(AC.destination);
+            // 雨音:遠くの雨のごうごう、これひとつだけ
+            const len = AC.sampleRate * 2,
+              buf = AC.createBuffer(1, len, AC.sampleRate);
+            const ch = buf.getChannelData(0);
+            let l = 0;
+            for (let i = 0; i < len; i++) {
+              l = l * 0.97 + (Math.random() * 2 - 1) * 0.03;
+              ch[i] = l * 3;
+            }
+            const src = AC.createBufferSource();
+            src.buffer = buf;
+            src.loop = true;
+            const lp = AC.createBiquadFilter();
+            lp.type = "lowpass";
+            lp.frequency.value = 700;
+            const rg = AC.createGain();
+            rg.gain.value = 0.16;
+            src.connect(lp);
+            lp.connect(rg);
+            rg.connect(master);
+            src.start();
+          }
+          if (AC.state === "suspended") AC.resume();
+          return AC;
+        }
+        function tone(
+          freq,
+          dur,
+          vol,
+          type = "sine",
+          glide = 0,
+          delay = 0,
+          atk = 0.012,
+        ) {
+          if (muted) return;
+          const a = ac(),
+            t = a.currentTime + delay;
+          const o = a.createOscillator(),
+            g = a.createGain();
+          o.type = type;
+          o.frequency.setValueAtTime(freq, t);
+          if (glide)
+            o.frequency.exponentialRampToValueAtTime(freq * glide, t + dur);
+          g.gain.setValueAtTime(0, t);
+          g.gain.linearRampToValueAtTime(vol, t + atk);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+          o.connect(g);
+          g.connect(master);
+          o.start(t);
+          o.stop(t + dur + 0.05);
+        }
+        let lastTick = 0;
+        function tickSound(r) {
+          const now = performance.now();
+          if (now - lastTick < 80) return;
+          lastTick = now;
+          tone(620 - r * 4 + Math.random() * 60, 0.05, 0.014, "sine", 0.7);
+        }
+        function slipSound() {
+          tone(300, 0.32, 0.035, "sine", 0.5);
+        }
+        function plopSound(r, x) {
+          // 落ちた場所で音程が変わる(左が低く右が高く)
+          tone(430 - r * 2.2, 0.16, 0.13, "sine", 0.5);
+          const idx = Math.max(0, Math.min(4, Math.floor((x / W) * 5)));
+          const f = 196 * Math.pow(2, PENTA[idx] / 12) * (r > 34 ? 1 : 2); // 大きい雫は低め
+          tone(f, 1.8, 0.07, "sine", 0, 0.06);
+        }
+        function revealSound() {
+          // ランプが姿を見せる、ひそやかな音
+          tone(233, 0.4, 0.028, "sine", 0.8);
+        }
+        function lampSound(i) {
+          const f =
+            (392 * Math.pow(2, PENTA[i % 5] / 12)) /
+            (Math.floor(i / 5) % 2 ? 2 : 1);
+          tone(f, 1.4, 0.06, "sine");
+          tone(f * 2, 0.7, 0.02, "sine", 0, 0.03);
+        }
+        function chordSound() {
+          [262, 392, 523, 659].forEach((f, i) =>
+            tone(f, 2.4, 0.05, "sine", 0, i * 0.12),
+          );
+        }
+        muteBtn.addEventListener("click", () => {
+          muted = !muted;
+          if (master) master.gain.value = muted ? 0 : 0.55;
+          muteBtn.classList.toggle("dim", muted);
+          document.getElementById("icSndOn").style.display = muted
+            ? "none"
+            : "";
+          document.getElementById("icSndOff").style.display = muted
+            ? ""
+            : "none";
+          muteBtn.setAttribute("aria-pressed", String(muted));
+        });
+        const autoBtn = document.getElementById("auto");
+        let autoMode = false;
+        autoBtn.addEventListener("click", () => {
+          ac();
+          autoMode = !autoMode;
+          autoBtn.classList.toggle("on", autoMode);
+          autoBtn.setAttribute("aria-pressed", String(autoMode));
+          if (autoMode) autoTimer = 0; // すぐ降り始める
+        });
 
-  // まちの移り変わりを進める
-  if(townBlend<1){
-    townBlend=Math.min(1, townBlend+dt/5200);
-    if(townBlend>=1) prevLights.length=0; // 前のまちのあかりは見えなくなった
-  }
+        /* ================= 雫 ================= */
+        const stuck = [],
+          fallers = [];
+        const TARGET = 210,
+          INITIAL = 88,
+          BASE_R = 7; // 最初はまばら、雨で増えていく
+        let BREAK_R = 15; // 落下サイズは以前の7割
+        let dropped = 0;
+        const rnd = (a, b) => a + Math.random() * (b - a);
 
-  // 曇りは初期の濃さを上限にゆっくり戻る
-  fogRegrow+=dt;
-  if(fogRegrow>200){
-    fogRegrow=0;
-    fgx.fillStyle="rgba(148,174,190,.004)"; fgx.fillRect(0,0,W,H);
-  }
-  for(const L of LIGHTS){
-    if(L.cool>0) L.cool-=dt;
-    if(L.stage===2){ // 灯ったあかりだけ、ゆっくり眠りに戻る(姿は残る)
-      L.decayT+=dt;
-      if(L.decayT>40000){
-        L.decayT=0; L.stage=1;
-        litCount--; celebrated=false; updateLampUI();
-      }
-    }
-  }
+        function randR() {
+          // たまに大粒も混ざる
+          const q = Math.random();
+          return q < 0.76
+            ? rnd(1.6, 5.2)
+            : q < 0.93
+              ? rnd(6, 9.5)
+              : rnd(10, 16);
+        }
+        function spawnStuck(x, y, r, fade) {
+          const nx = x ?? rnd(6, W - 6),
+            ny = y ?? rnd(60, H - 10),
+            nr = r ?? randR();
+          // 同じ場所に降ったら、そこにある雫と合体する(指で集める時と同じ)
+          for (let i = 0; i < stuck.length; i++) {
+            const s = stuck[i];
+            if (Math.hypot(s.x - nx, s.y - ny) < s.r * 0.92 + nr) {
+              s.r = Math.min(50, Math.sqrt(s.r * s.r + nr * nr * 0.95));
+              if (s.r >= BREAK_R) {
+                // 重くなりすぎたら、ひとりでに流れ出す
+                stuck.splice(i, 1);
+                breakFree(s.x, s.y, s.r, true);
+              }
+              return;
+            }
+          }
+          stuck.push({
+            x: nx,
+            y: ny,
+            r: nr,
+            a: fade ? 0 : 1,
+            tail: rnd(0.4, 1.1),
+            sq: rnd(0.88, 1.12),
+            rot: rnd(-0.3, 0.3),
+          });
+        }
+        for (let i = 0; i < INITIAL; i++) spawnStuck();
 
-  autoTimer-=dt;
-  if(autoTimer<0){
-    autoTimer = autoMode ? rnd(700,1900) : rnd(3000,7000);
-    breakFree(rnd(W*.08,W*.92), rnd(-20,40), autoMode?rnd(6,13):rnd(7,12), true);
-  }
+        const collector = {
+          active: false,
+          x: 0,
+          y: 0,
+          px: 0,
+          py: 0,
+          vx: 0,
+          vy: 0,
+          rot: 0,
+          r: BASE_R,
+          wob: 0,
+          wobA: 0,
+          speed: 0,
+        };
 
-  // 雫を持っていない指は、曇りをそっと拭くだけ
-  if(pointer.down && !collector.active) wipeFog(pointer.x,pointer.y,16,.05);
+        function absorbInto(t, silent) {
+          let got = false;
+          for (let i = stuck.length - 1; i >= 0; i--) {
+            const s = stuck[i];
+            if (Math.hypot(t.x - s.x, t.y - s.y) < t.r * 0.92 + s.r) {
+              t.r = Math.min(50, Math.sqrt(t.r * t.r + s.r * s.r * 0.95));
+              stuck.splice(i, 1);
+              if (!silent) tickSound(t.r); // 音が鳴るのは指で集めた時だけ
+              got = true;
+            }
+          }
+          return got;
+        }
+        function breakFree(x, y, r, silent) {
+          fallers.push({
+            x,
+            y,
+            r,
+            vy: rnd(0.15, 0.35),
+            sway: Math.random() * 6.28,
+            trail: [],
+            lastTrail: 0,
+          });
+          if (!silent) {
+            slipSound();
+            if (navigator.vibrate) navigator.vibrate([8, 50, 12]);
+          }
+        }
 
-  if(collector.active){
-    const k=1-Math.pow(.93, dt/16.7);
-    const tx=collector.px, ty=collector.py+sag();
-    const nx=collector.x+(tx-collector.x)*k;
-    const ny=collector.y+(ty-collector.y)*k;
-    collector.vx=(nx-collector.x)/Math.max(dt,1)*16.7;
-    collector.vy=(ny-collector.y)/Math.max(dt,1)*16.7;
-    collector.x=nx; collector.y=ny;
-    const sp=Math.hypot(collector.vx,collector.vy);
-    collector.speed=sp;
-    const targetRot = sp>1.2 ? Math.atan2(collector.vy,collector.vx)-PI/2 : 0;
-    collector.rot += shortestAngle(collector.rot,targetRot)*Math.min(1,dt*.005);
+        /* ================= 入力 ================= */
+        let hintShown = true;
+        const pointer = { down: false, x: 0, y: 0 };
+        function sag() {
+          return 14 + collector.r * 0.5;
+        }
+        function tryGrab(x, y) {
+          // 触れた場所に雫があれば掴む。なければ何も起きない
+          for (let i = stuck.length - 1; i >= 0; i--) {
+            const s = stuck[i];
+            if (Math.hypot(s.x - x, s.y - y) < s.r + 16) {
+              stuck.splice(i, 1);
+              collector.active = true;
+              collector.r = Math.max(4.5, s.r);
+              collector.px = x;
+              collector.py = y;
+              collector.x = s.x;
+              collector.y = s.y;
+              collector.vx = 0;
+              collector.vy = 0;
+              collector.rot = 0;
+              collector.wobA = 1.5;
+              collector.wob = 0;
+              collector.speed = 0;
+              tickSound(collector.r);
+              if (navigator.vibrate) navigator.vibrate(5);
+              return true;
+            }
+          }
+          return false;
+        }
+        cv.addEventListener("pointerdown", (e) => {
+          ac();
+          pointer.down = true;
+          pointer.x = e.clientX;
+          pointer.y = e.clientY;
+          tryGrab(e.clientX, e.clientY);
+          if (hintShown) {
+            hintShown = false;
+            hintEl.classList.add("fade");
+          }
+        });
+        cv.addEventListener("pointermove", (e) => {
+          if (!pointer.down) return;
+          pointer.x = e.clientX;
+          pointer.y = e.clientY;
+          if (collector.active) {
+            collector.px = e.clientX;
+            collector.py = e.clientY;
+          } else {
+            tryGrab(e.clientX, e.clientY); // なぞる途中で雫に触れたら拾う
+          }
+        });
+        window.addEventListener("pointerup", () => {
+          pointer.down = false;
+          if (!collector.active) return;
+          collector.active = false;
+          if (collector.r > 5) {
+            stuck.push({
+              x: collector.x,
+              y: collector.y,
+              r: collector.r,
+              a: 1,
+              tail: 0.8,
+              sq: 1,
+              rot: 0,
+            });
+          }
+        });
 
-    wipeFog(collector.x,collector.y,collector.r*1.3,.10);
-    if(absorbInto(collector)){
-      collector.wobA=Math.min(5, 2+collector.r*.06); collector.wob=0;
-      if(navigator.vibrate) navigator.vibrate(4);
-    }
-    if(collector.wobA>0.02){collector.wob+=dt*.02; collector.wobA*=Math.pow(.994,dt);}
-    if(collector.r>=BREAK_R){
-      breakFree(collector.x,collector.y,collector.r);
-      collector.active=false; // 指からするっと抜けて、手には何も残らない
-      BREAK_R=15;
-    }
-  }
+        /* ================= 更新 ================= */
+        let last = performance.now(),
+          autoTimer = rnd(2500, 6000);
+        let litCount = 0,
+          celebrated = false,
+          fogRegrow = 0;
+        function shortestAngle(a, b) {
+          return Math.atan2(Math.sin(b - a), Math.cos(b - a));
+        }
+        function updateLampUI() {} // カウンター表示は廃止
+        updateLampUI();
 
-  for(let i=fallers.length-1;i>=0;i--){
-    const f=fallers[i];
-    f.vy=Math.min(f.vy+dt*.0018, .9+f.r*.008);
-    f.sway+=dt*.003;
-    f.x+=Math.sin(f.sway)*.35;
-    f.y+=f.vy*dt*.35;
-    absorbInto(f,true);
-    wipeFog(f.x,f.y,f.r*1.6,.28);
-    tryLight(f.x,f.y);
-    f.lastTrail+=dt;
-    if(f.lastTrail>60){
-      f.lastTrail=0;
-      f.trail.push({x:f.x+rnd(-f.r*.3,f.r*.3), y:f.y-f.r*.8, r:rnd(1,2.4), a:.9});
-      if(Math.random()<.5) spawnStuck(f.x+rnd(-f.r*.4,f.r*.4), f.y-f.r, rnd(1.2,2.6), false);
-    }
-    for(const t of f.trail) t.a-=dt*.0006;
-    f.trail=f.trail.filter(t=>t.a>0);
-    if(f.y-f.r>H){
-      dropped++; plopSound(f.r,f.x);
-      fallers.splice(i,1);
-    }
-  }
-}
+        function tryLight(x, y) {
+          if (townBlend < 1) return; // 景色が流れている間は灯らない
+          for (const L of LIGHTS) {
+            if (L.stage >= 2 || L.cool > 0) continue;
+            if (Math.hypot(L.x - x, L.y - y) < 58) {
+              L.stage++;
+              L.cool = 1500;
+              L.decayT = 0;
+              if (L.stage === 1) {
+                revealSound(); // 消えたランプが姿を見せる
+              } else {
+                lampSound(L.note); // 灯る
+                litCount++;
+                updateLampUI();
+                if (navigator.vibrate) navigator.vibrate(12);
+                if (litCount === LIGHTS.length && !celebrated) {
+                  celebrated = true;
+                  chordSound();
+                  if (!FLAVORS) FLAVORS = [...WAKE_TEXTS, ...TRAVEL_TEXTS];
+                  hintEl.textContent = pick(FLAVORS);
+                  hintEl.classList.remove("fade");
+                  setTimeout(() => hintEl.classList.add("fade"), 7400); // 移動が終わる頃まで
+                  setTimeout(nextTown, 3200); // 余韻のあとで次のまちへ
+                }
+              }
+            }
+          }
+        }
 
-/* ================= 描画 ================= */
-function lampGlow(x,y,c,glow){ // glow: 0〜1
-  const R=50+glow*70;
-  const g=scx.createRadialGradient(x,y,0,x,y,R);
-  g.addColorStop(0,`rgba(${c},${.5*glow})`);
-  g.addColorStop(.4,`rgba(${c},${.2*glow})`);
-  g.addColorStop(1,`rgba(${c},0)`);
-  scx.fillStyle=g; scx.beginPath(); scx.arc(x,y,R,0,6.2832); scx.fill();
-  scx.beginPath(); scx.arc(x,y,3+glow*2.5,0,6.2832);
-  scx.fillStyle=`rgba(255,252,240,${.25+.6*glow})`; scx.fill();
-}
-function lampDark(x,y){ // 消えたランプ:灯るランプのグレー版
-  const R=30;
-  const g=scx.createRadialGradient(x,y,0,x,y,R);
-  g.addColorStop(0,"rgba(152,166,178,.15)");
-  g.addColorStop(.4,"rgba(152,166,178,.06)");
-  g.addColorStop(1,"rgba(152,166,178,0)");
-  scx.fillStyle=g; scx.beginPath(); scx.arc(x,y,R,0,6.2832); scx.fill();
-  scx.beginPath(); scx.arc(x,y,3.5,0,6.2832);
-  scx.fillStyle="rgba(188,198,208,.32)"; scx.fill();
-}
-function drawLamp(x,y,L){
-  if(L.stage===1) lampDark(x,y);
-  else if(L.stage>=2) lampGlow(x,y,L.c,1);
-}
-function composeScene(){ // 背景+あかり+曇り → 雫はこれを映す
-  if(townBlend<1){ // 車窓のように、景色が右へ流れて次のまちが来る
-    const e=(1-Math.cos(townBlend*PI))/2;
-    const off=e*W;
-    scx.drawImage(bgPrev,0,0,bgPrev.width,bgPrev.height,off,0,W,H);
-    scx.drawImage(bg,0,0,bg.width,bg.height,off-W,0,W,H);
-    // まちとまちの間は深い夜霧:境目そのものを見せない
-    const MW=W*.8, x0=off-MW/2;
-    const hz=scx.createLinearGradient(x0,0,x0+MW,0);
-    hz.addColorStop(0,"rgba(7,12,19,0)");
-    hz.addColorStop(.35,"rgba(7,12,19,.72)");
-    hz.addColorStop(.5,"rgba(7,12,19,.92)");
-    hz.addColorStop(.65,"rgba(7,12,19,.72)");
-    hz.addColorStop(1,"rgba(7,12,19,0)");
-    scx.fillStyle=hz; scx.fillRect(x0,0,MW,H);
-    const fz=scx.createLinearGradient(x0,0,x0+MW,0);
-    fz.addColorStop(0,"rgba(125,155,175,0)");
-    fz.addColorStop(.5,"rgba(125,155,175,.11)");
-    fz.addColorStop(1,"rgba(125,155,175,0)");
-    scx.fillStyle=fz; scx.fillRect(x0,0,MW,H);
-    // 前のまちのあかりは、灯ったまま景色と一緒に流れて見えなくなる
-    for(const L of prevLights){
-      if(L.stage<=0 || L.x+off>W+120) continue;
-      drawLamp(L.x+off, L.y, L);
-    }
-  }else{
-    scx.drawImage(bg,0,0,bg.width,bg.height,0,0,W,H);
-  }
-  for(const L of LIGHTS){
-    if(L.stage<=0) continue;
-    drawLamp(L.x, L.y, L);
-  }
-  scx.globalAlpha=FOGA;
-  scx.drawImage(fog,0,0,fog.width,fog.height,0,0,W,H);
-  scx.globalAlpha=1;
-}
-function dropBody(r,stretch){
-  ctx.beginPath();
-  ctx.ellipse(0, r*stretch*.06, r, r*stretch, 0, 0, 6.2832);
-}
-function drawSmear(r,stretch,tailLen,alpha){
-  if(tailLen<=0.01) return;
-  const top=-r*stretch-r*tailLen, base=-r*stretch*.55;
-  const wTop=r*.42, wBase=r*.8;
-  const g=ctx.createLinearGradient(0,top,0,base);
-  g.addColorStop(0,"rgba(185,215,232,0)");
-  g.addColorStop(1,`rgba(185,215,232,${.14*alpha})`);
-  ctx.beginPath();
-  ctx.moveTo(-wTop,top);
-  ctx.quadraticCurveTo(-wBase,(top+base)/2, -wBase,base);
-  ctx.lineTo(wBase,base);
-  ctx.quadraticCurveTo(wBase,(top+base)/2, wTop,top);
-  ctx.closePath();
-  ctx.fillStyle=g; ctx.fill();
-}
-function drawRefract(x,y,r,stretch,tailLen,alpha,rot=0){
-  ctx.save(); ctx.translate(x,y); ctx.rotate(rot);
-  const sh=ctx.createRadialGradient(r*.1,r*.34,r*.2, r*.1,r*.34,r*1.3);
-  sh.addColorStop(0,`rgba(0,0,0,${.28*alpha})`); sh.addColorStop(1,"rgba(0,0,0,0)");
-  ctx.fillStyle=sh; ctx.beginPath(); ctx.arc(r*.1,r*.34,r*1.3,0,6.2832); ctx.fill();
-  drawSmear(r,stretch,tailLen,alpha);
-  dropBody(r,stretch); ctx.clip();
-  // 曇りごと映す:雫の色が窓に馴染む
-  ctx.globalAlpha=alpha;
-  ctx.rotate(-rot);
-  ctx.scale(1.22,-1.22);
-  ctx.drawImage(scene,0,0,scene.width,scene.height,-x,-y,W,H);
-  ctx.restore();
+        function update(dt) {
+          // 雨が降り続ける:結露がどんどん増える
+          if (stuck.length < TARGET && Math.random() < 0.24)
+            spawnStuck(null, null, null, true);
+          for (const s of stuck)
+            if (s.a < 1) s.a = Math.min(1, s.a + dt * 0.002);
 
-  ctx.save(); ctx.translate(x,y); ctx.rotate(rot); ctx.globalAlpha=alpha;
-  dropBody(r,stretch); ctx.clip();
-  const g=ctx.createLinearGradient(0,-r*stretch,0,r*stretch);
-  g.addColorStop(0,"rgba(5,9,15,.45)");
-  g.addColorStop(.5,"rgba(5,9,15,0)");
-  g.addColorStop(1,"rgba(220,242,252,.08)");
-  ctx.fillStyle=g; ctx.fillRect(-r,-r*stretch-1,r*2,r*stretch*2+2);
-  const cg=ctx.createRadialGradient(0,r*stretch*.5,0, 0,r*stretch*.5,r*.85);
-  cg.addColorStop(0,`rgba(226,246,255,${.26*alpha})`);
-  cg.addColorStop(1,"rgba(226,246,255,0)");
-  ctx.fillStyle=cg; ctx.fillRect(-r,-r*stretch,r*2,r*stretch*2);
-  ctx.restore();
+          // まちの移り変わりを進める
+          if (townBlend < 1) {
+            townBlend = Math.min(1, townBlend + dt / 5200);
+            if (townBlend >= 1) prevLights.length = 0; // 前のまちのあかりは見えなくなった
+          }
 
-  ctx.save(); ctx.translate(x,y); ctx.rotate(rot); ctx.globalAlpha=alpha;
-  dropBody(r,stretch);
-  ctx.strokeStyle=`rgba(8,14,22,${.36*alpha})`; ctx.lineWidth=1; ctx.stroke();
-  ctx.beginPath();
-  ctx.ellipse(-r*.34,-r*stretch*.3, r*.13, r*.24, -.5, 0, 6.2832);
-  ctx.fillStyle=`rgba(240,250,255,${.65*alpha})`; ctx.fill();
-  ctx.beginPath();
-  ctx.ellipse(r*.28, r*stretch*.42, r*.09, r*.05, .4, 0, 6.2832);
-  ctx.fillStyle=`rgba(240,250,255,${.25*alpha})`; ctx.fill();
-  ctx.restore();
-}
-function drawDot(x,y,r,a,sq=1,rot=0){
-  ctx.save(); ctx.translate(x,y); ctx.rotate(rot); ctx.scale(1,sq);
-  const sh=ctx.createRadialGradient(r*.12,r*.3,0, r*.12,r*.3,r*1.15);
-  sh.addColorStop(0,`rgba(0,0,0,${.22*a})`); sh.addColorStop(1,"rgba(0,0,0,0)");
-  ctx.fillStyle=sh; ctx.beginPath(); ctx.arc(r*.12,r*.3,r*1.15,0,6.2832); ctx.fill();
-  const g=ctx.createRadialGradient(0,r*.2,0, 0,0,r);
-  g.addColorStop(0,`rgba(205,232,246,${.20*a})`);
-  g.addColorStop(.6,`rgba(150,190,214,${.10*a})`);
-  g.addColorStop(1,`rgba(10,18,28,${.30*a})`);
-  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(0,0,r,0,6.2832); ctx.fill();
-  const cg=ctx.createRadialGradient(0,r*.35,0, 0,r*.35,r*.8);
-  cg.addColorStop(0,`rgba(232,248,255,${.26*a})`);
-  cg.addColorStop(1,"rgba(232,248,255,0)");
-  ctx.fillStyle=cg; ctx.beginPath(); ctx.arc(0,0,r,0,6.2832); ctx.fill();
-  ctx.beginPath(); ctx.arc(-r*.34,-r*.36, Math.max(.5,r*.18), 0,6.2832);
-  ctx.fillStyle=`rgba(248,252,255,${.6*a})`; ctx.fill();
-  ctx.restore();
-}
+          // 曇りは初期の濃さを上限にゆっくり戻る
+          fogRegrow += dt;
+          if (fogRegrow > 200) {
+            fogRegrow = 0;
+            fgx.fillStyle = "rgba(148,174,190,.004)";
+            fgx.fillRect(0, 0, W, H);
+          }
+          for (const L of LIGHTS) {
+            if (L.cool > 0) L.cool -= dt;
+            if (L.stage === 2) {
+              // 灯ったあかりだけ、ゆっくり眠りに戻る(姿は残る)
+              L.decayT += dt;
+              if (L.decayT > 40000) {
+                L.decayT = 0;
+                L.stage = 1;
+                litCount--;
+                celebrated = false;
+                updateLampUI();
+              }
+            }
+          }
 
-function render(){
-  composeScene();
-  ctx.drawImage(scene,0,0,scene.width,scene.height,0,0,W,H);
+          autoTimer -= dt;
+          if (autoTimer < 0) {
+            autoTimer = autoMode ? rnd(700, 1900) : rnd(3000, 7000);
+            breakFree(
+              rnd(W * 0.08, W * 0.92),
+              rnd(-20, 40),
+              autoMode ? rnd(6, 13) : rnd(7, 12),
+              true,
+            );
+          }
 
-  for(const s of stuck){
-    if(s.r<6) drawDot(s.x,s.y,s.r,s.a,s.sq,s.rot);
-    else drawRefract(s.x,s.y,s.r,s.sq,s.tail*.5,s.a,s.rot*.4);
-  }
-  for(const f of fallers){
-    for(const t of f.trail) drawDot(t.x,t.y,t.r,t.a);
-    const st=Math.min(1.5, 1+f.vy*.45);
-    drawRefract(f.x,f.y,f.r/Math.sqrt(st),st, .6+f.vy*.9, 1);
-  }
-  if(collector.active){
-    const sq=1+Math.sin(collector.wob)*collector.wobA*.02;
-    const move=Math.min(.4, collector.speed*.045);
-    drawRefract(collector.x,collector.y,
-      collector.r*sq/(1+move*.5), (1+move)/sq, .25+move*1.6, 1, collector.rot);
-    if(collector.r>BREAK_R*.8){
-      ctx.beginPath();
-      ctx.ellipse(collector.x,collector.y+collector.r*1.05,collector.r*.5,collector.r*.14,0,0,6.2832);
-      ctx.fillStyle="rgba(200,230,245,.10)"; ctx.fill();
-    }
-  }
-}
+          // 雫を持っていない指は、曇りをそっと拭くだけ
+          if (pointer.down && !collector.active)
+            wipeFog(pointer.x, pointer.y, 16, 0.05);
 
-function loop(t){
-  const dt=Math.min(50,t-last); last=t;
-  update(dt); render();
-  requestAnimationFrame(loop);
-}
-requestAnimationFrame(loop);
-})();
-</script>
-</body>
+          if (collector.active) {
+            const k = 1 - Math.pow(0.93, dt / 16.7);
+            const tx = collector.px,
+              ty = collector.py + sag();
+            const nx = collector.x + (tx - collector.x) * k;
+            const ny = collector.y + (ty - collector.y) * k;
+            collector.vx = ((nx - collector.x) / Math.max(dt, 1)) * 16.7;
+            collector.vy = ((ny - collector.y) / Math.max(dt, 1)) * 16.7;
+            collector.x = nx;
+            collector.y = ny;
+            const sp = Math.hypot(collector.vx, collector.vy);
+            collector.speed = sp;
+            const targetRot =
+              sp > 1.2 ? Math.atan2(collector.vy, collector.vx) - PI / 2 : 0;
+            collector.rot +=
+              shortestAngle(collector.rot, targetRot) * Math.min(1, dt * 0.005);
+
+            wipeFog(collector.x, collector.y, collector.r * 1.3, 0.1);
+            if (absorbInto(collector)) {
+              collector.wobA = Math.min(5, 2 + collector.r * 0.06);
+              collector.wob = 0;
+              if (navigator.vibrate) navigator.vibrate(4);
+            }
+            if (collector.wobA > 0.02) {
+              collector.wob += dt * 0.02;
+              collector.wobA *= Math.pow(0.994, dt);
+            }
+            if (collector.r >= BREAK_R) {
+              breakFree(collector.x, collector.y, collector.r);
+              collector.active = false; // 指からするっと抜けて、手には何も残らない
+              BREAK_R = 15;
+            }
+          }
+
+          for (let i = fallers.length - 1; i >= 0; i--) {
+            const f = fallers[i];
+            f.vy = Math.min(f.vy + dt * 0.0018, 0.9 + f.r * 0.008);
+            f.sway += dt * 0.003;
+            f.x += Math.sin(f.sway) * 0.35;
+            f.y += f.vy * dt * 0.35;
+            absorbInto(f, true);
+            wipeFog(f.x, f.y, f.r * 1.6, 0.28);
+            tryLight(f.x, f.y);
+            f.lastTrail += dt;
+            if (f.lastTrail > 60) {
+              f.lastTrail = 0;
+              f.trail.push({
+                x: f.x + rnd(-f.r * 0.3, f.r * 0.3),
+                y: f.y - f.r * 0.8,
+                r: rnd(1, 2.4),
+                a: 0.9,
+              });
+              if (Math.random() < 0.5)
+                spawnStuck(
+                  f.x + rnd(-f.r * 0.4, f.r * 0.4),
+                  f.y - f.r,
+                  rnd(1.2, 2.6),
+                  false,
+                );
+            }
+            for (const t of f.trail) t.a -= dt * 0.0006;
+            f.trail = f.trail.filter((t) => t.a > 0);
+            if (f.y - f.r > H) {
+              dropped++;
+              plopSound(f.r, f.x);
+              fallers.splice(i, 1);
+            }
+          }
+        }
+
+        /* ================= 描画 ================= */
+        function lampGlow(x, y, c, glow) {
+          // glow: 0〜1
+          const R = 50 + glow * 70;
+          const g = scx.createRadialGradient(x, y, 0, x, y, R);
+          g.addColorStop(0, `rgba(${c},${0.5 * glow})`);
+          g.addColorStop(0.4, `rgba(${c},${0.2 * glow})`);
+          g.addColorStop(1, `rgba(${c},0)`);
+          scx.fillStyle = g;
+          scx.beginPath();
+          scx.arc(x, y, R, 0, 6.2832);
+          scx.fill();
+          scx.beginPath();
+          scx.arc(x, y, 3 + glow * 2.5, 0, 6.2832);
+          scx.fillStyle = `rgba(255,252,240,${0.25 + 0.6 * glow})`;
+          scx.fill();
+        }
+        function lampDark(x, y) {
+          // 消えたランプ:灯るランプのグレー版
+          const R = 30;
+          const g = scx.createRadialGradient(x, y, 0, x, y, R);
+          g.addColorStop(0, "rgba(152,166,178,.15)");
+          g.addColorStop(0.4, "rgba(152,166,178,.06)");
+          g.addColorStop(1, "rgba(152,166,178,0)");
+          scx.fillStyle = g;
+          scx.beginPath();
+          scx.arc(x, y, R, 0, 6.2832);
+          scx.fill();
+          scx.beginPath();
+          scx.arc(x, y, 3.5, 0, 6.2832);
+          scx.fillStyle = "rgba(188,198,208,.32)";
+          scx.fill();
+        }
+        function drawLamp(x, y, L) {
+          if (L.stage === 1) lampDark(x, y);
+          else if (L.stage >= 2) lampGlow(x, y, L.c, 1);
+        }
+        function composeScene() {
+          // 背景+あかり+曇り → 雫はこれを映す
+          if (townBlend < 1) {
+            // 車窓のように、景色が右へ流れて次のまちが来る
+            const e = (1 - Math.cos(townBlend * PI)) / 2;
+            const off = e * W;
+            scx.drawImage(
+              bgPrev,
+              0,
+              0,
+              bgPrev.width,
+              bgPrev.height,
+              off,
+              0,
+              W,
+              H,
+            );
+            scx.drawImage(bg, 0, 0, bg.width, bg.height, off - W, 0, W, H);
+            // まちとまちの間は深い夜霧:境目そのものを見せない
+            const MW = W * 0.8,
+              x0 = off - MW / 2;
+            const hz = scx.createLinearGradient(x0, 0, x0 + MW, 0);
+            hz.addColorStop(0, "rgba(7,12,19,0)");
+            hz.addColorStop(0.35, "rgba(7,12,19,.72)");
+            hz.addColorStop(0.5, "rgba(7,12,19,.92)");
+            hz.addColorStop(0.65, "rgba(7,12,19,.72)");
+            hz.addColorStop(1, "rgba(7,12,19,0)");
+            scx.fillStyle = hz;
+            scx.fillRect(x0, 0, MW, H);
+            const fz = scx.createLinearGradient(x0, 0, x0 + MW, 0);
+            fz.addColorStop(0, "rgba(125,155,175,0)");
+            fz.addColorStop(0.5, "rgba(125,155,175,.11)");
+            fz.addColorStop(1, "rgba(125,155,175,0)");
+            scx.fillStyle = fz;
+            scx.fillRect(x0, 0, MW, H);
+            // 前のまちのあかりは、灯ったまま景色と一緒に流れて見えなくなる
+            for (const L of prevLights) {
+              if (L.stage <= 0 || L.x + off > W + 120) continue;
+              drawLamp(L.x + off, L.y, L);
+            }
+          } else {
+            scx.drawImage(bg, 0, 0, bg.width, bg.height, 0, 0, W, H);
+          }
+          for (const L of LIGHTS) {
+            if (L.stage <= 0) continue;
+            drawLamp(L.x, L.y, L);
+          }
+          scx.globalAlpha = FOGA;
+          scx.drawImage(fog, 0, 0, fog.width, fog.height, 0, 0, W, H);
+          scx.globalAlpha = 1;
+        }
+        function dropBody(r, stretch) {
+          ctx.beginPath();
+          ctx.ellipse(0, r * stretch * 0.06, r, r * stretch, 0, 0, 6.2832);
+        }
+        function drawSmear(r, stretch, tailLen, alpha) {
+          if (tailLen <= 0.01) return;
+          const top = -r * stretch - r * tailLen,
+            base = -r * stretch * 0.55;
+          const wTop = r * 0.42,
+            wBase = r * 0.8;
+          const g = ctx.createLinearGradient(0, top, 0, base);
+          g.addColorStop(0, "rgba(185,215,232,0)");
+          g.addColorStop(1, `rgba(185,215,232,${0.14 * alpha})`);
+          ctx.beginPath();
+          ctx.moveTo(-wTop, top);
+          ctx.quadraticCurveTo(-wBase, (top + base) / 2, -wBase, base);
+          ctx.lineTo(wBase, base);
+          ctx.quadraticCurveTo(wBase, (top + base) / 2, wTop, top);
+          ctx.closePath();
+          ctx.fillStyle = g;
+          ctx.fill();
+        }
+        function drawRefract(x, y, r, stretch, tailLen, alpha, rot = 0) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(rot);
+          const sh = ctx.createRadialGradient(
+            r * 0.1,
+            r * 0.34,
+            r * 0.2,
+            r * 0.1,
+            r * 0.34,
+            r * 1.3,
+          );
+          sh.addColorStop(0, `rgba(0,0,0,${0.28 * alpha})`);
+          sh.addColorStop(1, "rgba(0,0,0,0)");
+          ctx.fillStyle = sh;
+          ctx.beginPath();
+          ctx.arc(r * 0.1, r * 0.34, r * 1.3, 0, 6.2832);
+          ctx.fill();
+          drawSmear(r, stretch, tailLen, alpha);
+          dropBody(r, stretch);
+          ctx.clip();
+          // 曇りごと映す:雫の色が窓に馴染む
+          ctx.globalAlpha = alpha;
+          ctx.rotate(-rot);
+          ctx.scale(1.22, -1.22);
+          ctx.drawImage(scene, 0, 0, scene.width, scene.height, -x, -y, W, H);
+          ctx.restore();
+
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(rot);
+          ctx.globalAlpha = alpha;
+          dropBody(r, stretch);
+          ctx.clip();
+          const g = ctx.createLinearGradient(0, -r * stretch, 0, r * stretch);
+          g.addColorStop(0, "rgba(5,9,15,.45)");
+          g.addColorStop(0.5, "rgba(5,9,15,0)");
+          g.addColorStop(1, "rgba(220,242,252,.08)");
+          ctx.fillStyle = g;
+          ctx.fillRect(-r, -r * stretch - 1, r * 2, r * stretch * 2 + 2);
+          const cg = ctx.createRadialGradient(
+            0,
+            r * stretch * 0.5,
+            0,
+            0,
+            r * stretch * 0.5,
+            r * 0.85,
+          );
+          cg.addColorStop(0, `rgba(226,246,255,${0.26 * alpha})`);
+          cg.addColorStop(1, "rgba(226,246,255,0)");
+          ctx.fillStyle = cg;
+          ctx.fillRect(-r, -r * stretch, r * 2, r * stretch * 2);
+          ctx.restore();
+
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(rot);
+          ctx.globalAlpha = alpha;
+          dropBody(r, stretch);
+          ctx.strokeStyle = `rgba(8,14,22,${0.36 * alpha})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.ellipse(
+            -r * 0.34,
+            -r * stretch * 0.3,
+            r * 0.13,
+            r * 0.24,
+            -0.5,
+            0,
+            6.2832,
+          );
+          ctx.fillStyle = `rgba(240,250,255,${0.65 * alpha})`;
+          ctx.fill();
+          ctx.beginPath();
+          ctx.ellipse(
+            r * 0.28,
+            r * stretch * 0.42,
+            r * 0.09,
+            r * 0.05,
+            0.4,
+            0,
+            6.2832,
+          );
+          ctx.fillStyle = `rgba(240,250,255,${0.25 * alpha})`;
+          ctx.fill();
+          ctx.restore();
+        }
+        function drawDot(x, y, r, a, sq = 1, rot = 0) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(rot);
+          ctx.scale(1, sq);
+          const sh = ctx.createRadialGradient(
+            r * 0.12,
+            r * 0.3,
+            0,
+            r * 0.12,
+            r * 0.3,
+            r * 1.15,
+          );
+          sh.addColorStop(0, `rgba(0,0,0,${0.22 * a})`);
+          sh.addColorStop(1, "rgba(0,0,0,0)");
+          ctx.fillStyle = sh;
+          ctx.beginPath();
+          ctx.arc(r * 0.12, r * 0.3, r * 1.15, 0, 6.2832);
+          ctx.fill();
+          const g = ctx.createRadialGradient(0, r * 0.2, 0, 0, 0, r);
+          g.addColorStop(0, `rgba(205,232,246,${0.2 * a})`);
+          g.addColorStop(0.6, `rgba(150,190,214,${0.1 * a})`);
+          g.addColorStop(1, `rgba(10,18,28,${0.3 * a})`);
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(0, 0, r, 0, 6.2832);
+          ctx.fill();
+          const cg = ctx.createRadialGradient(
+            0,
+            r * 0.35,
+            0,
+            0,
+            r * 0.35,
+            r * 0.8,
+          );
+          cg.addColorStop(0, `rgba(232,248,255,${0.26 * a})`);
+          cg.addColorStop(1, "rgba(232,248,255,0)");
+          ctx.fillStyle = cg;
+          ctx.beginPath();
+          ctx.arc(0, 0, r, 0, 6.2832);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(-r * 0.34, -r * 0.36, Math.max(0.5, r * 0.18), 0, 6.2832);
+          ctx.fillStyle = `rgba(248,252,255,${0.6 * a})`;
+          ctx.fill();
+          ctx.restore();
+        }
+
+        function render() {
+          composeScene();
+          ctx.drawImage(scene, 0, 0, scene.width, scene.height, 0, 0, W, H);
+
+          for (const s of stuck) {
+            if (s.r < 6) drawDot(s.x, s.y, s.r, s.a, s.sq, s.rot);
+            else
+              drawRefract(s.x, s.y, s.r, s.sq, s.tail * 0.5, s.a, s.rot * 0.4);
+          }
+          for (const f of fallers) {
+            for (const t of f.trail) drawDot(t.x, t.y, t.r, t.a);
+            const st = Math.min(1.5, 1 + f.vy * 0.45);
+            drawRefract(f.x, f.y, f.r / Math.sqrt(st), st, 0.6 + f.vy * 0.9, 1);
+          }
+          if (collector.active) {
+            const sq = 1 + Math.sin(collector.wob) * collector.wobA * 0.02;
+            const move = Math.min(0.4, collector.speed * 0.045);
+            drawRefract(
+              collector.x,
+              collector.y,
+              (collector.r * sq) / (1 + move * 0.5),
+              (1 + move) / sq,
+              0.25 + move * 1.6,
+              1,
+              collector.rot,
+            );
+            if (collector.r > BREAK_R * 0.8) {
+              ctx.beginPath();
+              ctx.ellipse(
+                collector.x,
+                collector.y + collector.r * 1.05,
+                collector.r * 0.5,
+                collector.r * 0.14,
+                0,
+                0,
+                6.2832,
+              );
+              ctx.fillStyle = "rgba(200,230,245,.10)";
+              ctx.fill();
+            }
+          }
+        }
+
+        function loop(t) {
+          const dt = Math.min(50, t - last);
+          last = t;
+          update(dt);
+          render();
+          requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+      })();
+    </script>
+  </body>
 </html>
