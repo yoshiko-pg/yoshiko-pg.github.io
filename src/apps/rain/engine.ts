@@ -45,6 +45,15 @@ interface TrailDot {
   a: number;
 }
 
+interface Slurp {
+  x0: number;
+  y0: number;
+  r: number;
+  t: number;
+  /** 吸い込み先(collectorや落下中の雫)。動くので参照で持つ */
+  tgt: { x: number; y: number };
+}
+
 interface Faller {
   x: number;
   y: number;
@@ -616,6 +625,9 @@ export function createRainEngine(
     speed: 0,
   };
 
+  const slurps: Slurp[] = []; // ちゅるんと吸い込まれていく途中の雫
+  const SLURP_MS = 130;
+
   function absorbInto(
     t: { x: number; y: number; r: number },
     silent?: boolean,
@@ -626,6 +638,7 @@ export function createRainEngine(
       if (Math.hypot(t.x - s.x, t.y - s.y) < t.r * 0.92 + s.r) {
         t.r = Math.min(50, Math.sqrt(t.r * t.r + s.r * s.r * 0.95));
         stuck.splice(i, 1);
+        slurps.push({ x0: s.x, y0: s.y, r: s.r, t: 0, tgt: t });
         if (!silent) tickSound(t.r); // 音が鳴るのは指で集めた時だけ
         got = true;
       }
@@ -894,6 +907,11 @@ export function createRainEngine(
         collector.active = false; // 指からするっと抜けて、手には何も残らない
         BREAK_R = 15;
       }
+    }
+
+    for (let i = slurps.length - 1; i >= 0; i--) {
+      slurps[i].t += dt;
+      if (slurps[i].t >= SLURP_MS) slurps.splice(i, 1);
     }
 
     for (let i = fallers.length - 1; i >= 0; i--) {
@@ -1206,6 +1224,14 @@ export function createRainEngine(
     for (const s of stuck) {
       if (s.r < 6) drawDot(s.x, s.y, s.r, s.a, s.sq, s.rot);
       else drawRefract(s.x, s.y, s.r, s.sq, s.tail * 0.5, s.a, s.rot * 0.4);
+    }
+    for (const sl of slurps) {
+      // ちゅるん:吸い込み先へ滑り込みながら縮んで消える
+      const p = sl.t / SLURP_MS;
+      const e = p * p; // 加速しながら吸い込まれる
+      const x = sl.x0 + (sl.tgt.x - sl.x0) * e;
+      const y = sl.y0 + (sl.tgt.y - sl.y0) * e;
+      drawDot(x, y, sl.r * (1 - p * 0.6), 1 - p * 0.5);
     }
     for (const f of fallers) {
       for (const t of f.trail) drawDot(t.x, t.y, t.r, t.a);
