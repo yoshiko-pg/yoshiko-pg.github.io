@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createRainEngine, type RainEngine } from "./engine";
+import { usePwaManifest } from "../../hooks/usePwaManifest";
 import styles from "./RainApp.module.css";
 
 function RainApp() {
@@ -12,6 +13,8 @@ function RainApp() {
   const [title, setTitle] = useState("RAIN.");
   const [titleFaded, setTitleFaded] = useState(false);
   const titleTimers = useRef<number[]>([]);
+
+  usePwaManifest("/apps/rain/");
 
   useEffect(() => {
     document.title = "RAIN.";
