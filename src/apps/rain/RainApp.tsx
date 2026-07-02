@@ -82,7 +82,7 @@ function RainApp() {
         <div className={styles.btns}>
           <button
             type="button"
-            className={`${styles.ctl} ${autoMode ? styles.on : ""}`}
+            className={`${styles.ctl} ${autoMode ? "" : styles.dim}`}
             aria-pressed={autoMode}
             aria-label="雨がふるモード切替"
             onClick={toggleAuto}

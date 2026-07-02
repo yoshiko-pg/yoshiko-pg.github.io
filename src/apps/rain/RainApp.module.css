@@ -119,21 +119,6 @@
   }
 }
 
-.ctl.on {
-  /* ながめる中:あかりのように灯る */
-  & .ic {
-    background: rgba(255, 214, 150, 0.14);
-    border-color: rgba(255, 220, 170, 0.55);
-    box-shadow: 0 0 16px rgba(255, 214, 150, 0.28);
-    color: #ffe9c9;
-  }
-
-  & .lbl {
-    opacity: 0.85;
-    color: #ffe9c9;
-  }
-}
-
 .ctl.dim {
   & .ic {
     opacity: 0.4;
