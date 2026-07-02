@@ -859,12 +859,12 @@ export function createRainEngine(
     scx.fillStyle = `rgba(255,252,240,${0.25 + 0.6 * glow})`;
     scx.fill();
   }
-  function lampDark(x: number, y: number) {
+  function lampDark(x: number, y: number, a = 1) {
     // 消えたランプ:灯るランプのグレー版
     const R = 30;
     const g = scx.createRadialGradient(x, y, 0, x, y, R);
-    g.addColorStop(0, "rgba(152,166,178,.15)");
-    g.addColorStop(0.4, "rgba(152,166,178,.06)");
+    g.addColorStop(0, `rgba(152,166,178,${0.15 * a})`);
+    g.addColorStop(0.4, `rgba(152,166,178,${0.06 * a})`);
     g.addColorStop(1, "rgba(152,166,178,0)");
     scx.fillStyle = g;
     scx.beginPath();
@@ -872,12 +872,12 @@ export function createRainEngine(
     scx.fill();
     scx.beginPath();
     scx.arc(x, y, 3.5, 0, 6.2832);
-    scx.fillStyle = "rgba(188,198,208,.32)";
+    scx.fillStyle = `rgba(188,198,208,${0.32 * a})`;
     scx.fill();
   }
-  function drawLamp(x: number, y: number, L: Light) {
-    if (L.stage === 1) lampDark(x, y);
-    else if (L.stage >= 2) lampGlow(x, y, L.c, 1);
+  function drawLamp(x: number, y: number, L: Light, fade = 1) {
+    if (L.stage === 1) lampDark(x, y, fade);
+    else if (L.stage >= 2) lampGlow(x, y, L.c, fade);
   }
   function composeScene() {
     // 背景+あかり+曇り → 雫はこれを映す
@@ -904,10 +904,11 @@ export function createRainEngine(
       fz.addColorStop(1, "rgba(125,155,175,0)");
       scx.fillStyle = fz;
       scx.fillRect(x0, 0, MW, H);
-      // 前のまちのあかりは、灯ったまま景色と一緒に流れて見えなくなる
+      // 前のまちのあかりは、景色と一緒に流れながらだんだん暗くなっていく
+      const lampFade = Math.max(0, 1 - townBlend * 1.6);
       for (const L of prevLights) {
-        if (L.stage <= 0 || L.x + off > W + 120) continue;
-        drawLamp(L.x + off, L.y, L);
+        if (L.stage <= 0 || L.x + off > W + 120 || lampFade <= 0) continue;
+        drawLamp(L.x + off, L.y, L, lampFade);
       }
     } else {
       scx.drawImage(bg, 0, 0, bg.width, bg.height, 0, 0, W, H);
