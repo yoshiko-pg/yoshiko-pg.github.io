@@ -492,6 +492,10 @@ export function createRainEngine(
           src.buffer = buf;
           src.loop = true;
           src.connect(rg);
+          // いきなり鳴らさず、雨がだんだん聴こえてくるように
+          const target = rg.gain.value;
+          rg.gain.value = 0;
+          rg.gain.setTargetAtTime(target, AC!.currentTime, 1.4);
           src.start();
         });
     }
