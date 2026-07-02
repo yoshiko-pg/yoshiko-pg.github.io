@@ -35,17 +35,37 @@ async function generateStaticPages() {
     const indexHtml = ejs.render(indexTemplate, {
       jsFile,
       cssFile,
+      title: "yoshiko",
+      description: "登壇資料置き場",
+      ogImage: "https://yoshiko-pg.github.io/og.png",
+      pageUrl: "https://yoshiko-pg.github.io/",
     });
     await fs.writeFile(path.join(distDir, "index.html"), indexHtml);
     console.log("Generated: /index.html with OGP");
 
     // Generate app pages (/apps/* のミニアプリはクライアントサイドルート)
-    const appPaths = ["apps/rain"];
-    for (const appPath of appPaths) {
-      const appDir = path.join(distDir, appPath);
+    const apps = [
+      {
+        path: "apps/rain",
+        title: "RAIN.",
+        description:
+          "雨の日の窓ガラス。しずくをつれていくと、まちにあかりが灯る。",
+        ogImage: "https://yoshiko-pg.github.io/screenshots/rain.jpg",
+      },
+    ];
+    for (const app of apps) {
+      const appHtml = ejs.render(indexTemplate, {
+        jsFile,
+        cssFile,
+        title: app.title,
+        description: app.description,
+        ogImage: app.ogImage,
+        pageUrl: `https://yoshiko-pg.github.io/${app.path}/`,
+      });
+      const appDir = path.join(distDir, app.path);
       await fs.mkdir(appDir, { recursive: true });
-      await fs.writeFile(path.join(appDir, "index.html"), indexHtml);
-      console.log(`Generated: /${appPath}/index.html`);
+      await fs.writeFile(path.join(appDir, "index.html"), appHtml);
+      console.log(`Generated: /${app.path}/index.html`);
     }
 
     // Generate talk pages
