@@ -1112,19 +1112,19 @@ export function createRainEngine(
     if (mist > 0.005) {
       // まちとまちの間の深い夜霧:動き出す前にふわっと現れて切れ目を隠し、
       // 着いたあとは右端に残ったままふわっと晴れていく(濃さはmist、位置はmistX)
-      const MW = W * 0.8,
+      const MW = W * 1.1,
         x0 = mistX - MW / 2;
       const hz = scx.createLinearGradient(x0, 0, x0 + MW, 0);
       hz.addColorStop(0, "rgba(7,12,19,0)");
-      hz.addColorStop(0.35, `rgba(7,12,19,${0.72 * mist})`);
-      hz.addColorStop(0.5, `rgba(7,12,19,${0.92 * mist})`);
-      hz.addColorStop(0.65, `rgba(7,12,19,${0.72 * mist})`);
+      hz.addColorStop(0.3, `rgba(7,12,19,${0.88 * mist})`);
+      hz.addColorStop(0.5, `rgba(7,12,19,${0.99 * mist})`);
+      hz.addColorStop(0.7, `rgba(7,12,19,${0.88 * mist})`);
       hz.addColorStop(1, "rgba(7,12,19,0)");
       scx.fillStyle = hz;
       scx.fillRect(x0, -M, MW, H + M * 2);
       const fz = scx.createLinearGradient(x0, 0, x0 + MW, 0);
       fz.addColorStop(0, "rgba(125,155,175,0)");
-      fz.addColorStop(0.5, `rgba(125,155,175,${0.11 * mist})`);
+      fz.addColorStop(0.5, `rgba(125,155,175,${0.14 * mist})`);
       fz.addColorStop(1, "rgba(125,155,175,0)");
       scx.fillStyle = fz;
       scx.fillRect(x0, -M, MW, H + M * 2);
