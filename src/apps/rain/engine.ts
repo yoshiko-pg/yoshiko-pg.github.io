@@ -321,6 +321,8 @@ export function createRainEngine(
   let FLAVORS: string[] | null = null; // WAKE_TEXTSとTRAVEL_TEXTSを合わせたもの(初回に生成)
   let townIdx = 0,
     townBlend = 1; // 1=切替完了
+  let mist = 0, // 夜霧の濃さ(移動の前にふわっと現れ、着くまえに晴れる)
+    mistOn = false;
   let prevLights: Light[] = []; // 流れていく前のまちのあかり
   const bgPrev = document.createElement("canvas"),
     bpx = bgPrev.getContext("2d")!;
@@ -449,6 +451,8 @@ export function createRainEngine(
     scene.height = H * DPR;
     scx.setTransform(DPR, 0, 0, DPR, 0, 0);
     townBlend = 1; // リサイズ時は移り変わりを打ち切る
+    mistOn = false;
+    mist = 0;
     paintBackground();
     paintFog();
   }
@@ -804,6 +808,7 @@ export function createRainEngine(
             if (!FLAVORS) FLAVORS = [...WAKE_TEXTS, ...TRAVEL_TEXTS];
             hooks.showFlavor(pick(FLAVORS));
             later(() => hooks.fadeHint(), 7400); // 移動が終わる頃まで
+            later(() => (mistOn = true), 1400); // 動き出す前に夜霧で切れ目を隠す
             later(nextTown, 3200); // 余韻のあとで次のまちへ
           }
         }
@@ -835,8 +840,10 @@ export function createRainEngine(
     // まちの移り変わりを進める
     if (townBlend < 1) {
       townBlend = Math.min(1, townBlend + dt / 5200);
+      if (townBlend >= 0.78) mistOn = false; // 着くまえに霧は晴れていく
       if (townBlend >= 1) prevLights.length = 0; // 前のまちのあかりは見えなくなった
     }
+    mist += ((mistOn ? 1 : 0) - mist) * (1 - Math.pow(0.9965, dt));
 
     // 曇りは初期の濃さを上限にじんわり戻る(全部拭いても30秒ほどで元どおり)
     fogRegrow += dt;
@@ -1019,10 +1026,10 @@ export function createRainEngine(
       oy = -paraY * PARA_AY;
     scx.save();
     scx.translate(ox, oy);
+    // 車窓のように、景色が右へ流れて次のまちが来る(off=切れ目の位置)
+    const eB = townBlend < 1 ? (1 - Math.cos(townBlend * PI)) / 2 : 0;
+    const off = eB * W;
     if (townBlend < 1) {
-      // 車窓のように、景色が右へ流れて次のまちが来る
-      const e = (1 - Math.cos(townBlend * PI)) / 2;
-      const off = e * W;
       scx.drawImage(
         bgPrev,
         0,
@@ -1045,31 +1052,6 @@ export function createRainEngine(
         W + M * 2,
         H + M * 2,
       );
-      // まちとまちの間は深い夜霧:境目そのものを見せない
-      // 移行の入りと終わりでは霧自体を薄くして、消える瞬間を見せない
-      const bandA = Math.min(1, townBlend * 5, (1 - townBlend) * 3.5);
-      const MW = W * 0.8,
-        x0 = off - MW / 2;
-      const hz = scx.createLinearGradient(x0, 0, x0 + MW, 0);
-      hz.addColorStop(0, "rgba(7,12,19,0)");
-      hz.addColorStop(0.35, `rgba(7,12,19,${0.72 * bandA})`);
-      hz.addColorStop(0.5, `rgba(7,12,19,${0.92 * bandA})`);
-      hz.addColorStop(0.65, `rgba(7,12,19,${0.72 * bandA})`);
-      hz.addColorStop(1, "rgba(7,12,19,0)");
-      scx.fillStyle = hz;
-      scx.fillRect(x0, 0, MW, H);
-      const fz = scx.createLinearGradient(x0, 0, x0 + MW, 0);
-      fz.addColorStop(0, "rgba(125,155,175,0)");
-      fz.addColorStop(0.5, `rgba(125,155,175,${0.11 * bandA})`);
-      fz.addColorStop(1, "rgba(125,155,175,0)");
-      scx.fillStyle = fz;
-      scx.fillRect(x0, 0, MW, H);
-      // 前のまちのあかりは、景色と一緒に流れながらだんだん暗くなっていく
-      const lampFade = Math.max(0, 1 - townBlend * 1.6);
-      for (const L of prevLights) {
-        if (L.stage <= 0 || L.x + off > W + 120 || lampFade <= 0) continue;
-        drawLamp(L.x + off, L.y, L, lampFade);
-      }
     } else {
       scx.drawImage(
         bg,
@@ -1082,6 +1064,34 @@ export function createRainEngine(
         W + M * 2,
         H + M * 2,
       );
+    }
+    if (mist > 0.005) {
+      // まちとまちの間の深い夜霧:動き出す前にふわっと現れて切れ目を隠し、
+      // 着くまえに晴れていく(濃さはmistが持つ)
+      const MW = W * 0.8,
+        x0 = off - MW / 2;
+      const hz = scx.createLinearGradient(x0, 0, x0 + MW, 0);
+      hz.addColorStop(0, "rgba(7,12,19,0)");
+      hz.addColorStop(0.35, `rgba(7,12,19,${0.72 * mist})`);
+      hz.addColorStop(0.5, `rgba(7,12,19,${0.92 * mist})`);
+      hz.addColorStop(0.65, `rgba(7,12,19,${0.72 * mist})`);
+      hz.addColorStop(1, "rgba(7,12,19,0)");
+      scx.fillStyle = hz;
+      scx.fillRect(x0, -M, MW, H + M * 2);
+      const fz = scx.createLinearGradient(x0, 0, x0 + MW, 0);
+      fz.addColorStop(0, "rgba(125,155,175,0)");
+      fz.addColorStop(0.5, `rgba(125,155,175,${0.11 * mist})`);
+      fz.addColorStop(1, "rgba(125,155,175,0)");
+      scx.fillStyle = fz;
+      scx.fillRect(x0, -M, MW, H + M * 2);
+    }
+    if (townBlend < 1) {
+      // 前のまちのあかりは、景色と一緒に流れながらだんだん暗くなっていく
+      const lampFade = Math.max(0, 1 - townBlend * 1.6);
+      for (const L of prevLights) {
+        if (L.stage <= 0 || L.x + off > W + 120 || lampFade <= 0) continue;
+        drawLamp(L.x + off, L.y, L, lampFade);
+      }
     }
     for (const L of LIGHTS) {
       if (L.stage <= 0) continue;
