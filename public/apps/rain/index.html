@@ -398,11 +398,10 @@ function tickSound(r){
 }
 function slipSound(){ tone(300,.32,.035,"sine",.5); }
 function plopSound(r,x){ // 落ちた場所で音程が変わる(左が低く右が高く)
+  tone(430-r*2.2, .16, .13, "sine", .5);
   const idx=Math.max(0,Math.min(4,Math.floor(x/W*5)));
-  const f=392*Math.pow(2,PENTA[idx]/12)*(r>34?1:2); // 大きい雫は低め
-  tone(f,1.9,.10,"sine");                 // 立ち上がりの速い基音(打鍵感)
-  tone(f*2,.6,.035,"sine",0,0,.008);      // 打鍵の明るい倍音
-  tone(f*3,.25,.012,"sine",0,0,.006);     // ごく薄いきらめき
+  const f=196*Math.pow(2,PENTA[idx]/12)*(r>34?1:2); // 大きい雫は低め
+  tone(f,1.8,.07,"sine",0,.06);
 }
 function revealSound(){ // ランプが姿を見せる、ひそやかな音
   tone(233,.4,.028,"sine",.8);
