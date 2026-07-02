@@ -768,7 +768,7 @@ export function createRainEngine(
     for (const L of LIGHTS) {
       if (L.cool > 0) L.cool -= dt;
       // 灯るときはぱっとではなく、ふわっと明るくなる
-      if (L.stage >= 2 && L.glow < 1) L.glow = Math.min(1, L.glow + dt / 600);
+      if (L.stage >= 2 && L.glow < 1) L.glow = Math.min(1, L.glow + dt / 280);
     }
 
     autoTimer -= dt;
