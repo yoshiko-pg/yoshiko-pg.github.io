@@ -1,3 +1,4 @@
+import AppsList from "../components/AppsList";
 import TalksList from "../components/TalksList";
 import Footer from "../components/Footer";
 import styles from "./Home.module.css";
@@ -20,8 +21,16 @@ export default function Home() {
         </a>
       </section>
 
+      <section className={styles.apps}>
+        <div className={styles.sectionContainer}>
+          <h2 className={styles.sectionTitle}>Apps</h2>
+          <AppsList />
+        </div>
+      </section>
+
       <section className={styles.talks}>
         <div className={styles.sectionContainer}>
+          <h2 className={styles.sectionTitle}>Slides</h2>
           <TalksList />
         </div>
       </section>

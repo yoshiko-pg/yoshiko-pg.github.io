@@ -59,8 +59,22 @@
   }
 }
 
+.apps {
+  background: var(--color-background);
+  margin-bottom: 3rem;
+}
+
 .talks {
   background: var(--color-background);
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--color-text);
+  max-width: 1000px;
+  margin: 0 auto 1.5rem;
 }
 
 .sectionContainer {
