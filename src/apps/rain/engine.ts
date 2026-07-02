@@ -585,7 +585,7 @@ export function createRainEngine(
   function randR() {
     // たまに大粒も混ざる
     const q = Math.random();
-    return q < 0.76 ? rnd(2.4, 5.2) : q < 0.93 ? rnd(6, 9.5) : rnd(10, 16);
+    return q < 0.76 ? rnd(4.8, 7) : q < 0.93 ? rnd(6, 9.5) : rnd(10, 16);
   }
   function spawnStuck(
     x?: number | null,
@@ -914,14 +914,14 @@ export function createRainEngine(
         f.trail.push({
           x: f.x + rnd(-f.r * 0.3, f.r * 0.3),
           y: f.y - f.r * 0.8,
-          r: rnd(1.5, 2.4),
+          r: rnd(3, 4.8),
           a: 0.9,
         });
         if (Math.random() < 0.5)
           spawnStuck(
             f.x + rnd(-f.r * 0.4, f.r * 0.4),
             f.y - f.r,
-            rnd(1.8, 2.6),
+            rnd(3.6, 5.2),
             false,
           );
       }
