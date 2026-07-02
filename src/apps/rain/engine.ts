@@ -664,6 +664,13 @@ export function createRainEngine(
   /* ================= 入力 ================= */
   let hintShown = true;
   const pointer = { down: false, x: 0, y: 0 };
+  // 視差:ポインタ位置に合わせて、窓の外の景色だけがわずかにずれる
+  let paraX = 0, // なめらかに追従する現在値(-0.5〜0.5)
+    paraY = 0,
+    paraTX = 0, // 目標値
+    paraTY = 0;
+  const PARA_AX = 10, // 揺れ幅(px)
+    PARA_AY = 6;
   let tapT = 0, // シングルタップ判定用:押した時刻と場所
     tapX = 0,
     tapY = 0;
@@ -713,6 +720,8 @@ export function createRainEngine(
     }
   }
   function onPointerMove(e: PointerEvent) {
+    paraTX = e.clientX / W - 0.5;
+    paraTY = e.clientY / H - 0.5;
     if (!pointer.down) return;
     pointer.x = e.clientX;
     pointer.y = e.clientY;
@@ -841,6 +850,11 @@ export function createRainEngine(
       wakeT += dt;
       if (wakeT > 3600) wakeT = -1;
     }
+
+    // 視差はゆっくり目標に追いつく
+    const pk = 1 - Math.pow(0.985, dt / 16.7);
+    paraX += (paraTX - paraX) * pk;
+    paraY += (paraTY - paraY) * pk;
 
     autoTimer -= dt;
     if (autoTimer < 0) {
@@ -995,12 +1009,38 @@ export function createRainEngine(
   }
   function composeScene() {
     // 背景+あかり+曇り → 雫はこれを映す
+    // 窓の外の景色だけ視差でわずかに揺れる(雫と曇りは窓面なので動かない)
+    const M = 14, // 端が見切れないための余白
+      ox = -paraX * PARA_AX,
+      oy = -paraY * PARA_AY;
+    scx.save();
+    scx.translate(ox, oy);
     if (townBlend < 1) {
       // 車窓のように、景色が右へ流れて次のまちが来る
       const e = (1 - Math.cos(townBlend * PI)) / 2;
       const off = e * W;
-      scx.drawImage(bgPrev, 0, 0, bgPrev.width, bgPrev.height, off, 0, W, H);
-      scx.drawImage(bg, 0, 0, bg.width, bg.height, off - W, 0, W, H);
+      scx.drawImage(
+        bgPrev,
+        0,
+        0,
+        bgPrev.width,
+        bgPrev.height,
+        off - M,
+        -M,
+        W + M * 2,
+        H + M * 2,
+      );
+      scx.drawImage(
+        bg,
+        0,
+        0,
+        bg.width,
+        bg.height,
+        off - W - M,
+        -M,
+        W + M * 2,
+        H + M * 2,
+      );
       // まちとまちの間は深い夜霧:境目そのものを見せない
       // 移行の入りと終わりでは霧自体を薄くして、消える瞬間を見せない
       const bandA = Math.min(1, townBlend * 5, (1 - townBlend) * 3.5);
@@ -1027,7 +1067,17 @@ export function createRainEngine(
         drawLamp(L.x + off, L.y, L, lampFade);
       }
     } else {
-      scx.drawImage(bg, 0, 0, bg.width, bg.height, 0, 0, W, H);
+      scx.drawImage(
+        bg,
+        0,
+        0,
+        bg.width,
+        bg.height,
+        -M,
+        -M,
+        W + M * 2,
+        H + M * 2,
+      );
     }
     for (const L of LIGHTS) {
       if (L.stage <= 0) continue;
@@ -1042,6 +1092,7 @@ export function createRainEngine(
       scx.fillStyle = g;
       scx.fillRect(0, 0, W, H);
     }
+    scx.restore(); // 視差はここまで。曇りは窓面なのでずれない
     scx.globalAlpha = FOGA;
     scx.drawImage(fog, 0, 0, fog.width, fog.height, 0, 0, W, H);
     scx.globalAlpha = 1;
