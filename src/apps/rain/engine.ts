@@ -34,6 +34,8 @@ interface Stuck {
   tail: number;
   sq: number;
   rot: number;
+  /** 蒸発までの残り時間(ms)。操作できるサイズの雫はInfinity */
+  life: number;
 }
 
 interface TrailDot {
@@ -580,6 +582,8 @@ export function createRainEngine(
     INITIAL = 88,
     BASE_R = 7; // 最初はまばら、雨で増えていく
   let BREAK_R = 15; // 落下サイズは以前の7割
+  const GRAB_MIN = 4, // これ未満の水滴は操作対象にならず
+    EVAP_MS = 5000; // やがて蒸発して消える
   const rnd = (a: number, b: number) => a + Math.random() * (b - a);
 
   function randR() {
@@ -601,6 +605,7 @@ export function createRainEngine(
       const s = stuck[i];
       if (Math.hypot(s.x - nx, s.y - ny) < s.r * 0.92 + nr) {
         s.r = Math.min(50, Math.sqrt(s.r * s.r + nr * nr * 0.95));
+        if (s.r >= GRAB_MIN) s.life = Infinity; // 育ったら蒸発しない
         if (s.r >= BREAK_R) {
           // 重くなりすぎたら、ひとりでに流れ出す
           stuck.splice(i, 1);
@@ -617,6 +622,7 @@ export function createRainEngine(
       tail: rnd(0.4, 1.1),
       sq: rnd(0.88, 1.12),
       rot: rnd(-0.3, 0.3),
+      life: nr < GRAB_MIN ? EVAP_MS : Infinity,
     });
   }
   for (let i = 0; i < INITIAL; i++) spawnStuck();
@@ -683,6 +689,7 @@ export function createRainEngine(
     // 触れた場所に雫があれば掴む。なければ何も起きない
     for (let i = stuck.length - 1; i >= 0; i--) {
       const s = stuck[i];
+      if (s.r < GRAB_MIN) continue; // 小さな水滴は掴めない
       if (Math.hypot(s.x - x, s.y - y) < s.r + 16) {
         stuck.splice(i, 1);
         collector.active = true;
@@ -750,6 +757,7 @@ export function createRainEngine(
         tail: 0.8,
         sq: 1,
         rot: 0,
+        life: Infinity,
       });
     }
   }
@@ -811,7 +819,19 @@ export function createRainEngine(
     // 雨が降り続ける:結露がどんどん増える(雨脚とまちの気候しだい)
     if (stuck.length < TARGET && Math.random() < (0.08 + 0.3 * rainy) * TR.pace)
       spawnStuck(null, null, null, true);
-    for (const s of stuck) if (s.a < 1) s.a = Math.min(1, s.a + dt * 0.002);
+    for (let i = stuck.length - 1; i >= 0; i--) {
+      const s = stuck[i];
+      if (s.a < 1) s.a = Math.min(1, s.a + dt * 0.002);
+      if (s.life !== Infinity) {
+        // 小さな水滴はやがて蒸発する
+        s.life -= dt;
+        if (s.life <= 0) {
+          stuck.splice(i, 1);
+          continue;
+        }
+        if (s.life < 900) s.a = Math.min(s.a, s.life / 900);
+      }
+    }
 
     // まちの移り変わりを進める
     if (townBlend < 1) {
@@ -928,14 +948,14 @@ export function createRainEngine(
         f.trail.push({
           x: f.x + rnd(-f.r * 0.3, f.r * 0.3),
           y: f.y - f.r * 0.8,
-          r: rnd(3, 4.8),
+          r: rnd(1.5, 2.4),
           a: 0.9,
         });
         if (Math.random() < 0.5)
           spawnStuck(
             f.x + rnd(-f.r * 0.4, f.r * 0.4),
             f.y - f.r,
-            rnd(3.6, 5.2),
+            rnd(1.8, 2.6),
             false,
           );
       }
