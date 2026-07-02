@@ -1,6 +1,8 @@
 // 雨の日の窓ガラスのシミュレーション本体。
 // DOM は canvas だけを受け取り、UI(ヒント文など)への通知は hooks 経由で行う。
 
+import rainLoopUrl from "./rain_loop.mp3";
+
 export interface RainHooks {
   /** まちが全部灯ったときなどに流れる一言を表示する */
   showFlavor(text: string): void;
@@ -444,27 +446,28 @@ export function createRainEngine(
       master = AC.createGain();
       master.gain.value = muted ? 0 : 0.55;
       master.connect(AC.destination);
-      // 雨音:遠くの雨のごうごう、これひとつだけ
-      const len = AC.sampleRate * 2,
-        buf = AC.createBuffer(1, len, AC.sampleRate);
-      const ch = buf.getChannelData(0);
-      let l = 0;
-      for (let i = 0; i < len; i++) {
-        l = l * 0.97 + (Math.random() * 2 - 1) * 0.03;
-        ch[i] = l * 3;
-      }
-      const src = AC.createBufferSource();
-      src.buffer = buf;
-      src.loop = true;
-      const lp = AC.createBiquadFilter();
-      lp.type = "lowpass";
-      lp.frequency.value = 700;
+      // 雨音BGM:録音した雨のループ、これひとつだけ
       const rg = AC.createGain();
-      rg.gain.value = 0.16;
-      src.connect(lp);
-      lp.connect(rg);
+      rg.gain.value = 0.15; // 基準音量
       rg.connect(master);
-      src.start();
+      // 遠くなったり近くなったり、ゆるやかな強弱のゆらぎ
+      const lfo = AC.createOscillator();
+      lfo.frequency.value = 1 / 28; // 28秒でひとまわり
+      const lfoDepth = AC.createGain();
+      lfoDepth.gain.value = 0.06;
+      lfo.connect(lfoDepth);
+      lfoDepth.connect(rg.gain);
+      lfo.start();
+      void fetch(rainLoopUrl)
+        .then((res) => res.arrayBuffer())
+        .then((data) => AC!.decodeAudioData(data))
+        .then((buf) => {
+          const src = AC!.createBufferSource();
+          src.buffer = buf;
+          src.loop = true;
+          src.connect(rg);
+          src.start();
+        });
     }
     if (AC.state === "suspended") void AC.resume();
     return AC;
