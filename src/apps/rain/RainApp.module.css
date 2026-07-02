@@ -104,10 +104,6 @@
     transition: opacity 0.6s ease;
   }
 
-  &:hover {
-    border-color: transparent;
-  }
-
   &:focus,
   &:focus-visible {
     outline: none;

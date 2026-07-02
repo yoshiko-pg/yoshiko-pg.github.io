@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createRainEngine, type RainEngine } from "./engine";
 import { usePwaManifest } from "../../hooks/usePwaManifest";
 import styles from "./RainApp.module.css";
@@ -8,7 +8,7 @@ function RainApp() {
   const engineRef = useRef<RainEngine | null>(null);
   const [muted, setMuted] = useState(false);
   const [autoMode, setAutoMode] = useState(true); // 雨は最初から降っている
-  const [hint, setHint] = useState<ReactNode>(null);
+  const [hint, setHint] = useState<string | null>(null);
   const [hintFaded, setHintFaded] = useState(false);
   const [title, setTitle] = useState("RAIN.");
   const [titleFaded, setTitleFaded] = useState(false);
@@ -87,7 +87,7 @@ function RainApp() {
                 <path d="M18.2 15.4l-1.9 5" />
               </svg>
             </span>
-            <span className={styles.lbl}>RAIN</span>
+            <span className={styles.lbl}>AUTO</span>
           </button>
           <button
             type="button"

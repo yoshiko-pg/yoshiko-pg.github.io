@@ -69,16 +69,18 @@ interface Faller {
   lastTrail: number;
 }
 
-type LightDef = [number, number, number, string, number];
+/** あかりの見た目:半径(画面比) / 色 / 明るさ。場所は毎回ランダムに決まる */
+type LightDef = [number, string, number];
 
 interface Town {
   name: string;
   base: [string, string, string];
   lights: LightDef[];
   spark: [string, string];
-  /** 雨の表情:雫の落下速度 / 結露と自動落下のペース / BGM音量、それぞれの係数 */
-  rain: { fall: number; pace: number; bgm: number };
 }
+
+/** 雨の表情:雫の落下速度 / 結露と自動落下のペース / BGM音量、それぞれの係数 */
+const RAIN = { fall: 0.9, pace: 0.9, bgm: 0.9 };
 
 /* ---------- まち(全部灯すと次のまちへ) ---------- */
 const TOWNS: Town[] = [
@@ -86,73 +88,69 @@ const TOWNS: Town[] = [
     name: "よるのまち",
     base: ["#0a1220", "#0d1826", "#16202e"],
     lights: [
-      [0.16, 0.72, 0.3, "255,190,110", 0.3],
-      [0.34, 0.8, 0.22, "255,160, 90", 0.22],
-      [0.55, 0.68, 0.34, "120,200,215", 0.2],
-      [0.74, 0.78, 0.26, "255,205,130", 0.26],
-      [0.88, 0.62, 0.2, "170,150,220", 0.14],
-      [0.08, 0.5, 0.18, "120,190,210", 0.12],
-      [0.45, 0.55, 0.16, "255,235,180", 0.1],
-      [0.65, 0.88, 0.3, "255,150, 80", 0.18],
-      [0.25, 0.6, 0.12, "200,230,255", 0.08],
-      [0.93, 0.85, 0.22, "140,210,200", 0.16],
+      [0.3, "255,190,110", 0.3],
+      [0.22, "255,160, 90", 0.22],
+      [0.34, "120,200,215", 0.2],
+      [0.26, "255,205,130", 0.26],
+      [0.2, "170,150,220", 0.14],
+      [0.18, "120,190,210", 0.12],
+      [0.16, "255,235,180", 0.1],
+      [0.3, "255,150, 80", 0.18],
+      [0.12, "200,230,255", 0.08],
+      [0.22, "140,210,200", 0.16],
     ],
     spark: ["255,210,140", "150,215,225"],
-    rain: { fall: 0.9, pace: 0.9, bgm: 0.9 },
   },
   {
     name: "みなとまち",
     base: ["#071018", "#0a1d24", "#0e2a30"],
     lights: [
-      [0.12, 0.78, 0.26, "120,225,210", 0.26],
-      [0.3, 0.66, 0.3, "90,190,230", 0.22],
-      [0.5, 0.84, 0.22, "255,230,170", 0.2],
-      [0.68, 0.7, 0.28, "110,210,190", 0.24],
-      [0.86, 0.8, 0.24, "140,200,255", 0.18],
-      [0.06, 0.58, 0.16, "180,240,230", 0.12],
-      [0.42, 0.56, 0.14, "220,245,255", 0.1],
-      [0.6, 0.9, 0.26, "90,170,210", 0.16],
-      [0.78, 0.55, 0.14, "170,230,220", 0.1],
-      [0.94, 0.66, 0.18, "120,190,230", 0.14],
+      [0.26, "120,225,210", 0.26],
+      [0.3, "90,190,230", 0.22],
+      [0.22, "255,230,170", 0.2],
+      [0.28, "110,210,190", 0.24],
+      [0.24, "140,200,255", 0.18],
+      [0.16, "180,240,230", 0.12],
+      [0.14, "220,245,255", 0.1],
+      [0.26, "90,170,210", 0.16],
+      [0.14, "170,230,220", 0.1],
+      [0.18, "120,190,230", 0.14],
     ],
     spark: ["190,240,230", "140,200,240"],
-    rain: { fall: 0.9, pace: 0.9, bgm: 0.9 },
   },
   {
     name: "ゆうぐれのまち",
     base: ["#1a0f1e", "#2a1626", "#3a1e2a"],
     lights: [
-      [0.14, 0.7, 0.3, "255,150,120", 0.28],
-      [0.32, 0.82, 0.24, "255,120, 90", 0.22],
-      [0.52, 0.66, 0.32, "255,180,200", 0.18],
-      [0.72, 0.78, 0.26, "255,200,120", 0.24],
-      [0.9, 0.64, 0.2, "230,140,190", 0.16],
-      [0.08, 0.52, 0.16, "255,170,150", 0.12],
-      [0.44, 0.54, 0.14, "255,220,180", 0.1],
-      [0.64, 0.88, 0.28, "255,130,110", 0.18],
-      [0.24, 0.62, 0.12, "255,190,210", 0.08],
-      [0.94, 0.84, 0.2, "250,160,140", 0.14],
+      [0.3, "255,150,120", 0.28],
+      [0.24, "255,120, 90", 0.22],
+      [0.32, "255,180,200", 0.18],
+      [0.26, "255,200,120", 0.24],
+      [0.2, "230,140,190", 0.16],
+      [0.16, "255,170,150", 0.12],
+      [0.14, "255,220,180", 0.1],
+      [0.28, "255,130,110", 0.18],
+      [0.12, "255,190,210", 0.08],
+      [0.2, "250,160,140", 0.14],
     ],
     spark: ["255,190,150", "255,160,190"],
-    rain: { fall: 0.9, pace: 0.9, bgm: 0.9 },
   },
   {
     name: "ゆきのまち",
     base: ["#0d141f", "#141e2c", "#1d2938"],
     lights: [
-      [0.15, 0.74, 0.28, "200,225,255", 0.24],
-      [0.33, 0.8, 0.22, "235,240,255", 0.18],
-      [0.53, 0.68, 0.3, "170,210,250", 0.18],
-      [0.73, 0.78, 0.24, "255,240,210", 0.2],
-      [0.89, 0.62, 0.18, "190,215,245", 0.14],
-      [0.07, 0.54, 0.16, "210,230,255", 0.1],
-      [0.45, 0.56, 0.14, "240,245,255", 0.08],
-      [0.63, 0.88, 0.26, "200,220,255", 0.16],
-      [0.25, 0.6, 0.12, "225,235,255", 0.08],
-      [0.93, 0.84, 0.2, "210,235,255", 0.14],
+      [0.28, "200,225,255", 0.24],
+      [0.22, "235,240,255", 0.18],
+      [0.3, "170,210,250", 0.18],
+      [0.24, "255,240,210", 0.2],
+      [0.18, "190,215,245", 0.14],
+      [0.16, "210,230,255", 0.1],
+      [0.14, "240,245,255", 0.08],
+      [0.26, "200,220,255", 0.16],
+      [0.12, "225,235,255", 0.08],
+      [0.2, "210,235,255", 0.14],
     ],
     spark: ["240,245,255", "190,215,250"],
-    rain: { fall: 0.9, pace: 0.9, bgm: 0.9 },
   },
 ];
 
@@ -302,6 +300,8 @@ const WAKE_TEXTS = [
   "きょうも だれかの いえに あかりが ともる",
 ];
 
+const FLAVORS = [...WAKE_TEXTS, ...TRAVEL_TEXTS];
+
 const pick = <T>(a: T[]): T => a[Math.floor(Math.random() * a.length)];
 
 export function createRainEngine(
@@ -323,7 +323,6 @@ export function createRainEngine(
   const FOGA = 0.15; // 曇りの最大濃度(初期値=上限)
   const LIGHTS: Light[] = [];
 
-  let FLAVORS: string[] | null = null; // WAKE_TEXTSとTRAVEL_TEXTSを合わせたもの(初回に生成)
   let townIdx = 0,
     townBlend = 1; // 1=切替完了
   let mist = 0, // 夜霧の濃さ(移動の前にふわっと現れ、着いてから晴れる)
@@ -361,7 +360,7 @@ export function createRainEngine(
       minD = Math.min(W, H) * 0.18,
       placed: Array<[number, number]> = [];
     for (let i = 0; i < NLIGHTS; i++) {
-      const [, , pr, c, a] = T.lights[i % T.lights.length];
+      const [pr, c, a] = T.lights[i % T.lights.length];
       let x = 0,
         y = 0,
         tries = 0;
@@ -414,16 +413,14 @@ export function createRainEngine(
     bpx.drawImage(bg, 0, 0);
     townIdx = (townIdx + 1) % TOWNS.length;
     paintBackground(); // LIGHTSも新しいまちのものに
-    // BGMの基準音量も、次のまちの雨にゆっくり寄せていく
-    if (AC && bgmGain)
-      bgmGain.gain.setTargetAtTime(
-        0.105 * TOWNS[townIdx].rain.bgm,
-        AC.currentTime,
-        2.5,
-      );
     litCount = 0;
     celebrated = false;
     townBlend = 0;
+  }
+  function arrive() {
+    prevLights.length = 0; // 前のまちのあかりは見えなくなった
+    mistOn = false; // 着いてから霧はふわっと晴れていく
+    hooks.showTown(TOWNS[townIdx].name); // 着いたまちの名前をそっと知らせる
   }
   function paintFog() {
     // マスク:不透明=曇り最大。増えてもここが上限
@@ -457,7 +454,11 @@ export function createRainEngine(
     scene.width = W * DPR;
     scene.height = H * DPR;
     scx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    townBlend = 1; // リサイズ時は移り変わりを打ち切る
+    if (townBlend < 1) {
+      // リサイズ時は移り変わりを打ち切って、そのまま到着扱いにする
+      townBlend = 1;
+      arrive();
+    }
     if (!travelPending) {
       // 移動待ちの霧は消さない(消すと移動のきっかけが失われる)
       mistOn = false;
@@ -472,7 +473,6 @@ export function createRainEngine(
   /* ================= 音 ================= */
   let AC: AudioContext | null = null,
     master: GainNode | null = null,
-    bgmGain: GainNode | null = null,
     muted = false;
   const PENTA = [0, 2, 4, 7, 9];
   function ac(): AudioContext {
@@ -481,35 +481,36 @@ export function createRainEngine(
         window.AudioContext ||
         (window as unknown as { webkitAudioContext: typeof AudioContext })
           .webkitAudioContext;
-      AC = new Ctor();
-      master = AC.createGain();
+      const a = new Ctor();
+      AC = a;
+      master = a.createGain();
       master.gain.value = muted ? 0 : 0.55;
-      master.connect(AC.destination);
+      master.connect(a.destination);
       // 雨音BGM:録音した雨のループ、これひとつだけ
-      const rg = AC.createGain();
-      rg.gain.value = 0.105 * TOWNS[townIdx].rain.bgm; // 基準音量(ゆらぎ込みで0.09〜0.12 × まちの係数)
+      const rg = a.createGain();
+      rg.gain.value = 0.105 * RAIN.bgm; // 基準音量(ゆらぎ込みで0.09〜0.12 × 雨の係数)
       rg.connect(master);
-      bgmGain = rg;
       // 遠くなったり近くなったり、ゆるやかな強弱のゆらぎ
-      const lfo = AC.createOscillator();
+      const lfo = a.createOscillator();
       lfo.frequency.value = 1 / 28; // 28秒でひとまわり
-      const lfoDepth = AC.createGain();
+      const lfoDepth = a.createGain();
       lfoDepth.gain.value = 0.015;
       lfo.connect(lfoDepth);
       lfoDepth.connect(rg.gain);
       lfo.start();
       void fetch(rainLoopUrl)
         .then((res) => res.arrayBuffer())
-        .then((data) => AC!.decodeAudioData(data))
+        .then((data) => a.decodeAudioData(data))
         .then((buf) => {
-          const src = AC!.createBufferSource();
+          if (destroyed) return;
+          const src = a.createBufferSource();
           src.buffer = buf;
           src.loop = true;
           src.connect(rg);
           // いきなり鳴らさず、雨がだんだん聴こえてくるように
           const target = rg.gain.value;
           rg.gain.value = 0;
-          rg.gain.setTargetAtTime(target, AC!.currentTime, 1.4);
+          rg.gain.setTargetAtTime(target, a.currentTime, 1.4);
           src.start();
         });
     }
@@ -583,7 +584,7 @@ export function createRainEngine(
   const TARGET = 210,
     INITIAL = 88,
     BASE_R = 7; // 最初はまばら、雨で増えていく
-  let BREAK_R = 15; // 落下サイズは以前の7割
+  const BREAK_R = 15; // これより育つと自重で流れ出す
   const GRAB_MIN = 4, // これ未満の水滴は操作対象にならず
     EVAP_MS = 5000; // やがて蒸発して消える
   const rnd = (a: number, b: number) => a + Math.random() * (b - a);
@@ -686,7 +687,6 @@ export function createRainEngine(
   }
 
   /* ================= 入力 ================= */
-  let hintShown = true;
   const pointer = { down: false, x: 0, y: 0 };
   // 視差:ポインタ位置に合わせて、窓の外の景色だけがわずかにずれる
   let paraX = 0, // なめらかに追従する現在値(-0.5〜0.5)
@@ -738,10 +738,6 @@ export function createRainEngine(
     tapX = e.clientX;
     tapY = e.clientY;
     tryGrab(e.clientX, e.clientY);
-    if (hintShown) {
-      hintShown = false;
-      hooks.fadeHint();
-    }
   }
   function onPointerMove(e: PointerEvent) {
     paraTX = e.clientX / W - 0.5;
@@ -823,7 +819,6 @@ export function createRainEngine(
             celebrated = true;
             chordSound();
             wakeT = 0; // まち全体がひと呼吸ぶん明るくなる
-            if (!FLAVORS) FLAVORS = [...WAKE_TEXTS, ...TRAVEL_TEXTS];
             hooks.showFlavor(pick(FLAVORS));
             later(() => hooks.fadeHint(), 7400); // 移動が終わる頃まで
             // 余韻のあとで夜霧がふわっと立ちこめ、濃くなりきってから動き出す
@@ -839,11 +834,13 @@ export function createRainEngine(
   }
 
   function update(dt: number) {
-    const TR = TOWNS[townIdx].rain; // このまちの雨の表情
     // 雨脚はゆっくり強まったり弱まったりする(0=こぬか雨、1=本降り)
     const rainy = 0.5 + 0.5 * Math.sin(last * 0.00011);
-    // 雨が降り続ける:結露がどんどん増える(雨脚とまちの気候しだい)
-    if (stuck.length < TARGET && Math.random() < (0.08 + 0.3 * rainy) * TR.pace)
+    // 雨が降り続ける:結露がどんどん増える(雨脚しだい)
+    if (
+      stuck.length < TARGET &&
+      Math.random() < (0.08 + 0.3 * rainy) * RAIN.pace
+    )
       spawnStuck(null, null, null, true);
     for (let i = stuck.length - 1; i >= 0; i--) {
       const s = stuck[i];
@@ -868,11 +865,7 @@ export function createRainEngine(
     if (townBlend < 1) {
       townBlend = Math.min(1, townBlend + dt / 5200);
       mistX = ((1 - Math.cos(townBlend * PI)) / 2) * W; // 霧の帯は切れ目に追従
-      if (townBlend >= 1) {
-        prevLights.length = 0; // 前のまちのあかりは見えなくなった
-        mistOn = false; // 着いてから霧はふわっと晴れていく
-        hooks.showTown(TOWNS[townIdx].name); // 着いたまちの名前をそっと知らせる
-      }
+      if (townBlend >= 1) arrive();
     }
     mist += ((mistOn ? 1 : 0) - mist) * (1 - Math.pow(0.998, dt));
     if (travelPending && mist >= 0.98) {
@@ -909,7 +902,7 @@ export function createRainEngine(
       // 本降りのときほど、ひとりでに流れる雫も増える
       autoTimer =
         ((autoMode ? rnd(700, 1900) : rnd(3000, 7000)) * (1.4 - 0.8 * rainy)) /
-        TR.pace;
+        RAIN.pace;
       breakFree(
         rnd(6, W - 6),
         rnd(-20, 40),
@@ -969,7 +962,6 @@ export function createRainEngine(
         breakFree(collector.x, collector.y, collector.r, true); // 音は立てずに
         if (navigator.vibrate) navigator.vibrate([8, 50, 12]);
         collector.active = false; // 指からするっと抜けて、手には何も残らない
-        BREAK_R = 15;
       }
     }
 
@@ -981,8 +973,8 @@ export function createRainEngine(
     for (let i = fallers.length - 1; i >= 0; i--) {
       const f = fallers[i];
       f.vy = Math.min(
-        f.vy + dt * 0.0018 * TR.fall,
-        (0.9 + f.r * 0.008) * TR.fall,
+        f.vy + dt * 0.0018 * RAIN.fall,
+        (0.9 + f.r * 0.008) * RAIN.fall,
       );
       f.sway += dt * 0.003;
       f.x += Math.sin(f.sway) * 0.35;
