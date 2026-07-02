@@ -746,8 +746,10 @@ export function createRainEngine(
   }
 
   function update(dt: number) {
-    // 雨が降り続ける:結露がどんどん増える
-    if (stuck.length < TARGET && Math.random() < 0.24)
+    // 雨脚はゆっくり強まったり弱まったりする(0=こぬか雨、1=本降り)
+    const rainy = 0.5 + 0.5 * Math.sin(last * 0.00011);
+    // 雨が降り続ける:結露がどんどん増える(雨脚しだいで増えかたが変わる)
+    if (stuck.length < TARGET && Math.random() < 0.08 + 0.3 * rainy)
       spawnStuck(null, null, null, true);
     for (const s of stuck) if (s.a < 1) s.a = Math.min(1, s.a + dt * 0.002);
 
@@ -785,7 +787,9 @@ export function createRainEngine(
 
     autoTimer -= dt;
     if (autoTimer < 0) {
-      autoTimer = autoMode ? rnd(700, 1900) : rnd(3000, 7000);
+      // 本降りのときほど、ひとりでに流れる雫も増える
+      autoTimer =
+        (autoMode ? rnd(700, 1900) : rnd(3000, 7000)) * (1.4 - 0.8 * rainy);
       breakFree(
         rnd(W * 0.08, W * 0.92),
         rnd(-20, 40),
