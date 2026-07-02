@@ -919,19 +919,21 @@ export function createRainEngine(
       scx.drawImage(bgPrev, 0, 0, bgPrev.width, bgPrev.height, off, 0, W, H);
       scx.drawImage(bg, 0, 0, bg.width, bg.height, off - W, 0, W, H);
       // まちとまちの間は深い夜霧:境目そのものを見せない
+      // 移行の入りと終わりでは霧自体を薄くして、消える瞬間を見せない
+      const bandA = Math.min(1, townBlend * 5, (1 - townBlend) * 3.5);
       const MW = W * 0.8,
         x0 = off - MW / 2;
       const hz = scx.createLinearGradient(x0, 0, x0 + MW, 0);
       hz.addColorStop(0, "rgba(7,12,19,0)");
-      hz.addColorStop(0.35, "rgba(7,12,19,.72)");
-      hz.addColorStop(0.5, "rgba(7,12,19,.92)");
-      hz.addColorStop(0.65, "rgba(7,12,19,.72)");
+      hz.addColorStop(0.35, `rgba(7,12,19,${0.72 * bandA})`);
+      hz.addColorStop(0.5, `rgba(7,12,19,${0.92 * bandA})`);
+      hz.addColorStop(0.65, `rgba(7,12,19,${0.72 * bandA})`);
       hz.addColorStop(1, "rgba(7,12,19,0)");
       scx.fillStyle = hz;
       scx.fillRect(x0, 0, MW, H);
       const fz = scx.createLinearGradient(x0, 0, x0 + MW, 0);
       fz.addColorStop(0, "rgba(125,155,175,0)");
-      fz.addColorStop(0.5, "rgba(125,155,175,.11)");
+      fz.addColorStop(0.5, `rgba(125,155,175,${0.11 * bandA})`);
       fz.addColorStop(1, "rgba(125,155,175,0)");
       scx.fillStyle = fz;
       scx.fillRect(x0, 0, MW, H);
