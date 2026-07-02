@@ -671,6 +671,9 @@ export function createRainEngine(
   /* ================= 入力 ================= */
   let hintShown = true;
   const pointer = { down: false, x: 0, y: 0 };
+  let tapT = 0, // シングルタップ判定用:押した時刻と場所
+    tapX = 0,
+    tapY = 0;
   let wipePX = -1, // 曇り拭きの前回位置(-1=拭いていない)
     wipePY = 0;
   function sag() {
@@ -706,6 +709,9 @@ export function createRainEngine(
     pointer.down = true;
     pointer.x = e.clientX;
     pointer.y = e.clientY;
+    tapT = performance.now();
+    tapX = e.clientX;
+    tapY = e.clientY;
     tryGrab(e.clientX, e.clientY);
     if (hintShown) {
       hintShown = false;
@@ -727,6 +733,14 @@ export function createRainEngine(
     pointer.down = false;
     if (!collector.active) return;
     collector.active = false;
+    // シングルタップした雫は、そのサイズのまま流れ落ちていく
+    if (
+      performance.now() - tapT < 250 &&
+      Math.hypot(pointer.x - tapX, pointer.y - tapY) < 8
+    ) {
+      breakFree(collector.x, collector.y, collector.r, true);
+      return;
+    }
     if (collector.r > 5) {
       stuck.push({
         x: collector.x,
