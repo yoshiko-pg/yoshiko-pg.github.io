@@ -8,6 +8,8 @@ export interface RainHooks {
   showFlavor(text: string): void;
   /** ヒント文をフェードアウトさせる */
   fadeHint(): void;
+  /** 新しいまちに着いたとき、まちの名前を知らせる */
+  showTown(name: string): void;
 }
 
 export interface RainEngine {
@@ -841,7 +843,10 @@ export function createRainEngine(
     if (townBlend < 1) {
       townBlend = Math.min(1, townBlend + dt / 5200);
       if (townBlend >= 0.78) mistOn = false; // 着くまえに霧は晴れていく
-      if (townBlend >= 1) prevLights.length = 0; // 前のまちのあかりは見えなくなった
+      if (townBlend >= 1) {
+        prevLights.length = 0; // 前のまちのあかりは見えなくなった
+        hooks.showTown(TOWNS[townIdx].name); // 着いたまちの名前をそっと知らせる
+      }
     }
     mist += ((mistOn ? 1 : 0) - mist) * (1 - Math.pow(0.9965, dt));
 

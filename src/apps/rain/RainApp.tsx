@@ -20,6 +20,9 @@ function RainApp() {
   );
   const [hint, setHint] = useState<ReactNode>(DEFAULT_HINT);
   const [hintFaded, setHintFaded] = useState(false);
+  const [title, setTitle] = useState("RAIN.");
+  const [titleFaded, setTitleFaded] = useState(false);
+  const titleTimers = useRef<number[]>([]);
 
   useEffect(() => {
     document.title = "RAIN.";
@@ -31,12 +34,31 @@ function RainApp() {
       fadeHint() {
         setHintFaded(true);
       },
+      showTown(name) {
+        // タイトルがふわっと街名になり、しばらくしてRAIN.に戻る
+        titleTimers.current.forEach(clearTimeout);
+        titleTimers.current = [];
+        const push = (fn: () => void, ms: number) =>
+          titleTimers.current.push(window.setTimeout(fn, ms));
+        setTitleFaded(true);
+        push(() => {
+          setTitle(name);
+          setTitleFaded(false);
+        }, 1000);
+        push(() => setTitleFaded(true), 7000);
+        push(() => {
+          setTitle("RAIN.");
+          setTitleFaded(false);
+        }, 8000);
+      },
     });
     engineRef.current = engine;
     if (window.innerWidth > window.innerHeight) engine.setAuto(true);
     return () => {
       engine.destroy();
       engineRef.current = null;
+      titleTimers.current.forEach(clearTimeout);
+      titleTimers.current = [];
     };
   }, []);
 
@@ -59,7 +81,9 @@ function RainApp() {
         aria-label="雨の日の窓ガラス。なぞって雫を集める画面"
       />
       <header className={styles.header}>
-        <h1 className={styles.title}>RAIN.</h1>
+        <h1 className={`${styles.title} ${titleFaded ? styles.fade : ""}`}>
+          {title}
+        </h1>
         <div className={styles.btns}>
           <button
             type="button"

@@ -43,6 +43,11 @@
   letter-spacing: 0.14em;
   opacity: 0.8;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+  transition: opacity 0.9s ease;
+}
+
+.title.fade {
+  opacity: 0;
 }
 
 .btns {
