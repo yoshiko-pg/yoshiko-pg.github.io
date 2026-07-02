@@ -60,6 +60,8 @@ interface Town {
   base: [string, string, string];
   lights: LightDef[];
   spark: [string, string];
+  /** 雨の表情:雫の落下速度 / 結露と自動落下のペース / BGM音量、それぞれの係数 */
+  rain: { fall: number; pace: number; bgm: number };
 }
 
 /* ---------- まち(全部灯すと次のまちへ) ---------- */
@@ -80,6 +82,7 @@ const TOWNS: Town[] = [
       [0.93, 0.85, 0.22, "140,210,200", 0.16],
     ],
     spark: ["255,210,140", "150,215,225"],
+    rain: { fall: 1, pace: 1, bgm: 1 },
   },
   {
     name: "みなとまち",
@@ -97,6 +100,7 @@ const TOWNS: Town[] = [
       [0.94, 0.66, 0.18, "120,190,230", 0.14],
     ],
     spark: ["190,240,230", "140,200,240"],
+    rain: { fall: 1.15, pace: 1.35, bgm: 1.15 }, // 海からの本降り
   },
   {
     name: "ゆうぐれのまち",
@@ -114,6 +118,7 @@ const TOWNS: Town[] = [
       [0.94, 0.84, 0.2, "250,160,140", 0.14],
     ],
     spark: ["255,190,150", "255,160,190"],
+    rain: { fall: 0.9, pace: 0.8, bgm: 0.9 }, // 通り雨のなごり
   },
   {
     name: "ゆきのまち",
@@ -131,6 +136,7 @@ const TOWNS: Town[] = [
       [0.93, 0.84, 0.2, "210,235,255", 0.14],
     ],
     spark: ["240,245,255", "190,215,250"],
+    rain: { fall: 0.6, pace: 0.55, bgm: 0.75 }, // みぞれまじりの静かな雨
   },
 ];
 
@@ -390,6 +396,13 @@ export function createRainEngine(
     bpx.drawImage(bg, 0, 0);
     townIdx = (townIdx + 1) % TOWNS.length;
     paintBackground(); // LIGHTSも新しいまちのものに
+    // BGMの基準音量も、次のまちの雨にゆっくり寄せていく
+    if (AC && bgmGain)
+      bgmGain.gain.setTargetAtTime(
+        0.105 * TOWNS[townIdx].rain.bgm,
+        AC.currentTime,
+        2.5,
+      );
     litCount = 0;
     celebrated = false;
     townBlend = 0;
@@ -448,6 +461,7 @@ export function createRainEngine(
   /* ================= 音 ================= */
   let AC: AudioContext | null = null,
     master: GainNode | null = null,
+    bgmGain: GainNode | null = null,
     muted = false;
   const PENTA = [0, 2, 4, 7, 9];
   function ac(): AudioContext {
@@ -462,8 +476,9 @@ export function createRainEngine(
       master.connect(AC.destination);
       // 雨音BGM:録音した雨のループ、これひとつだけ
       const rg = AC.createGain();
-      rg.gain.value = 0.105; // 基準音量(ゆらぎ込みで0.09〜0.12)
+      rg.gain.value = 0.105 * TOWNS[townIdx].rain.bgm; // 基準音量(ゆらぎ込みで0.09〜0.12 × まちの係数)
       rg.connect(master);
+      bgmGain = rg;
       // 遠くなったり近くなったり、ゆるやかな強弱のゆらぎ
       const lfo = AC.createOscillator();
       lfo.frequency.value = 1 / 28; // 28秒でひとまわり
@@ -759,10 +774,11 @@ export function createRainEngine(
   }
 
   function update(dt: number) {
+    const TR = TOWNS[townIdx].rain; // このまちの雨の表情
     // 雨脚はゆっくり強まったり弱まったりする(0=こぬか雨、1=本降り)
     const rainy = 0.5 + 0.5 * Math.sin(last * 0.00011);
-    // 雨が降り続ける:結露がどんどん増える(雨脚しだいで増えかたが変わる)
-    if (stuck.length < TARGET && Math.random() < 0.08 + 0.3 * rainy)
+    // 雨が降り続ける:結露がどんどん増える(雨脚とまちの気候しだい)
+    if (stuck.length < TARGET && Math.random() < (0.08 + 0.3 * rainy) * TR.pace)
       spawnStuck(null, null, null, true);
     for (const s of stuck) if (s.a < 1) s.a = Math.min(1, s.a + dt * 0.002);
 
@@ -795,7 +811,8 @@ export function createRainEngine(
     if (autoTimer < 0) {
       // 本降りのときほど、ひとりでに流れる雫も増える
       autoTimer =
-        (autoMode ? rnd(700, 1900) : rnd(3000, 7000)) * (1.4 - 0.8 * rainy);
+        ((autoMode ? rnd(700, 1900) : rnd(3000, 7000)) * (1.4 - 0.8 * rainy)) /
+        TR.pace;
       breakFree(
         rnd(6, W - 6),
         rnd(-20, 40),
@@ -846,7 +863,10 @@ export function createRainEngine(
 
     for (let i = fallers.length - 1; i >= 0; i--) {
       const f = fallers[i];
-      f.vy = Math.min(f.vy + dt * 0.0018, 0.9 + f.r * 0.008);
+      f.vy = Math.min(
+        f.vy + dt * 0.0018 * TR.fall,
+        (0.9 + f.r * 0.008) * TR.fall,
+      );
       f.sway += dt * 0.003;
       f.x += Math.sin(f.sway) * 0.35;
       f.y += f.vy * dt * 0.35;
