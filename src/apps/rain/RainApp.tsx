@@ -30,6 +30,11 @@ function RainApp() {
       },
     });
     engineRef.current = engine;
+    // 横長の画面(PCなど)では、ながめるモードで始める
+    if (window.innerWidth > window.innerHeight) {
+      engine.setAuto(true);
+      setAutoMode(true);
+    }
     return () => {
       engine.destroy();
       engineRef.current = null;
