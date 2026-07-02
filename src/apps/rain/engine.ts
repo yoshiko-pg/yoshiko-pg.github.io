@@ -1125,8 +1125,13 @@ export function createRainEngine(
     composeScene();
     ctx.drawImage(scene, 0, 0, scene.width, scene.height, 0, 0, W, H);
     if (flashA > 0) {
-      ctx.fillStyle = `rgba(190,215,245,${flashA})`;
-      ctx.fillRect(0, 0, W, H);
+      // 空だけが光る:上端からすっと消えるグラデーション(街とは混ざらない)
+      const fh = H * 0.28;
+      const fg = ctx.createLinearGradient(0, 0, 0, fh);
+      fg.addColorStop(0, `rgba(190,215,245,${flashA})`);
+      fg.addColorStop(1, "rgba(190,215,245,0)");
+      ctx.fillStyle = fg;
+      ctx.fillRect(0, 0, W, fh);
     }
 
     for (const s of stuck) {
