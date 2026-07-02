@@ -69,9 +69,9 @@
 }
 
 .sectionTitle {
-  font-family: "Archivo Black", system-ui, sans-serif;
+  font-family: "Rubik", system-ui, sans-serif;
   font-size: 1.75rem;
-  font-weight: 400;
+  font-weight: 900;
   letter-spacing: 0.04em;
   text-align: center;
   color: var(--color-accent);
