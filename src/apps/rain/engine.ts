@@ -699,6 +699,14 @@ export function createRainEngine(
   cv.addEventListener("pointermove", onPointerMove);
   window.addEventListener("pointerup", onPointerUp);
 
+  // タブが隠れているあいだは音ごと眠る
+  function onVisibility() {
+    if (!AC) return;
+    if (document.hidden) void AC.suspend();
+    else void AC.resume();
+  }
+  document.addEventListener("visibilitychange", onVisibility);
+
   /* ================= 更新 ================= */
   let last = performance.now(),
     autoTimer = rnd(2500, 6000);
@@ -1183,6 +1191,7 @@ export function createRainEngine(
       window.removeEventListener("pointerup", onPointerUp);
       cv.removeEventListener("pointerdown", onPointerDown);
       cv.removeEventListener("pointermove", onPointerMove);
+      document.removeEventListener("visibilitychange", onVisibility);
       for (const id of timeouts) clearTimeout(id);
       timeouts.clear();
       if (AC) void AC.close();
