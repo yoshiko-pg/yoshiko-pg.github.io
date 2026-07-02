@@ -327,6 +327,7 @@ export function createRainEngine(
   let townIdx = 0,
     townBlend = 1; // 1=切替完了
   let mist = 0, // 夜霧の濃さ(移動の前にふわっと現れ、着いてから晴れる)
+    mistX = 0, // 霧の帯の中心。移動中は切れ目に追従し、着いたあとは右端に残って晴れる
     mistOn = false,
     travelPending = false; // 霧が濃くなりきるのを待って移動を始める
   let prevLights: Light[] = []; // 流れていく前のまちのあかり
@@ -827,6 +828,7 @@ export function createRainEngine(
             // 余韻のあとで夜霧がふわっと立ちこめ、濃くなりきってから動き出す
             later(() => {
               mistOn = true;
+              mistX = 0; // 切れ目はまず左端に現れる
               travelPending = true;
             }, 1400);
           }
@@ -864,6 +866,7 @@ export function createRainEngine(
     // まちの移り変わりを進める
     if (townBlend < 1) {
       townBlend = Math.min(1, townBlend + dt / 5200);
+      mistX = ((1 - Math.cos(townBlend * PI)) / 2) * W; // 霧の帯は切れ目に追従
       if (townBlend >= 1) {
         prevLights.length = 0; // 前のまちのあかりは見えなくなった
         mistOn = false; // 着いてから霧はふわっと晴れていく
@@ -1106,9 +1109,9 @@ export function createRainEngine(
     }
     if (mist > 0.005) {
       // まちとまちの間の深い夜霧:動き出す前にふわっと現れて切れ目を隠し、
-      // 着いてからふわっと晴れていく(濃さはmistが持つ)
+      // 着いたあとは右端に残ったままふわっと晴れていく(濃さはmist、位置はmistX)
       const MW = W * 0.8,
-        x0 = off - MW / 2;
+        x0 = mistX - MW / 2;
       const hz = scx.createLinearGradient(x0, 0, x0 + MW, 0);
       hz.addColorStop(0, "rgba(7,12,19,0)");
       hz.addColorStop(0.35, `rgba(7,12,19,${0.72 * mist})`);
