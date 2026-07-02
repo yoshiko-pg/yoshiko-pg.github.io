@@ -1,7 +1,7 @@
 .appsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
+  gap: 3.5rem;
   max-width: 800px;
   margin: 0 auto;
 
