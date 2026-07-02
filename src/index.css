@@ -13,6 +13,44 @@
 :root {
   --color-accent: #ff6b35;
 
+  --color-primary: #2c2c2c;
+  --color-primary-dark: #1a1a1a;
+  --color-secondary: #5a5a5a;
+  --color-text: #2c2c2c;
+  --color-text-light: #5a5a5a;
+  --color-text-lighter: #8a8a8a;
+  --color-background: #faf9f7;
+  --color-background-light: #f5f4f2;
+  --color-border: #e8e6e3;
+  --color-shadow: rgba(0, 0, 0, 0.05);
+
+  --font-family-base:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-family-mono:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-xxl: 4rem;
+
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 20px;
+
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
   font-family:
     system-ui,
     -apple-system,
