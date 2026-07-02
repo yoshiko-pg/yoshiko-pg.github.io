@@ -25,6 +25,8 @@ interface Light {
   stage: number;
   cool: number;
   glow: number;
+  /** 雫が前を通ったときの一瞬のきらめき(0〜1、勝手におさまる) */
+  spark: number;
   note: number;
 }
 
@@ -383,7 +385,7 @@ export function createRainEngine(
       bgx.beginPath();
       bgx.arc(x, y, r, 0, 6.2832);
       bgx.fill();
-      LIGHTS.push({ x, y, c, stage: 0, cool: 0, glow: 0, note: i });
+      LIGHTS.push({ x, y, c, stage: 0, cool: 0, glow: 0, spark: 0, note: i });
     }
     for (let i = 0; i < 26; i++) {
       const x = Math.random() * W,
@@ -891,6 +893,8 @@ export function createRainEngine(
       if (L.cool > 0) L.cool -= dt;
       // 灯るときはぱっとではなく、ふわっと明るくなる
       if (L.stage >= 2 && L.glow < 1) L.glow = Math.min(1, L.glow + dt / 280);
+      // きらめきは余韻を残しておさまる
+      if (L.spark > 0.003) L.spark *= Math.pow(0.995, dt);
     }
     if (wakeT >= 0) {
       wakeT += dt;
@@ -988,6 +992,10 @@ export function createRainEngine(
       absorbInto(f, true);
       wipeFog(f.x, f.y, f.r * 1.6, 0.28);
       tryLight(f.x, f.y);
+      // 灯ったあかりの前を通ると、一瞬きらめく
+      for (const L of LIGHTS) {
+        if (L.stage >= 2 && Math.hypot(L.x - f.x, L.y - f.y) < 80) L.spark = 1;
+      }
       f.lastTrail += dt;
       if (f.lastTrail > 60) {
         f.lastTrail = 0;
@@ -1052,11 +1060,12 @@ export function createRainEngine(
     else if (L.stage >= 2) {
       const g = L.glow * (2 - L.glow);
       if (g < 1) lampDark(x, y, fade * (1 - g)); // グレーのランプからふわっと灯る
-      // それぞれ別の呼吸でごくわずかにまたたく
+      // それぞれ別の呼吸でごくわずかにまたたく(雫が前を通るとひときわ)
       const flicker =
         0.94 +
         0.04 * Math.sin(last * 0.0011 + L.note * 2.1) +
-        0.02 * Math.sin(last * 0.0037 + L.note * 5.3);
+        0.02 * Math.sin(last * 0.0037 + L.note * 5.3) +
+        L.spark * 0.3;
       lampGlow(x, y, L.c, fade * g * flicker);
     }
   }
