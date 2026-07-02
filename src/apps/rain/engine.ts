@@ -742,7 +742,8 @@ export function createRainEngine(
     autoTimer = rnd(2500, 6000);
   let litCount = 0,
     celebrated = false,
-    fogRegrow = 0;
+    fogRegrow = 0,
+    wakeT = -1; // まちの目覚め演出の経過時間(-1=なし)
   function shortestAngle(a: number, b: number) {
     return Math.atan2(Math.sin(b - a), Math.cos(b - a));
   }
@@ -763,6 +764,7 @@ export function createRainEngine(
           if (litCount === LIGHTS.length && !celebrated) {
             celebrated = true;
             chordSound();
+            wakeT = 0; // まち全体がひと呼吸ぶん明るくなる
             if (!FLAVORS) FLAVORS = [...WAKE_TEXTS, ...TRAVEL_TEXTS];
             hooks.showFlavor(pick(FLAVORS));
             later(() => hooks.fadeHint(), 7400); // 移動が終わる頃まで
@@ -805,6 +807,10 @@ export function createRainEngine(
       if (L.cool > 0) L.cool -= dt;
       // 灯るときはぱっとではなく、ふわっと明るくなる
       if (L.stage >= 2 && L.glow < 1) L.glow = Math.min(1, L.glow + dt / 280);
+    }
+    if (wakeT >= 0) {
+      wakeT += dt;
+      if (wakeT > 3600) wakeT = -1;
     }
 
     autoTimer -= dt;
@@ -980,6 +986,15 @@ export function createRainEngine(
     for (const L of LIGHTS) {
       if (L.stage <= 0) continue;
       drawLamp(L.x, L.y, L);
+    }
+    if (wakeT >= 0) {
+      // まちの目覚め:全部灯った瞬間、まち全体がゆっくり息を吸って吐く
+      const a = Math.sin(PI * Math.min(1, wakeT / 3600)) * 0.1;
+      const g = scx.createLinearGradient(0, H, 0, H * 0.2);
+      g.addColorStop(0, `rgba(255,215,150,${a})`);
+      g.addColorStop(1, "rgba(255,215,150,0)");
+      scx.fillStyle = g;
+      scx.fillRect(0, 0, W, H);
     }
     scx.globalAlpha = FOGA;
     scx.drawImage(fog, 0, 0, fog.width, fog.height, 0, 0, W, H);
