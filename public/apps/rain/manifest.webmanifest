@@ -1,0 +1,27 @@
+{
+  "name": "RAIN.",
+  "short_name": "RAIN.",
+  "start_url": "/apps/rain/",
+  "scope": "/apps/rain/",
+  "display": "standalone",
+  "background_color": "#0a1018",
+  "theme_color": "#0a1018",
+  "icons": [
+    {
+      "src": "/apps/rain/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/apps/rain/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/apps/rain/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

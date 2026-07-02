@@ -2,6 +2,21 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createRainEngine, type RainEngine } from "./engine";
 import styles from "./RainApp.module.css";
 
+// rainページを開いている間だけPWAとしてインストール可能にするため、
+// マニフェスト等をマウント時にheadへ追加し、アンマウント時に取り除く
+const pwaHeadTags: [tag: string, attrs: Record<string, string>][] = [
+  ["link", { rel: "manifest", href: "/apps/rain/manifest.webmanifest" }],
+  ["link", { rel: "apple-touch-icon", href: "/apps/rain/icon-192.png" }],
+  ["meta", { name: "apple-mobile-web-app-capable", content: "yes" }],
+  [
+    "meta",
+    {
+      name: "apple-mobile-web-app-status-bar-style",
+      content: "black-translucent",
+    },
+  ],
+];
+
 function RainApp() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<RainEngine | null>(null);
@@ -12,6 +27,20 @@ function RainApp() {
   const [title, setTitle] = useState("RAIN.");
   const [titleFaded, setTitleFaded] = useState(false);
   const titleTimers = useRef<number[]>([]);
+
+  useEffect(() => {
+    const elements = pwaHeadTags.map(([tag, attrs]) => {
+      const el = document.createElement(tag);
+      for (const [key, value] of Object.entries(attrs)) {
+        el.setAttribute(key, value);
+      }
+      document.head.appendChild(el);
+      return el;
+    });
+    return () => {
+      elements.forEach((el) => el.remove());
+    };
+  }, []);
 
   useEffect(() => {
     document.title = "RAIN.";
