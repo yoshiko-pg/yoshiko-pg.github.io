@@ -659,6 +659,8 @@ export function createRainEngine(
   /* ================= 入力 ================= */
   let hintShown = true;
   const pointer = { down: false, x: 0, y: 0 };
+  let wipePX = -1, // 曇り拭きの前回位置(-1=拭いていない)
+    wipePY = 0;
   function sag() {
     return 14 + collector.r * 0.5;
   }
@@ -827,9 +829,23 @@ export function createRainEngine(
       );
     }
 
-    // 雫を持っていない指は、曇りをそっと拭くだけ
-    if (pointer.down && !collector.active)
-      wipeFog(pointer.x, pointer.y, 16, 0.05);
+    // 雫を持っていない指は、窓の曇りを拭く(らくがきができる)
+    if (pointer.down && !collector.active) {
+      if (wipePX < 0) {
+        wipePX = pointer.x;
+        wipePY = pointer.y;
+      }
+      // 速く動かしても線がとぎれないように、前回位置から補間して拭く
+      const dx = pointer.x - wipePX,
+        dy = pointer.y - wipePY;
+      const steps = Math.max(1, Math.ceil(Math.hypot(dx, dy) / 7));
+      for (let i = 1; i <= steps; i++)
+        wipeFog(wipePX + (dx * i) / steps, wipePY + (dy * i) / steps, 20, 0.3);
+      wipePX = pointer.x;
+      wipePY = pointer.y;
+    } else {
+      wipePX = -1;
+    }
 
     if (collector.active) {
       const k = 1 - Math.pow(0.93, dt / 16.7);
