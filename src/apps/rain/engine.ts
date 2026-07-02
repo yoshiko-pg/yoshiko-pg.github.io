@@ -806,7 +806,7 @@ export function createRainEngine(
         shortestAngle(collector.rot, targetRot) * Math.min(1, dt * 0.005);
 
       wipeFog(collector.x, collector.y, collector.r * 1.3, 0.1);
-      if (absorbInto(collector, true)) {
+      if (absorbInto(collector)) {
         collector.wobA = Math.min(5, 2 + collector.r * 0.06);
         collector.wob = 0;
         if (navigator.vibrate) navigator.vibrate(4);
@@ -816,7 +816,8 @@ export function createRainEngine(
         collector.wobA *= Math.pow(0.994, dt);
       }
       if (collector.r >= BREAK_R) {
-        breakFree(collector.x, collector.y, collector.r);
+        breakFree(collector.x, collector.y, collector.r, true); // 音は立てずに
+        if (navigator.vibrate) navigator.vibrate([8, 50, 12]);
         collector.active = false; // 指からするっと抜けて、手には何も残らない
         BREAK_R = 15;
       }
