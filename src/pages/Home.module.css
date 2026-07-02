@@ -73,9 +73,12 @@
   font-size: 1.75rem;
   font-weight: 900;
   letter-spacing: 0.04em;
-  text-align: center;
-  color: var(--color-accent);
-  margin: 0 0 2rem;
+  width: fit-content;
+  margin: 0 auto 2rem;
+  padding: 0.2em 0.9em;
+  background: var(--color-accent);
+  color: var(--color-page-background);
+  transform: rotate(-3deg);
 }
 
 .sectionContainer {
