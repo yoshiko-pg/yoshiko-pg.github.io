@@ -38,6 +38,9 @@ interface Stuck {
   rot: number;
   /** 蒸発までの残り時間(ms)。操作できるサイズの雫はInfinity */
   life: number;
+  /** ぷるんと揺れる振幅と位相(雨粒が合体したとき) */
+  wobA: number;
+  wobT: number;
 }
 
 interface TrailDot {
@@ -610,6 +613,8 @@ export function createRainEngine(
       if (Math.hypot(s.x - nx, s.y - ny) < s.r * 0.92 + nr) {
         s.r = Math.min(50, Math.sqrt(s.r * s.r + nr * nr * 0.95));
         if (s.r >= GRAB_MIN) s.life = Infinity; // 育ったら蒸発しない
+        s.wobA = Math.min(0.16, 0.06 + nr * 0.012); // ぷるん
+        s.wobT = 0;
         if (s.r >= BREAK_R) {
           // 重くなりすぎたら、ひとりでに流れ出す
           stuck.splice(i, 1);
@@ -627,6 +632,8 @@ export function createRainEngine(
       sq: rnd(0.88, 1.12),
       rot: rnd(-0.3, 0.3),
       life: nr < GRAB_MIN ? EVAP_MS : Infinity,
+      wobA: 0,
+      wobT: 0,
     });
   }
   for (let i = 0; i < INITIAL; i++) spawnStuck();
@@ -775,6 +782,8 @@ export function createRainEngine(
         sq: 1,
         rot: 0,
         life: Infinity,
+        wobA: 0,
+        wobT: 0,
       });
     }
   }
@@ -839,6 +848,11 @@ export function createRainEngine(
     for (let i = stuck.length - 1; i >= 0; i--) {
       const s = stuck[i];
       if (s.a < 1) s.a = Math.min(1, s.a + dt * 0.002);
+      if (s.wobA > 0.003) {
+        // 合体のぷるんは揺れながらおさまっていく
+        s.wobT += dt * 0.025;
+        s.wobA *= Math.pow(0.994, dt);
+      }
       if (s.life !== Infinity) {
         // 小さな水滴はやがて蒸発する
         s.life -= dt;
@@ -1340,8 +1354,9 @@ export function createRainEngine(
     ctx.drawImage(scene, 0, 0, scene.width, scene.height, 0, 0, W, H);
 
     for (const s of stuck) {
-      if (s.r < 6) drawDot(s.x, s.y, s.r, s.a, s.sq, s.rot);
-      else drawRefract(s.x, s.y, s.r, s.sq, s.tail * 0.5, s.a, s.rot * 0.4);
+      const sq = s.sq * (1 + Math.sin(s.wobT) * s.wobA);
+      if (s.r < 6) drawDot(s.x, s.y, s.r, s.a, sq, s.rot);
+      else drawRefract(s.x, s.y, s.r, sq, s.tail * 0.5, s.a, s.rot * 0.4);
     }
     for (const sl of slurps) {
       // ちゅるん:吸い込み先へ滑り込みながら縮んで消える
