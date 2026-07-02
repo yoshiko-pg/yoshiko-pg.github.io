@@ -652,11 +652,12 @@ export function createRainEngine(
   function absorbInto(
     t: { x: number; y: number; r: number },
     silent?: boolean,
+    reach?: number, // 判定の届く距離。省略時は雫そのもののサイズ
   ) {
     let got = false;
     for (let i = stuck.length - 1; i >= 0; i--) {
       const s = stuck[i];
-      if (Math.hypot(t.x - s.x, t.y - s.y) < t.r * 0.92 + s.r) {
+      if (Math.hypot(t.x - s.x, t.y - s.y) < (reach ?? t.r * 0.92) + s.r) {
         t.r = Math.min(50, Math.sqrt(t.r * t.r + s.r * s.r * 0.95));
         stuck.splice(i, 1);
         slurps.push({ x0: s.x, y0: s.y, r: s.r, t: 0, tgt: t });
@@ -948,7 +949,9 @@ export function createRainEngine(
         shortestAngle(collector.rot, targetRot) * Math.min(1, dt * 0.005);
 
       wipeFog(collector.x, collector.y, collector.r * 1.3, 0.1);
-      if (absorbInto(collector)) {
+      // 指で運ぶ間は、雫が小さくても指先ぶんの範囲(落下前の最大サイズより
+      // ひと回り大きい)でまわりの雫を拾える
+      if (absorbInto(collector, false, Math.max(collector.r * 0.92, 18))) {
         collector.wobA = Math.min(5, 2 + collector.r * 0.06);
         collector.wob = 0;
         if (navigator.vibrate) navigator.vibrate(4);
