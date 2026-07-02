@@ -296,6 +296,8 @@ export function createRainEngine(
     bgx = bg.getContext("2d")!;
   const fog = document.createElement("canvas"),
     fgx = fog.getContext("2d")!; // 曇りマスク
+  const wet = document.createElement("canvas"),
+    wtx = wet.getContext("2d")!; // 雫が伝ったあとの濡れた筋
   const scene = document.createElement("canvas"),
     scx = scene.getContext("2d")!; // 背景+あかり+曇りの合成
   const FOGA = 0.15; // 曇りの最大濃度(初期値=上限)
@@ -400,6 +402,15 @@ export function createRainEngine(
     fgx.fillStyle = "rgb(148,174,190)";
     fgx.fillRect(0, 0, W, H);
   }
+  function paintStreak(x: number, y: number, r: number) {
+    const g = wtx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, "rgba(205,232,246,.14)");
+    g.addColorStop(1, "rgba(205,232,246,0)");
+    wtx.fillStyle = g;
+    wtx.beginPath();
+    wtx.arc(x, y, r, 0, 6.2832);
+    wtx.fill();
+  }
   function wipeFog(x: number, y: number, r: number, strength: number) {
     fgx.save();
     fgx.globalCompositeOperation = "destination-out";
@@ -424,6 +435,9 @@ export function createRainEngine(
     scene.width = W * DPR;
     scene.height = H * DPR;
     scx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    wet.width = W * DPR;
+    wet.height = H * DPR;
+    wtx.setTransform(DPR, 0, 0, DPR, 0, 0);
     townBlend = 1; // リサイズ時は移り変わりを打ち切る
     paintBackground();
     paintFog();
@@ -764,6 +778,12 @@ export function createRainEngine(
       fogRegrow = 0;
       fgx.fillStyle = "rgba(148,174,190,.02)";
       fgx.fillRect(0, 0, W, H);
+      // 濡れた筋はゆっくり乾いていく
+      wtx.save();
+      wtx.globalCompositeOperation = "destination-out";
+      wtx.fillStyle = "rgba(0,0,0,.05)";
+      wtx.fillRect(0, 0, W, H);
+      wtx.restore();
     }
     for (const L of LIGHTS) {
       if (L.cool > 0) L.cool -= dt;
@@ -806,6 +826,7 @@ export function createRainEngine(
         shortestAngle(collector.rot, targetRot) * Math.min(1, dt * 0.005);
 
       wipeFog(collector.x, collector.y, collector.r * 1.3, 0.1);
+      paintStreak(collector.x, collector.y, collector.r * 0.5);
       if (absorbInto(collector)) {
         collector.wobA = Math.min(5, 2 + collector.r * 0.06);
         collector.wob = 0;
@@ -831,6 +852,7 @@ export function createRainEngine(
       f.y += f.vy * dt * 0.35;
       absorbInto(f, true);
       wipeFog(f.x, f.y, f.r * 1.6, 0.28);
+      paintStreak(f.x, f.y, f.r * 0.55);
       tryLight(f.x, f.y);
       f.lastTrail += dt;
       if (f.lastTrail > 60) {
@@ -1117,6 +1139,10 @@ export function createRainEngine(
   function render() {
     composeScene();
     ctx.drawImage(scene, 0, 0, scene.width, scene.height, 0, 0, W, H);
+    // 濡れた筋:雫が伝ったところがうっすら光る
+    ctx.globalAlpha = 0.55;
+    ctx.drawImage(wet, 0, 0, wet.width, wet.height, 0, 0, W, H);
+    ctx.globalAlpha = 1;
 
     for (const s of stuck) {
       if (s.r < 6) drawDot(s.x, s.y, s.r, s.a, s.sq, s.rot);
