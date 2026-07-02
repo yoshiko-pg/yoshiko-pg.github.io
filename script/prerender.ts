@@ -15,7 +15,9 @@ async function findJSFile(distDir: string): Promise<string> {
 async function findCSSFile(distDir: string): Promise<string> {
   const assetsDir = path.join(distDir, "assets");
   const files = await fs.readdir(assetsDir);
-  const found = files.find((file) => file.endsWith(".css"));
+  const found = files.find(
+    (file) => file.startsWith("index-") && file.endsWith(".css"),
+  );
   return found ? `/assets/${found}` : "/assets/index.css";
 }
 
