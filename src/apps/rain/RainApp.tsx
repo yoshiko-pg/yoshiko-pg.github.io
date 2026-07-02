@@ -14,7 +14,10 @@ function RainApp() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<RainEngine | null>(null);
   const [muted, setMuted] = useState(false);
-  const [autoMode, setAutoMode] = useState(false);
+  // 横長の画面(PCなど)では、ながめるモードで始める
+  const [autoMode, setAutoMode] = useState(
+    () => window.innerWidth > window.innerHeight,
+  );
   const [hint, setHint] = useState<ReactNode>(DEFAULT_HINT);
   const [hintFaded, setHintFaded] = useState(false);
 
@@ -30,11 +33,7 @@ function RainApp() {
       },
     });
     engineRef.current = engine;
-    // 横長の画面(PCなど)では、ながめるモードで始める
-    if (window.innerWidth > window.innerHeight) {
-      engine.setAuto(true);
-      setAutoMode(true);
-    }
+    if (window.innerWidth > window.innerHeight) engine.setAuto(true);
     return () => {
       engine.destroy();
       engineRef.current = null;
