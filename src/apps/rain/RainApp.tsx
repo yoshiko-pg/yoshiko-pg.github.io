@@ -2,20 +2,12 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createRainEngine, type RainEngine } from "./engine";
 import styles from "./RainApp.module.css";
 
-const DEFAULT_HINT = (
-  <>
-    しずくに ふれて つれていって
-    <br />
-    おもくなると ひとりでに おちる
-  </>
-);
-
 function RainApp() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<RainEngine | null>(null);
   const [muted, setMuted] = useState(false);
   const [autoMode, setAutoMode] = useState(true); // 雨は最初から降っている
-  const [hint, setHint] = useState<ReactNode>(DEFAULT_HINT);
+  const [hint, setHint] = useState<ReactNode>(null);
   const [hintFaded, setHintFaded] = useState(false);
   const [title, setTitle] = useState("RAIN.");
   const [titleFaded, setTitleFaded] = useState(false);
