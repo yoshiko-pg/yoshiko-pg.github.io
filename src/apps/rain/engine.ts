@@ -512,9 +512,11 @@ export function createRainEngine(
     const f = 196 * Math.pow(2, PENTA[idx] / 12) * (r > 34 ? 1 : 2); // 大きい雫は低め
     tone(f, 1.8, 0.07, "sine", 0, 0.06);
   }
-  function revealSound() {
-    // ランプが姿を見せる、ひそやかな音
-    tone(233, 0.4, 0.028, "sine", 0.8);
+  function revealSound(i: number) {
+    // ランプが姿を見せる、ひそやかな音(灯る時と同じ音階の1オクターブ下)
+    const f =
+      (196 * Math.pow(2, PENTA[i % 5] / 12)) / (Math.floor(i / 5) % 2 ? 2 : 1);
+    tone(f, 0.4, 0.028, "sine", 0.8);
   }
   function lampSound(i: number) {
     const f =
@@ -715,7 +717,7 @@ export function createRainEngine(
         L.stage++;
         L.cool = 1500;
         if (L.stage === 1) {
-          revealSound(); // 消えたランプが姿を見せる
+          revealSound(L.note); // 消えたランプが姿を見せる
         } else {
           lampSound(L.note); // 灯る
           litCount++;
