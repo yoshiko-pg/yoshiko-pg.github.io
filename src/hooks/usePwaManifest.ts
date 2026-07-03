@@ -26,8 +26,12 @@ export function usePwaManifest(appPath: string) {
       document.head.appendChild(el);
       return el;
     });
+    // インストールバナーは勝手に出さない(ブラウザのメニューからはインストールできる)
+    const suppressBanner = (e: Event) => e.preventDefault();
+    window.addEventListener("beforeinstallprompt", suppressBanner);
     return () => {
       elements.forEach((el) => el.remove());
+      window.removeEventListener("beforeinstallprompt", suppressBanner);
     };
   }, [appPath]);
 }
