@@ -1092,6 +1092,37 @@ export function createRainEngine(
         fallers.splice(i, 1);
       }
     }
+
+    // 落ちる雫同士も、重なったら合体して一粒になる
+    for (let i = fallers.length - 1; i >= 0; i--) {
+      const a = fallers[i];
+      for (let j = i - 1; j >= 0; j--) {
+        const b = fallers[j];
+        if (Math.hypot(a.x - b.x, a.y - b.y) > (a.r + b.r) * 0.85) continue;
+        // 下にいるほうへまとまり、勢いは大きさなりに引き継ぐ
+        const lower = a.y >= b.y ? a : b;
+        const upper = lower === a ? b : a;
+        const ml = lower.r * lower.r,
+          mu = upper.r * upper.r;
+        lower.vy = (lower.vy * ml + upper.vy * mu) / (ml + mu);
+        lower.r = Math.min(50, Math.sqrt(ml + mu));
+        lower.trail = lower.trail.concat(upper.trail);
+        slurps.push({
+          x0: upper.x,
+          y0: upper.y,
+          r: upper.r * 0.7,
+          t: 0,
+          tgt: lower,
+        });
+        if (upper === a) {
+          fallers.splice(i, 1);
+        } else {
+          fallers.splice(j, 1);
+          i--;
+        }
+        break; // このフレームではひと組ずつで十分
+      }
+    }
   }
 
   /* ================= 描画 ================= */
