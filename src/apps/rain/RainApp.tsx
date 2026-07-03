@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createRainEngine, type RainEngine } from "./engine";
 import { usePwaManifest } from "../../hooks/usePwaManifest";
+import { rainPage } from "../../data/pageMeta";
 import styles from "./RainApp.module.css";
 
 function RainApp() {
@@ -10,14 +11,14 @@ function RainApp() {
   const [autoMode, setAutoMode] = useState(true); // 雨は最初から降っている
   const [hint, setHint] = useState<string | null>(null);
   const [hintFaded, setHintFaded] = useState(false);
-  const [title, setTitle] = useState("RAIN.");
+  const [title, setTitle] = useState(rainPage.title);
   const [titleFaded, setTitleFaded] = useState(false);
   const titleTimers = useRef<number[]>([]);
 
   usePwaManifest("/apps/rain/");
 
   useEffect(() => {
-    document.title = "RAIN.";
+    document.title = rainPage.title;
     const engine = createRainEngine(canvasRef.current!, {
       showFlavor(text) {
         setHint(text);
