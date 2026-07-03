@@ -502,16 +502,14 @@ export function createRainEngine(
     bpx.drawImage(bg, 0, 0);
     townIdx = (townIdx + 1) % TOWNS.length;
     paintBackground(); // LIGHTSも新しいまちのものに
-    // 境目用のぼかし帯を作る:新しいまちの右端を鏡うつしで延長し、右へいくほど透ける
+    // 境目用のぼかし帯を作る:新しいまちの右端の色を横に引き伸ばして(スミア)、
+    // 右へいくほど透ける。鏡うつしだと折り返しの軸が筋に見えるのでこの方式
     const F = Math.max(1, Math.round(W * 0.28 * DPR));
+    const EDGE = Math.max(1, Math.round(6 * DPR)); // 引き伸ばす右端の幅
     seamStrip.width = F;
     seamStrip.height = bg.height;
     stx.setTransform(1, 0, 0, 1, 0, 0);
-    stx.save();
-    stx.translate(F, 0);
-    stx.scale(-1, 1);
-    stx.drawImage(bg, bg.width - F, 0, F, bg.height, 0, 0, F, bg.height);
-    stx.restore();
+    stx.drawImage(bg, bg.width - EDGE, 0, EDGE, bg.height, 0, 0, F, bg.height);
     stx.globalCompositeOperation = "destination-out";
     const sg = stx.createLinearGradient(0, 0, F, 0);
     sg.addColorStop(0, "rgba(0,0,0,0)");
@@ -1181,13 +1179,15 @@ export function createRainEngine(
     const eB = townBlend < 1 ? (1 - Math.cos(townBlend * PI)) / 2 : 0;
     const off = eB * W;
     if (townBlend < 1) {
+      // タイルの端は切れ目ぴったりに合わせる(はみ出すと硬いエッジが線に見える)
+      // 視差用の余白は画面外側にだけ取る
       scx.drawImage(
         bgPrev,
         0,
         0,
         bgPrev.width,
         bgPrev.height,
-        off - M,
+        off,
         -M,
         W + M * 2,
         H + M * 2,
@@ -1198,7 +1198,7 @@ export function createRainEngine(
         0,
         bg.width,
         bg.height,
-        off - W - M,
+        off - W - M * 2,
         -M,
         W + M * 2,
         H + M * 2,
