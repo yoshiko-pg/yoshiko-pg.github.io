@@ -80,6 +80,7 @@
   color: var(--color-page-background);
   transform: rotate(-3deg);
   transform-origin: top center;
+  user-select: none;
 }
 
 .swinging {
