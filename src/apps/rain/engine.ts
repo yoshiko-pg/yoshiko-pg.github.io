@@ -897,18 +897,11 @@ export function createRainEngine(
     paraX += (paraTX - paraX) * pk;
     paraY += (paraTY - paraY) * pk;
 
+    // 自動で流れる雫はRAINモードのときだけ(本降りのときほど増える)
     autoTimer -= dt;
     if (autoTimer < 0) {
-      // 本降りのときほど、ひとりでに流れる雫も増える
-      autoTimer =
-        ((autoMode ? rnd(700, 1900) : rnd(3000, 7000)) * (1.4 - 0.8 * rainy)) /
-        RAIN.pace;
-      breakFree(
-        rnd(6, W - 6),
-        rnd(-20, 40),
-        autoMode ? rnd(6, 13) : rnd(7, 12),
-        true,
-      );
+      autoTimer = (rnd(700, 1900) * (1.4 - 0.8 * rainy)) / RAIN.pace;
+      if (autoMode) breakFree(rnd(6, W - 6), rnd(-20, 40), rnd(6, 13), true);
     }
 
     // 雫を持っていない指は、窓の曇りを拭く(らくがきができる)
