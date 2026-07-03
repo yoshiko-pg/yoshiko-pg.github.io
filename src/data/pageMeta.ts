@@ -15,7 +15,7 @@ export interface PageMeta {
 export const homePage: PageMeta = {
   path: "/",
   title: "yoshiko",
-  description: "登壇資料置き場",
+  description: "yoshiko",
   image: "/og.png",
   type: "website",
 };
