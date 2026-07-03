@@ -415,13 +415,12 @@ export function createRainEngine(
 
   let townIdx = 0,
     townBlend = 1; // 1=切替完了
-  let mist = 0, // 夜霧の濃さ(移動の前にふわっと現れ、着いてから晴れる)
-    mistX = 0, // 霧の帯の中心。移動中は切れ目に追従し、着いたあとは右端に残って晴れる
-    mistOn = false,
-    travelPending = false; // 霧が濃くなりきるのを待って移動を始める
   let prevLights: Light[] = []; // 流れていく前のまちのあかり
   const bgPrev = document.createElement("canvas"),
     bpx = bgPrev.getContext("2d")!;
+  // まちの境目を溶かすぼかし帯:新しいまちの右端の鏡うつしに透明グラデをかけたもの
+  const seamStrip = document.createElement("canvas"),
+    stx = seamStrip.getContext("2d")!;
 
   let destroyed = false;
   const timeouts = new Set<ReturnType<typeof setTimeout>>();
@@ -503,13 +502,29 @@ export function createRainEngine(
     bpx.drawImage(bg, 0, 0);
     townIdx = (townIdx + 1) % TOWNS.length;
     paintBackground(); // LIGHTSも新しいまちのものに
+    // 境目用のぼかし帯を作る:新しいまちの右端を鏡うつしで延長し、右へいくほど透ける
+    const F = Math.max(1, Math.round(W * 0.16 * DPR));
+    seamStrip.width = F;
+    seamStrip.height = bg.height;
+    stx.setTransform(1, 0, 0, 1, 0, 0);
+    stx.save();
+    stx.translate(F, 0);
+    stx.scale(-1, 1);
+    stx.drawImage(bg, bg.width - F, 0, F, bg.height, 0, 0, F, bg.height);
+    stx.restore();
+    stx.globalCompositeOperation = "destination-out";
+    const sg = stx.createLinearGradient(0, 0, F, 0);
+    sg.addColorStop(0, "rgba(0,0,0,0)");
+    sg.addColorStop(1, "rgba(0,0,0,1)");
+    stx.fillStyle = sg;
+    stx.fillRect(0, 0, F, seamStrip.height);
+    stx.globalCompositeOperation = "source-over";
     litCount = 0;
     celebrated = false;
     townBlend = 0;
   }
   function arrive() {
     prevLights.length = 0; // 前のまちのあかりは見えなくなった
-    mistOn = false; // 着いてから霧はふわっと晴れていく
     hooks.showTown(TOWNS[townIdx].name); // 着いたまちの名前をそっと知らせる
   }
   function paintFog() {
@@ -548,11 +563,6 @@ export function createRainEngine(
       // リサイズ時は移り変わりを打ち切って、そのまま到着扱いにする
       townBlend = 1;
       arrive();
-    }
-    if (!travelPending) {
-      // 移動待ちの霧は消さない(消すと移動のきっかけが失われる)
-      mistOn = false;
-      mist = 0;
     }
     paintBackground();
     paintFog();
@@ -914,12 +924,7 @@ export function createRainEngine(
               pick(Math.random() < 0.5 ? TOWNS[townIdx].texts : FLAVORS),
             );
             later(() => hooks.fadeHint(), 7400); // 移動が終わる頃まで
-            // 余韻のあとで夜霧がふわっと立ちこめ、濃くなりきってから動き出す
-            later(() => {
-              mistOn = true;
-              mistX = 0; // 切れ目はまず左端に現れる
-              travelPending = true;
-            }, 1400);
+            later(nextTown, 2600); // 余韻のあとで次のまちへ
           }
         }
       }
@@ -957,14 +962,7 @@ export function createRainEngine(
     // まちの移り変わりを進める
     if (townBlend < 1) {
       townBlend = Math.min(1, townBlend + dt / 5200);
-      mistX = ((1 - Math.cos(townBlend * PI)) / 2) * W; // 霧の帯は切れ目に追従
       if (townBlend >= 1) arrive();
-    }
-    mist += ((mistOn ? 1 : 0) - mist) * (1 - Math.pow(0.998, dt));
-    if (travelPending && mist >= 0.98) {
-      // 夜霧がまちをすっかり包んでから、次のまちへ動き出す
-      travelPending = false;
-      nextTown();
     }
 
     // 曇りは初期の濃さを上限にじんわり戻る(本降りほど速く、こぬか雨はゆっくり)
@@ -1218,37 +1216,36 @@ export function createRainEngine(
         H + M * 2,
       );
     }
-    if (mist > 0.005) {
-      // まちの境目を隠すためだけの細い夜霧。切れ目に追従して、ふっと現れふっと消える
-      const MW = W * 0.36,
-        x0 = mistX - MW / 2;
-      const hz = scx.createLinearGradient(x0, 0, x0 + MW, 0);
-      hz.addColorStop(0, "rgba(7,12,19,0)");
-      hz.addColorStop(0.4, `rgba(7,12,19,${0.97 * mist})`);
-      hz.addColorStop(0.6, `rgba(7,12,19,${0.97 * mist})`);
-      hz.addColorStop(1, "rgba(7,12,19,0)");
-      scx.fillStyle = hz;
-      scx.fillRect(x0, -M, MW, H + M * 2);
+    if (townBlend < 1 && seamStrip.width > 1) {
+      // 境目そのものは、新しいまちの端を鏡うつしにしたぼかし帯で溶かす
+      // (動き出しの一瞬でふっと現れる)
+      const stripW = seamStrip.width / DPR;
+      scx.globalAlpha = Math.min(1, townBlend * 10);
+      scx.drawImage(
+        seamStrip,
+        0,
+        0,
+        seamStrip.width,
+        seamStrip.height,
+        off,
+        -M,
+        stripW,
+        H + M * 2,
+      );
+      scx.globalAlpha = 1;
     }
-    // 夜霧に近いあかりほど、霧に溶けてふんわり消えていく
-    const mistFadeAt = (x: number) => {
-      if (mist <= 0.005) return 1;
-      const near = Math.max(0, 1 - Math.abs(x - mistX) / (W * 0.18));
-      return Math.max(0, 1 - mist * near * 1.6);
-    };
     if (townBlend < 1) {
-      // 前のまちのあかりは、景色と一緒に流れながら霧に飲まれて消えていく
+      // 前のまちのあかりは、境目のぼかしに近いものだけ薄れつつ、景色と一緒に流れ去る
+      const stripW = seamStrip.width / DPR || 1;
       for (const L of prevLights) {
         const sx = L.x + off;
         if (L.stage <= 0 || sx > W + 120) continue;
-        const fade = mistFadeAt(sx);
-        if (fade <= 0) continue;
-        drawLamp(sx, L.y, L, fade);
+        drawLamp(sx, L.y, L, Math.min(1, L.x / stripW));
       }
     }
     for (const L of LIGHTS) {
       if (L.stage <= 0) continue;
-      drawLamp(L.x, L.y, L, mistFadeAt(L.x));
+      drawLamp(L.x, L.y, L);
     }
     if (wakeT >= 0) {
       // まちの目覚め:全部灯った瞬間、まち全体がゆっくり息を吸って吐く
