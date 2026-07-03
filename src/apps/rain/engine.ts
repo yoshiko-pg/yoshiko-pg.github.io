@@ -484,7 +484,7 @@ export function createRainEngine(
       const a = new Ctor();
       AC = a;
       master = a.createGain();
-      master.gain.value = muted ? 0 : 0.55;
+      master.gain.value = muted ? 0 : 0.605;
       master.connect(a.destination);
       // 雨音BGM:録音した雨のループ、これひとつだけ
       const rg = a.createGain();
@@ -1383,7 +1383,7 @@ export function createRainEngine(
   return {
     setMuted(m: boolean) {
       muted = m;
-      if (master) master.gain.value = m ? 0 : 0.55;
+      if (master) master.gain.value = m ? 0 : 0.605;
     },
     setAuto(a: boolean) {
       ac();
