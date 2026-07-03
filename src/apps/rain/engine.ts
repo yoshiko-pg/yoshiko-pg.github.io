@@ -1114,17 +1114,25 @@ export function createRainEngine(
       scx.fillStyle = fz;
       scx.fillRect(x0, -M, MW, H + M * 2);
     }
+    // 夜霧に近いあかりほど、霧に溶けてふんわり消えていく
+    const mistFadeAt = (x: number) => {
+      if (mist <= 0.005) return 1;
+      const near = Math.max(0, 1 - Math.abs(x - mistX) / (W * 0.55));
+      return Math.max(0, 1 - mist * near * 1.6);
+    };
     if (townBlend < 1) {
-      // 前のまちのあかりは、景色と一緒に流れながらだんだん暗くなっていく
-      const lampFade = Math.max(0, 1 - townBlend * 1.6);
+      // 前のまちのあかりは、景色と一緒に流れながら霧に飲まれて消えていく
       for (const L of prevLights) {
-        if (L.stage <= 0 || L.x + off > W + 120 || lampFade <= 0) continue;
-        drawLamp(L.x + off, L.y, L, lampFade);
+        const sx = L.x + off;
+        if (L.stage <= 0 || sx > W + 120) continue;
+        const fade = mistFadeAt(sx);
+        if (fade <= 0) continue;
+        drawLamp(sx, L.y, L, fade);
       }
     }
     for (const L of LIGHTS) {
       if (L.stage <= 0) continue;
-      drawLamp(L.x, L.y, L);
+      drawLamp(L.x, L.y, L, mistFadeAt(L.x));
     }
     if (wakeT >= 0) {
       // まちの目覚め:全部灯った瞬間、まち全体がゆっくり息を吸って吐く
