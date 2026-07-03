@@ -1235,12 +1235,16 @@ export function createRainEngine(
       scx.globalAlpha = 1;
     }
     if (townBlend < 1) {
-      // 前のまちのあかりは、境目のぼかしに近いものだけ薄れつつ、景色と一緒に流れ去る
+      // 前のまちのあかりは、移動のあいだにだんだん暗くなり、着く頃には消えている
+      // (境目のぼかしに近いものは、さらにそのぶん薄れる)
       const stripW = seamStrip.width / DPR || 1;
+      const travelFade = 1 - townBlend;
       for (const L of prevLights) {
         const sx = L.x + off;
         if (L.stage <= 0 || sx > W + 120) continue;
-        drawLamp(sx, L.y, L, Math.min(1, L.x / stripW));
+        const fade = travelFade * Math.min(1, L.x / stripW);
+        if (fade <= 0.005) continue;
+        drawLamp(sx, L.y, L, fade);
       }
     }
     for (const L of LIGHTS) {
