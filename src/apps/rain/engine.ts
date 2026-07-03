@@ -503,7 +503,7 @@ export function createRainEngine(
     townIdx = (townIdx + 1) % TOWNS.length;
     paintBackground(); // LIGHTSも新しいまちのものに
     // 境目用のぼかし帯を作る:新しいまちの右端を鏡うつしで延長し、右へいくほど透ける
-    const F = Math.max(1, Math.round(W * 0.16 * DPR));
+    const F = Math.max(1, Math.round(W * 0.28 * DPR));
     seamStrip.width = F;
     seamStrip.height = bg.height;
     stx.setTransform(1, 0, 0, 1, 0, 0);
