@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 // /apps/* のミニアプリをサブパススコープのPWAとしてインストール可能にするフック。
 // 対象ページを開いている間だけマニフェスト等をheadへ追加し、離れたら取り除く。
-// appPath 配下に manifest.webmanifest と icon-192.png を置いておくこと。
+// appPath 配下に manifest.webmanifest と icon-192.png と sw.js を置いておくこと。
 export function usePwaManifest(appPath: string) {
   useEffect(() => {
     const base = appPath.endsWith("/") ? appPath : `${appPath}/`;
@@ -29,6 +29,11 @@ export function usePwaManifest(appPath: string) {
     // インストールバナーは勝手に出さない(ブラウザのメニューからはインストールできる)
     const suppressBanner = (e: Event) => e.preventDefault();
     window.addEventListener("beforeinstallprompt", suppressBanner);
+    // Service Worker登録:AndroidのWebAPK化とオフライン動作のため
+    // (devではHMRとキャッシュが喧嘩するので本番のみ)
+    if (import.meta.env.PROD && "serviceWorker" in navigator) {
+      void navigator.serviceWorker.register(`${base}sw.js`, { scope: base });
+    }
     return () => {
       elements.forEach((el) => el.remove());
       window.removeEventListener("beforeinstallprompt", suppressBanner);
