@@ -130,6 +130,7 @@
   bottom: 30px;
   left: 0;
   right: 0;
+  padding: 0 20px;
   text-align: center;
   font-size: 12.5px;
   letter-spacing: 0.3em;
@@ -140,6 +141,28 @@
   z-index: 2;
   line-height: 2.2;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+}
+
+/* 言語ごとの調整:欧文・ハングルは 0.3em の字間だと広がりすぎるので詰める */
+.root[data-lang="en"] .hint {
+  letter-spacing: 0.1em;
+}
+
+.root[data-lang="ko"] .hint {
+  letter-spacing: 0.08em;
+}
+
+.root[data-lang="zh"] .hint {
+  letter-spacing: 0.22em;
+}
+
+.root[data-lang="ko"] {
+  font-family: "Marcellus", "Nanum Myeongjo", "AppleMyungjo", "Batang", serif;
+}
+
+.root[data-lang="zh"] {
+  font-family:
+    "Marcellus", "Songti SC", "Noto Serif SC", "SimSun", "STSong", serif;
 }
 
 .hint.fade {

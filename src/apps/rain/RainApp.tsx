@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createRainEngine, type RainEngine } from "./engine";
 import { usePwaManifest } from "../../hooks/usePwaManifest";
 import { rainPage } from "../../data/pageMeta";
+import { RAIN_LOCALES, resolveRainLang } from "./locales";
 import styles from "./RainApp.module.css";
 
 function RainApp() {
@@ -14,32 +15,40 @@ function RainApp() {
   const [title, setTitle] = useState(rainPage.title);
   const [titleFaded, setTitleFaded] = useState(false);
   const titleTimers = useRef<number[]>([]);
+  const [lang] = useState(resolveRainLang);
+  const locale = RAIN_LOCALES[lang];
 
   usePwaManifest("/apps/rain/");
 
   useEffect(() => {
     document.title = rainPage.title;
-    const engine = createRainEngine(canvasRef.current!, {
-      showFlavor(text) {
-        setHint(text);
-        setHintFaded(false);
+    const prevLang = document.documentElement.lang;
+    document.documentElement.lang = lang;
+    const engine = createRainEngine(
+      canvasRef.current!,
+      {
+        showFlavor(text) {
+          setHint(text);
+          setHintFaded(false);
+        },
+        fadeHint() {
+          setHintFaded(true);
+        },
+        showTown(name) {
+          // タイトルがふわっと今いる街の名前になる
+          titleTimers.current.forEach(clearTimeout);
+          titleTimers.current = [];
+          setTitleFaded(true);
+          titleTimers.current.push(
+            window.setTimeout(() => {
+              setTitle(name);
+              setTitleFaded(false);
+            }, 1000),
+          );
+        },
       },
-      fadeHint() {
-        setHintFaded(true);
-      },
-      showTown(name) {
-        // タイトルがふわっと今いる街の名前になる
-        titleTimers.current.forEach(clearTimeout);
-        titleTimers.current = [];
-        setTitleFaded(true);
-        titleTimers.current.push(
-          window.setTimeout(() => {
-            setTitle(name);
-            setTitleFaded(false);
-          }, 1000),
-        );
-      },
-    });
+      locale,
+    );
     engineRef.current = engine;
     engine.setAuto(true);
     return () => {
@@ -47,7 +56,10 @@ function RainApp() {
       engineRef.current = null;
       titleTimers.current.forEach(clearTimeout);
       titleTimers.current = [];
+      document.documentElement.lang = prevLang;
     };
+    // locale は初回マウント時に確定して以後変わらない
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleMute = () => {
@@ -62,11 +74,11 @@ function RainApp() {
   };
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-lang={lang}>
       <canvas
         ref={canvasRef}
         className={styles.stage}
-        aria-label="雨の日の窓ガラス。なぞって雫を集める画面"
+        aria-label={locale.ui.stage}
       />
       <header className={styles.header}>
         <h1 className={`${styles.title} ${titleFaded ? styles.fade : ""}`}>
@@ -77,7 +89,7 @@ function RainApp() {
             type="button"
             className={`${styles.ctl} ${autoMode ? "" : styles.dim}`}
             aria-pressed={autoMode}
-            aria-label="雨がふるモード切替"
+            aria-label={locale.ui.auto}
             onClick={toggleAuto}
           >
             <span className={styles.ic}>
@@ -94,7 +106,7 @@ function RainApp() {
             type="button"
             className={`${styles.ctl} ${muted ? styles.dim : ""}`}
             aria-pressed={muted}
-            aria-label="音の切替"
+            aria-label={locale.ui.sound}
             onClick={toggleMute}
           >
             <span className={styles.ic}>
