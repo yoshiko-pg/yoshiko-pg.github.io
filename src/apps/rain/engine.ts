@@ -421,6 +421,7 @@ export function createRainEngine(
   // まちの境目を溶かすぼかし帯:新しいまちの右端の鏡うつしに透明グラデをかけたもの
   const seamStrip = document.createElement("canvas"),
     stx = seamStrip.getContext("2d")!;
+  let seamIn = 0; // ぼかし帯が新しいまち側へ食い込む幅(CSS px)
 
   let destroyed = false;
   const timeouts = new Set<ReturnType<typeof setTimeout>>();
@@ -503,19 +504,32 @@ export function createRainEngine(
     townIdx = (townIdx + 1) % TOWNS.length;
     paintBackground(); // LIGHTSも新しいまちのものに
     // 境目用のぼかし帯を作る:新しいまちの右端の色を横に引き伸ばして(スミア)、
-    // 右へいくほど透ける。鏡うつしだと折り返しの軸が筋に見えるのでこの方式
-    const F = Math.max(1, Math.round(W * 0.28 * DPR));
+    // 「透明 → スミア100%(切れ目を覆う) → 透明」の山型で両端にエッジを作らない
+    const FIN = Math.max(1, Math.round(W * 0.1 * DPR)); // 新しいまち側へのなじみ幅
+    const F = Math.max(1, Math.round(W * 0.3 * DPR)); // 前のまち側へ透けていく幅
     const EDGE = Math.max(1, Math.round(6 * DPR)); // 引き伸ばす右端の幅
-    seamStrip.width = F;
+    seamIn = FIN / DPR; // 描画時に切れ目からこのぶん左へずらす
+    seamStrip.width = FIN + F;
     seamStrip.height = bg.height;
     stx.setTransform(1, 0, 0, 1, 0, 0);
-    stx.drawImage(bg, bg.width - EDGE, 0, EDGE, bg.height, 0, 0, F, bg.height);
+    stx.drawImage(
+      bg,
+      bg.width - EDGE,
+      0,
+      EDGE,
+      bg.height,
+      0,
+      0,
+      FIN + F,
+      bg.height,
+    );
     stx.globalCompositeOperation = "destination-out";
-    const sg = stx.createLinearGradient(0, 0, F, 0);
-    sg.addColorStop(0, "rgba(0,0,0,0)");
+    const sg = stx.createLinearGradient(0, 0, FIN + F, 0);
+    sg.addColorStop(0, "rgba(0,0,0,1)");
+    sg.addColorStop(FIN / (FIN + F), "rgba(0,0,0,0)");
     sg.addColorStop(1, "rgba(0,0,0,1)");
     stx.fillStyle = sg;
-    stx.fillRect(0, 0, F, seamStrip.height);
+    stx.fillRect(0, 0, FIN + F, seamStrip.height);
     stx.globalCompositeOperation = "source-over";
     litCount = 0;
     celebrated = false;
@@ -1217,8 +1231,8 @@ export function createRainEngine(
       );
     }
     if (townBlend < 1 && seamStrip.width > 1) {
-      // 境目そのものは、新しいまちの端を鏡うつしにしたぼかし帯で溶かす
-      // (動き出しの一瞬でふっと現れる)
+      // 境目そのものは、新しいまちの端色のスミア帯で溶かす
+      // (切れ目より少し左から食い込ませて、帯の両端にエッジを作らない)
       const stripW = seamStrip.width / DPR;
       scx.globalAlpha = Math.min(1, townBlend * 10);
       scx.drawImage(
@@ -1227,7 +1241,7 @@ export function createRainEngine(
         0,
         seamStrip.width,
         seamStrip.height,
-        off,
+        off - seamIn,
         -M,
         stripW,
         H + M * 2,
@@ -1237,7 +1251,7 @@ export function createRainEngine(
     if (townBlend < 1) {
       // 前のまちのあかりは、移動のあいだにだんだん暗くなり、着く頃には消えている
       // (境目のぼかしに近いものは、さらにそのぶん薄れる)
-      const stripW = seamStrip.width / DPR || 1;
+      const stripW = seamStrip.width / DPR - seamIn || 1;
       const travelFade = 1 - townBlend;
       for (const L of prevLights) {
         const sx = L.x + off;
