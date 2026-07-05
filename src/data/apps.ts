@@ -12,7 +12,14 @@ export const apps: App[] = [
     title: "difit",
     description: "ローカルGit diffビューア",
     url: "https://yoshiko-pg.github.io/difit/",
-    thumbnail: "/screenshots/difit.jpg",
+    thumbnail: "https://yoshiko-pg.github.io/difit/site-data/og-image.png",
+  },
+  {
+    slug: "ponkan",
+    title: "PONKAN",
+    description: "ミュージアムのマップとスタンプラリー",
+    url: "https://yoshiko-pg.github.io/ponkan/",
+    thumbnail: "https://yoshiko-pg.github.io/ponkan/og-image.jpg",
   },
   {
     slug: "rain",
